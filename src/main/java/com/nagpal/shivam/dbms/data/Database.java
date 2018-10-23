@@ -15,7 +15,7 @@ public class Database {
         if (sConnection == null) {
             try {
                 sConnection = DriverManager.getConnection(url);
-                Log.v(CLASS_NAME, "com.nagpal.shivam.dbms.data.Database Connected");
+                Log.v(CLASS_NAME, "Database Connected");
             } catch (SQLException e) {
                 Log.e(CLASS_NAME, e.getMessage());
             }

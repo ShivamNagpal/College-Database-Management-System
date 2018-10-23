@@ -2,14 +2,15 @@ package com.nagpal.shivam.dbms;
 
 import com.nagpal.shivam.dbms.data.Database;
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
+import com.nagpal.shivam.dbms.ui.InputProfessorData;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Main extends Application {
     private static final String CLASS_NAME = Main.class.getSimpleName();
+    public static Stage sStage;
 
     public static void main(String[] args) {
-        DatabaseHelper.createTables();
         launch(args);
     }
 
@@ -17,11 +18,14 @@ public class Main extends Application {
     @Override
     public void init() throws Exception {
         super.init();
+        DatabaseHelper.createTables();
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
+        sStage = primaryStage;
+        InputProfessorData.setScene();
+        sStage.show();
     }
 
     @Override

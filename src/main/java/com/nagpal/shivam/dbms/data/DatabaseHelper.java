@@ -6,6 +6,8 @@ import com.nagpal.shivam.dbms.data.DatabaseContract.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper {
     private static final String CLASS_NAME = DatabaseHelper.class.getSimpleName();
@@ -25,5 +27,13 @@ public class DatabaseHelper {
             return false;
         }
         return true;
+    }
+
+    public static List<String> fetchDepartmentNames() {
+        // TODO: DUMMY DATA: Replace with actual query
+        List<String> list = new ArrayList<>();
+        list.add("Hello");
+        list.add("World");
+        return list;
     }
 }

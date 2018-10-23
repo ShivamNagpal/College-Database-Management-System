@@ -4,7 +4,7 @@ public class DatabaseContract {
 
 
     public class Professor {
-        public static final String TABLE_NAME = "Professor";
+        public static final String TABLE_NAME = "PROFESSOR";
         public static final String NAME = "NAME";
         public static final String PROFESSOR_ID = "PROFESSOR_ID";
         public static final String DATE_OF_BIRTH = "DATE_OF_BIRTH";
@@ -110,6 +110,12 @@ public class DatabaseContract {
                 STUDENT_ID + " TEXT" +
                 ", " +
                 SUBJECT_ID + " TEXT" +
+                ", " +
+                "FOREIGN KEY (" + PROFESSOR_ID + ") REFERENCES " + Professor.TABLE_NAME + "(" + Professor.PROFESSOR_ID + ")" +
+                ", " +
+                "FOREIGN KEY (" + STUDENT_ID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ")" +
+                ", " +
+                "FOREIGN KEY (" + SUBJECT_ID + ") REFERENCES " + Subject.TABLE_NAME + "(" + Subject.SUBJECT_ID + ")" +
                 ", " +
                 "PRIMARY KEY (" + PROFESSOR_ID + ", " + STUDENT_ID + ", " + SUBJECT_ID + ")" +
                 ");";
