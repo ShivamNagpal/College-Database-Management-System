@@ -1,9 +1,7 @@
 package com.nagpal.shivam.dbms.data;
 
 import com.nagpal.shivam.dbms.Log;
-import com.nagpal.shivam.dbms.data.DatabaseContract.Department;
-import com.nagpal.shivam.dbms.data.DatabaseContract.Student;
-import com.nagpal.shivam.dbms.data.DatabaseContract.Professor;
+import com.nagpal.shivam.dbms.data.DatabaseContract.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,6 +18,8 @@ public class DatabaseHelper {
             statement.execute(Department.SQL_CREATE_TABLE);
             statement.execute(Professor.SQL_CREATE_TABLE);
             statement.execute(Student.SQL_CREATE_TABLE);
+            statement.execute(Subject.SQL_CREATE_TABLE);
+            statement.execute(Teaches.SQL_CREATE_TABLE);
         } catch (SQLException e) {
             Log.e(CLASS_NAME, e.getMessage());
             return false;
