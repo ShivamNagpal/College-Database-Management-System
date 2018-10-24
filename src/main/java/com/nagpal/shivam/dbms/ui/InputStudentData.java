@@ -17,16 +17,16 @@ import java.util.List;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
 
-public class InputProfessorData {
+public class InputStudentData {
 
-    private InputProfessorData() {
+    private InputStudentData() {
     }
 
     public static void setScene() {
-        Pane pane = new InputProfessorData().getLayout();
+        Pane pane = new InputStudentData().getLayout();
         pane.setPrefSize(800, 600);
         Scene scene = new Scene(pane);
-        sStage.setTitle("Insert new professor");
+        sStage.setTitle("Insert new student");
         sStage.setScene(scene);
     }
 
@@ -81,13 +81,6 @@ public class InputProfessorData {
         formGridPane.add(emailTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text designationText = new Text("Designation");
-        TextField designationTextField = new TextField();
-        designationTextField.setPromptText("Enter Designation");
-        formGridPane.add(designationText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(designationTextField, 1, gridPaneStartingRowIndex);
-        gridPaneStartingRowIndex += 1;
-
         Text departmentIdText = new Text("Department*");
         ComboBox<String> departmentChoiceBox = new ComboBox<>();
         departmentChoiceBox.setPromptText("Choose a department");
@@ -123,4 +116,5 @@ public class InputProfessorData {
 
         return containerGridPane;
     }
+
 }

@@ -32,8 +32,8 @@ public class DatabaseHelper {
     public static List<String> fetchDepartmentNames() {
         // TODO: DUMMY DATA: Replace with actual query
         List<String> list = new ArrayList<>();
-        list.add("Hello");
-        list.add("World");
+        list.add("Dep1");
+        list.add("Dep2");
         return list;
     }
 }
