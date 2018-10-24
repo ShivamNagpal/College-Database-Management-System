@@ -17,13 +17,13 @@ import java.util.List;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
 
-public class InputStudentData {
+public class InsertStudentData {
 
-    private InputStudentData() {
+    private InsertStudentData() {
     }
 
     public static void setScene() {
-        Pane pane = new InputStudentData().getLayout();
+        Pane pane = new InsertStudentData().getLayout();
         pane.setPrefSize(800, 600);
         Scene scene = new Scene(pane);
         sStage.setTitle("Insert new student");
