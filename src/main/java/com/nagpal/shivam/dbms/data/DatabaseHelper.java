@@ -3,16 +3,14 @@ package com.nagpal.shivam.dbms.data;
 import com.nagpal.shivam.dbms.Log;
 import com.nagpal.shivam.dbms.data.DatabaseContract.*;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper {
     private static final String CLASS_NAME = DatabaseHelper.class.getSimpleName();
 
-    public static boolean createTables() {
+    public static int createTables() {
         Connection connection = Database.getConnection();
         try {
             Statement statement = connection.createStatement();
@@ -24,16 +22,48 @@ public class DatabaseHelper {
             statement.execute(Teaches.SQL_CREATE_TABLE);
         } catch (SQLException e) {
             Log.e(CLASS_NAME, e.getMessage());
-            return false;
+            return e.getErrorCode();
         }
-        return true;
+        return SqlErrorCodes.SQLITE_OK;
     }
 
     public static List<String> fetchDepartmentNames() {
-        // TODO: DUMMY DATA: Replace with actual query
+        String sql = "SELECT " +
+                Department.NAME +
+                " FROM " +
+                Department.TABLE_NAME;
         List<String> list = new ArrayList<>();
-        list.add("Dep1");
-        list.add("Dep2");
+        Connection connection = Database.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                list.add(set.getString(Department.NAME));
+            }
+
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
         return list;
+    }
+
+    public static int insertIntoDepartment(String name, String id) {
+        String sql = "INSERT INTO " +
+                Department.TABLE_NAME +
+                "(" +
+                Department.NAME + ", " +
+                Department.DEPARTMENT_ID +
+                ") VALUES(?, ?)";
+        Connection connection = Database.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, name);
+            statement.setString(2, id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
     }
 }
