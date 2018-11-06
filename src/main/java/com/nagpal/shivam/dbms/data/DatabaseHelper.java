@@ -19,7 +19,10 @@ public class DatabaseHelper {
             statement.execute(Professor.SQL_CREATE_TABLE);
             statement.execute(Student.SQL_CREATE_TABLE);
             statement.execute(Subject.SQL_CREATE_TABLE);
+            statement.execute(SemesterSection.SQL_CREATE_TABLE);
             statement.execute(Teaches.SQL_CREATE_TABLE);
+            statement.execute(Division.SQL_CREATE_TABLE);
+            statement.execute(IaMarks.SQL_CREATE_TABLE);
         } catch (SQLException e) {
             Log.e(CLASS_NAME, e.getMessage());
             return e.getErrorCode();
@@ -35,8 +38,8 @@ public class DatabaseHelper {
         List<String> list = new ArrayList<>();
         Connection connection = Database.getConnection();
         try {
-            PreparedStatement statement = connection.prepareStatement(sql);
-            ResultSet set = statement.executeQuery();
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(sql);
             while (set.next()) {
                 list.add(set.getString(Department.NAME));
             }
