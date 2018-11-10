@@ -1,7 +1,7 @@
 package com.nagpal.shivam.dbms.data;
 
 public class DatabaseContract {
-
+    public static final String ROW_ID = "ROWID";
 
     public class Professor {
         public static final String TABLE_NAME = "PROFESSOR";

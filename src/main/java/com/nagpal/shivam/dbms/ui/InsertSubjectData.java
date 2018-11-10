@@ -1,6 +1,7 @@
 package com.nagpal.shivam.dbms.ui;
 
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
+import com.nagpal.shivam.dbms.model.DepartmentData;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,6 +16,7 @@ import javafx.scene.text.Text;
 import java.util.List;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
+import static com.nagpal.shivam.dbms.ui.Utils.departmentChoiceBoxCallback;
 
 public class InsertSubjectData {
     private InsertSubjectData() {
@@ -53,25 +55,28 @@ public class InsertSubjectData {
         gridPaneStartingRowIndex += 1;
 
         Text departmentIdText = new Text("Department*");
-        ComboBox<String> departmentChoiceBox = new ComboBox<>();
-        departmentChoiceBox.setPromptText("Choose a department");
-        Task<List<String>> fetchDepartmentNamesTask = new Task<List<String>>() {
+        ComboBox<DepartmentData> departmentDataComboBox = new ComboBox<>();
+        departmentDataComboBox.setCellFactory(departmentChoiceBoxCallback);
+        departmentDataComboBox.setButtonCell(departmentChoiceBoxCallback.call(null));
+
+        departmentDataComboBox.setPromptText("Choose a department");
+        Task<List<DepartmentData>> fetchDepartmentDetailsTask = new Task<List<DepartmentData>>() {
             @Override
-            protected List<String> call() throws Exception {
-                return DatabaseHelper.fetchDepartmentNames();
+            protected List<DepartmentData> call() {
+                return DatabaseHelper.fetchDepartmentDetails();
             }
 
             @Override
             protected void succeeded() {
                 super.succeeded();
-                departmentChoiceBox.getItems().addAll(this.getValue());
+                departmentDataComboBox.getItems().addAll(this.getValue());
             }
         };
-        Thread thread = new Thread(fetchDepartmentNamesTask);
+        Thread thread = new Thread(fetchDepartmentDetailsTask);
         thread.start();
         Text linkToAddNewDepartment = new Text("Not Found!, Add new Department First");
         formGridPane.add(departmentIdText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(departmentChoiceBox, 1, gridPaneStartingRowIndex);
+        formGridPane.add(departmentDataComboBox, 1, gridPaneStartingRowIndex);
         formGridPane.add(linkToAddNewDepartment, 2, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 

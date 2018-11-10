@@ -1,5 +1,6 @@
 package com.nagpal.shivam.dbms.ui;
 
+import com.nagpal.shivam.dbms.data.DatabaseHelper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,6 +13,10 @@ import javafx.scene.text.Text;
 import static com.nagpal.shivam.dbms.Main.sStage;
 
 public class InsertDepartmentData {
+
+    private TextField mNameTextField;
+    private TextField mIdTextField;
+
     private InsertDepartmentData() {
     }
 
@@ -33,17 +38,17 @@ public class InsertDepartmentData {
         int gridPaneStartingRowIndex = 0;
 
         Text nameText = new Text("Name*");
-        TextField nameTextField = new TextField();
-        nameTextField.setPromptText("Enter Name");
+        mNameTextField = new TextField();
+        mNameTextField.setPromptText("Enter Name");
         formGridPane.add(nameText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(nameTextField, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mNameTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         Text idText = new Text("Id*");
-        TextField idTextField = new TextField();
-        idTextField.setPromptText("Enter Id");
+        mIdTextField = new TextField();
+        mIdTextField.setPromptText("Enter Id");
         formGridPane.add(idText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(idTextField, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mIdTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         GridPane containerGridPane = new GridPane();
@@ -55,7 +60,15 @@ public class InsertDepartmentData {
 
         Button submitButton = new Button("Submit");
         containerGridPane.add(submitButton, 2, 2);
+        submitButton.setOnAction(event -> submitData());
 
         return containerGridPane;
+    }
+
+    private void submitData() {
+        String name = mNameTextField.getText();
+        String id = mIdTextField.getText();
+
+        DatabaseHelper.insertIntoDepartment(name, id);
     }
 }

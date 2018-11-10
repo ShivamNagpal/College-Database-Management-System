@@ -2,7 +2,7 @@ package com.nagpal.shivam.dbms;
 
 import com.nagpal.shivam.dbms.data.Database;
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
-import com.nagpal.shivam.dbms.ui.InsertProfessorData;
+import com.nagpal.shivam.dbms.ui.InsertStudentData;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -25,7 +25,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         sStage = primaryStage;
         sStage.show();
-        InsertProfessorData.setScene();
+        InsertStudentData.setScene();
     }
 
     @Override

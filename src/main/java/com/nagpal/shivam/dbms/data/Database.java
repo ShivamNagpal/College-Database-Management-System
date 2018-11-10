@@ -34,4 +34,14 @@ public class Database {
             }
         }
     }
+
+    public static void closeSqlComponents(AutoCloseable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

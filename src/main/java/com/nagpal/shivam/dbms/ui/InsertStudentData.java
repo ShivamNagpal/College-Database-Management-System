@@ -1,6 +1,7 @@
 package com.nagpal.shivam.dbms.ui;
 
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
+import com.nagpal.shivam.dbms.model.DepartmentData;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,11 +14,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
+import static com.nagpal.shivam.dbms.ui.Utils.departmentChoiceBoxCallback;
 
 public class InsertStudentData {
+
+    private TextField mNameTextField;
+    private TextField mIdTextField;
+    private DatePicker mDobDatePicker;
+    private TextField mAddressTextField;
+    private TextField mPhoneTextField;
+    private TextField mEmailTextField;
+    private ComboBox<DepartmentData> mDepartmentDataComboBox;
 
     private InsertStudentData() {
     }
@@ -40,67 +51,70 @@ public class InsertStudentData {
         int gridPaneStartingRowIndex = 0;
 
         Text nameText = new Text("Name*");
-        TextField nameTextField = new TextField();
-        nameTextField.setPromptText("Enter Name");
+        mNameTextField = new TextField();
+        mNameTextField.setPromptText("Enter Name");
         formGridPane.add(nameText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(nameTextField, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mNameTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         Text idText = new Text("Id*");
-        TextField idTextField = new TextField();
-        idTextField.setPromptText("Enter Id");
+        mIdTextField = new TextField();
+        mIdTextField.setPromptText("Enter Id");
         formGridPane.add(idText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(idTextField, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mIdTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         Text dobText = new Text("Date of Birth");
-        DatePicker datePicker = new DatePicker();
-        datePicker.setPromptText("Choose a date");
+        mDobDatePicker = new DatePicker();
+        mDobDatePicker.setPromptText("Choose a date");
         formGridPane.add(dobText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(datePicker, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mDobDatePicker, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         Text addressText = new Text("Address");
-        TextField addressTextField = new TextField();
-        addressTextField.setPromptText("Enter Address");
+        mAddressTextField = new TextField();
+        mAddressTextField.setPromptText("Enter Address");
         formGridPane.add(addressText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(addressTextField, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mAddressTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         Text phoneText = new Text("Phone");
-        TextField phoneTextField = new TextField();
-        phoneTextField.setPromptText("Enter Phone Number");
+        mPhoneTextField = new TextField();
+        mPhoneTextField.setPromptText("Enter Phone Number");
         formGridPane.add(phoneText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(phoneTextField, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mPhoneTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         Text emailText = new Text("Email");
-        TextField emailTextField = new TextField();
-        emailTextField.setPromptText("Enter Email Address");
+        mEmailTextField = new TextField();
+        mEmailTextField.setPromptText("Enter Email Address");
         formGridPane.add(emailText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(emailTextField, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mEmailTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         Text departmentIdText = new Text("Department*");
-        ComboBox<String> departmentChoiceBox = new ComboBox<>();
-        departmentChoiceBox.setPromptText("Choose a department");
-        Task<List<String>> fetchDepartmentNamesTask = new Task<List<String>>() {
+        mDepartmentDataComboBox = new ComboBox<>();
+        mDepartmentDataComboBox.setCellFactory(departmentChoiceBoxCallback);
+        mDepartmentDataComboBox.setButtonCell(departmentChoiceBoxCallback.call(null));
+
+        mDepartmentDataComboBox.setPromptText("Choose a department");
+        Task<List<DepartmentData>> fetchDepartmentDetailsTask = new Task<List<DepartmentData>>() {
             @Override
-            protected List<String> call() throws Exception {
-                return DatabaseHelper.fetchDepartmentNames();
+            protected List<DepartmentData> call() {
+                return DatabaseHelper.fetchDepartmentDetails();
             }
 
             @Override
             protected void succeeded() {
                 super.succeeded();
-                departmentChoiceBox.getItems().addAll(this.getValue());
+                mDepartmentDataComboBox.getItems().addAll(this.getValue());
             }
         };
-        Thread thread = new Thread(fetchDepartmentNamesTask);
+        Thread thread = new Thread(fetchDepartmentDetailsTask);
         thread.start();
         Text linkToAddNewDepartment = new Text("Not Found!, Add new Department First");
         formGridPane.add(departmentIdText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(departmentChoiceBox, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mDepartmentDataComboBox, 1, gridPaneStartingRowIndex);
         formGridPane.add(linkToAddNewDepartment, 2, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
@@ -113,8 +127,21 @@ public class InsertStudentData {
 
         Button submitButton = new Button("Submit");
         containerGridPane.add(submitButton, 2, 2);
+        submitButton.setOnAction(event -> submitData());
 
         return containerGridPane;
+    }
+
+    private void submitData() {
+        String name = mNameTextField.getText();
+        String id = mIdTextField.getText();
+        String dob = mDobDatePicker.getValue().format(DateTimeFormatter.ISO_DATE);
+        String address = mAddressTextField.getText();
+        String email = mEmailTextField.getText();
+        String phone = mPhoneTextField.getText();
+        String departmentId = mDepartmentDataComboBox.getValue().departmentId;
+
+        DatabaseHelper.insertIntoStudent(name, id, dob, address, email, phone, departmentId);
     }
 
 }
