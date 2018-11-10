@@ -1,6 +1,7 @@
 package com.nagpal.shivam.dbms.ui;
 
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
+import com.nagpal.shivam.dbms.model.DepartmentData;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -66,9 +67,10 @@ public class InsertDepartmentData {
     }
 
     private void submitData() {
-        String name = mNameTextField.getText();
-        String id = mIdTextField.getText();
+        DepartmentData departmentData = new DepartmentData();
+        departmentData.name = mNameTextField.getText();
+        departmentData.departmentId = mIdTextField.getText();
 
-        DatabaseHelper.insertIntoDepartment(name, id);
+        DatabaseHelper.insertIntoDepartment(departmentData);
     }
 }

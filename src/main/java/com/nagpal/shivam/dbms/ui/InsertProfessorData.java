@@ -2,6 +2,7 @@ package com.nagpal.shivam.dbms.ui;
 
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
 import com.nagpal.shivam.dbms.model.DepartmentData;
+import com.nagpal.shivam.dbms.model.ProfessorData;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -140,15 +141,16 @@ public class InsertProfessorData {
     }
 
     private void submitData() {
-        String name = mNameTextField.getText();
-        String id = mIdTextField.getText();
-        String dob = mDobDatePicker.getValue().format(DateTimeFormatter.ISO_DATE);
-        String address = mAddressTextField.getText();
-        String email = mEmailTextField.getText();
-        String phone = mPhoneTextField.getText();
-        String departmentId = mDepartmentDataComboBox.getValue().departmentId;
-        String designation = mDesignationTextField.getText();
+        ProfessorData professorData = new ProfessorData();
+        professorData.name = mNameTextField.getText();
+        professorData.professorId = mIdTextField.getText();
+        professorData.dateOfBirth = mDobDatePicker.getValue().format(DateTimeFormatter.ISO_DATE);
+        professorData.address = mAddressTextField.getText();
+        professorData.email = mEmailTextField.getText();
+        professorData.phone = mPhoneTextField.getText();
+        professorData.departmentId = mDepartmentDataComboBox.getValue().departmentId;
+        professorData.designation = mDesignationTextField.getText();
 
-        DatabaseHelper.insertIntoProfessor(name, id, dob, address, email, phone, departmentId, designation);
+        DatabaseHelper.insertIntoProfessor(professorData);
     }
 }

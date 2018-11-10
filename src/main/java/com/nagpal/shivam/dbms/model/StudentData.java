@@ -1,40 +1,36 @@
 package com.nagpal.shivam.dbms.model;
 
-public class ProfessorData {
+public class StudentData {
     public long rowId;
     public String name;
-    public String professorId;
+    public String studentId;
     public String dateOfBirth;
     public String address;
     public String phone;
     public String email;
-    public String designation;
     public String departmentId;
 
-    public ProfessorData() {
+    public StudentData() {
     }
 
-    public ProfessorData(String name, String professorId, String dateOfBirth, String address, String phone, String email, String designation, String departmentId) {
+    public StudentData(String name, String studentId, String dateOfBirth, String address, String phone, String email, String departmentId) {
         this.name = name;
-        this.professorId = professorId;
+        this.studentId = studentId;
         this.dateOfBirth = dateOfBirth;
         this.address = address;
         this.phone = phone;
         this.email = email;
-        this.designation = designation;
         this.departmentId = departmentId;
     }
 
-    public ProfessorData(long rowId, String name, String professorId, String dateOfBirth, String address, String phone, String email, String designation, String departmentId) {
+    public StudentData(long rowId, String name, String studentId, String dateOfBirth, String address, String phone, String email, String departmentId) {
         this.rowId = rowId;
         this.name = name;
-        this.professorId = professorId;
+        this.studentId = studentId;
         this.dateOfBirth = dateOfBirth;
         this.address = address;
         this.phone = phone;
         this.email = email;
-        this.designation = designation;
         this.departmentId = departmentId;
     }
-
 }

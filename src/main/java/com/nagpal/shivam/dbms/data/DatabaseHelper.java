@@ -2,10 +2,7 @@ package com.nagpal.shivam.dbms.data;
 
 import com.nagpal.shivam.dbms.Log;
 import com.nagpal.shivam.dbms.data.DatabaseContract.*;
-import com.nagpal.shivam.dbms.model.DepartmentData;
-import com.nagpal.shivam.dbms.model.ProfessorData;
-import com.nagpal.shivam.dbms.model.SemesterSectionData;
-import com.nagpal.shivam.dbms.model.SubjectData;
+import com.nagpal.shivam.dbms.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -138,7 +135,7 @@ public class DatabaseHelper {
         return list;
     }
 
-    public static int insertIntoDepartment(String name, String id) {
+    public static int insertIntoDepartment(DepartmentData departmentData) {
         String sql = "INSERT INTO " +
                 Department.TABLE_NAME +
                 "(" +
@@ -148,8 +145,8 @@ public class DatabaseHelper {
         Connection connection = Database.getConnection();
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, name);
-            statement.setString(2, id);
+            statement.setString(1, departmentData.name);
+            statement.setString(2, departmentData.departmentId);
             statement.executeUpdate();
         } catch (SQLException e) {
             Log.e(CLASS_NAME, e.getMessage());
@@ -158,7 +155,7 @@ public class DatabaseHelper {
         return SqlErrorCodes.SQLITE_OK;
     }
 
-    public static int insertIntoStudent(String name, String id, String dob, String address, String email, String phone, String departmentId) {
+    public static int insertIntoStudent(StudentData studentData) {
         String sql = "INSERT INTO " +
                 Student.TABLE_NAME +
                 "(" +
@@ -173,13 +170,13 @@ public class DatabaseHelper {
         Connection connection = Database.getConnection();
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, name);
-            statement.setString(2, id);
-            statement.setString(3, dob);
-            statement.setString(4, address);
-            statement.setString(5, email);
-            statement.setString(6, phone);
-            statement.setString(7, departmentId);
+            statement.setString(1, studentData.name);
+            statement.setString(2, studentData.studentId);
+            statement.setString(3, studentData.dateOfBirth);
+            statement.setString(4, studentData.address);
+            statement.setString(5, studentData.email);
+            statement.setString(6, studentData.phone);
+            statement.setString(7, studentData.departmentId);
             statement.executeUpdate();
         } catch (SQLException e) {
             Log.e(CLASS_NAME, e.getMessage());
@@ -188,7 +185,7 @@ public class DatabaseHelper {
         return SqlErrorCodes.SQLITE_OK;
     }
 
-    public static int insertIntoProfessor(String name, String id, String dob, String address, String email, String phone, String departmentId, String designation) {
+    public static int insertIntoProfessor(ProfessorData professorData) {
         String sql = "INSERT INTO " +
                 Professor.TABLE_NAME +
                 "(" +
@@ -204,14 +201,14 @@ public class DatabaseHelper {
         Connection connection = Database.getConnection();
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, name);
-            statement.setString(2, id);
-            statement.setString(3, dob);
-            statement.setString(4, address);
-            statement.setString(5, email);
-            statement.setString(6, phone);
-            statement.setString(7, departmentId);
-            statement.setString(8, designation);
+            statement.setString(1, professorData.name);
+            statement.setString(2, professorData.professorId);
+            statement.setString(3, professorData.dateOfBirth);
+            statement.setString(4, professorData.address);
+            statement.setString(5, professorData.email);
+            statement.setString(6, professorData.phone);
+            statement.setString(7, professorData.departmentId);
+            statement.setString(8, professorData.designation);
             statement.executeUpdate();
         } catch (SQLException e) {
             Log.e(CLASS_NAME, e.getMessage());
@@ -221,7 +218,7 @@ public class DatabaseHelper {
 
     }
 
-    public static int insertIntoSubject(String name, String id, String scheme, int semester, int credits, String departmentId) {
+    public static int insertIntoSubject(SubjectData subjectData) {
         String sql = "INSERT INTO " +
                 Subject.TABLE_NAME +
                 "(" +
@@ -235,12 +232,34 @@ public class DatabaseHelper {
         Connection connection = Database.getConnection();
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, name);
-            statement.setString(2, id);
-            statement.setString(3, scheme);
-            statement.setInt(4, semester);
-            statement.setInt(5, credits);
-            statement.setString(6, departmentId);
+            statement.setString(1, subjectData.name);
+            statement.setString(2, subjectData.subjectId);
+            statement.setString(3, subjectData.scheme);
+            statement.setInt(4, subjectData.semester);
+            statement.setInt(5, subjectData.credits);
+            statement.setString(6, subjectData.departmentId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
+    }
+
+    public static int insertIntoSemesterSection(SemesterSectionData semesterSectionData) {
+        String sql = "INSERT INTO " +
+                SemesterSection.TABLE_NAME +
+                "(" +
+                SemesterSection.SEM_SEC_ID + ", " +
+                SemesterSection.SEMESTER + ", " +
+                SemesterSection.SECTION +
+                ") VALUES(?, ?, ?)";
+        Connection connection = Database.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, semesterSectionData.semesterSectionId);
+            statement.setInt(2, semesterSectionData.semester);
+            statement.setString(3, semesterSectionData.section);
             statement.executeUpdate();
         } catch (SQLException e) {
             Log.e(CLASS_NAME, e.getMessage());

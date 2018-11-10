@@ -2,6 +2,7 @@ package com.nagpal.shivam.dbms.ui;
 
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
 import com.nagpal.shivam.dbms.model.DepartmentData;
+import com.nagpal.shivam.dbms.model.StudentData;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -133,15 +134,16 @@ public class InsertStudentData {
     }
 
     private void submitData() {
-        String name = mNameTextField.getText();
-        String id = mIdTextField.getText();
-        String dob = mDobDatePicker.getValue().format(DateTimeFormatter.ISO_DATE);
-        String address = mAddressTextField.getText();
-        String email = mEmailTextField.getText();
-        String phone = mPhoneTextField.getText();
-        String departmentId = mDepartmentDataComboBox.getValue().departmentId;
+        StudentData studentData = new StudentData();
+        studentData.name = mNameTextField.getText();
+        studentData.studentId = mIdTextField.getText();
+        studentData.dateOfBirth = mDobDatePicker.getValue().format(DateTimeFormatter.ISO_DATE);
+        studentData.address = mAddressTextField.getText();
+        studentData.email = mEmailTextField.getText();
+        studentData.phone = mPhoneTextField.getText();
+        studentData.departmentId = mDepartmentDataComboBox.getValue().departmentId;
 
-        DatabaseHelper.insertIntoStudent(name, id, dob, address, email, phone, departmentId);
+        DatabaseHelper.insertIntoStudent(studentData);
     }
 
 }
