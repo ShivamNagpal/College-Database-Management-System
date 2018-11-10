@@ -19,6 +19,14 @@ import static com.nagpal.shivam.dbms.Main.sStage;
 import static com.nagpal.shivam.dbms.ui.Utils.departmentChoiceBoxCallback;
 
 public class InsertSubjectData {
+
+    private TextField mNameTextField;
+    private TextField mIdTextField;
+    private TextField mSchemeTextField;
+    private TextField mSemesterTextField;
+    private TextField mCreditsTextField;
+    private ComboBox<DepartmentData> mDepartmentDataComboBox;
+
     private InsertSubjectData() {
     }
 
@@ -41,25 +49,46 @@ public class InsertSubjectData {
         int gridPaneStartingRowIndex = 0;
 
         Text nameText = new Text("Name*");
-        TextField nameTextField = new TextField();
-        nameTextField.setPromptText("Enter Name");
+        mNameTextField = new TextField();
+        mNameTextField.setPromptText("Enter Name");
         formGridPane.add(nameText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(nameTextField, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mNameTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         Text idText = new Text("Id*");
-        TextField idTextField = new TextField();
-        idTextField.setPromptText("Enter Id");
+        mIdTextField = new TextField();
+        mIdTextField.setPromptText("Enter Id");
         formGridPane.add(idText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(idTextField, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mIdTextField, 1, gridPaneStartingRowIndex);
+        gridPaneStartingRowIndex += 1;
+
+        Text schemeText = new Text("Scheme");
+        mSchemeTextField = new TextField();
+        mSchemeTextField.setPromptText("Enter Scheme");
+        formGridPane.add(schemeText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(mSchemeTextField, 1, gridPaneStartingRowIndex);
+        gridPaneStartingRowIndex += 1;
+
+        Text semesterText = new Text("Semester");
+        mSemesterTextField = new TextField();
+        mSemesterTextField.setPromptText("Enter Semester");
+        formGridPane.add(semesterText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(mSemesterTextField, 1, gridPaneStartingRowIndex);
+        gridPaneStartingRowIndex += 1;
+
+        Text creditsText = new Text("Credits");
+        mCreditsTextField = new TextField();
+        mCreditsTextField.setPromptText("Enter Credits");
+        formGridPane.add(creditsText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(mCreditsTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         Text departmentIdText = new Text("Department*");
-        ComboBox<DepartmentData> departmentDataComboBox = new ComboBox<>();
-        departmentDataComboBox.setCellFactory(departmentChoiceBoxCallback);
-        departmentDataComboBox.setButtonCell(departmentChoiceBoxCallback.call(null));
+        mDepartmentDataComboBox = new ComboBox<>();
+        mDepartmentDataComboBox.setCellFactory(departmentChoiceBoxCallback);
+        mDepartmentDataComboBox.setButtonCell(departmentChoiceBoxCallback.call(null));
 
-        departmentDataComboBox.setPromptText("Choose a department");
+        mDepartmentDataComboBox.setPromptText("Choose a department");
         Task<List<DepartmentData>> fetchDepartmentDetailsTask = new Task<List<DepartmentData>>() {
             @Override
             protected List<DepartmentData> call() {
@@ -69,14 +98,15 @@ public class InsertSubjectData {
             @Override
             protected void succeeded() {
                 super.succeeded();
-                departmentDataComboBox.getItems().addAll(this.getValue());
+                mDepartmentDataComboBox.getItems().addAll(this.getValue());
             }
         };
+
         Thread thread = new Thread(fetchDepartmentDetailsTask);
         thread.start();
         Text linkToAddNewDepartment = new Text("Not Found!, Add new Department First");
         formGridPane.add(departmentIdText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(departmentDataComboBox, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mDepartmentDataComboBox, 1, gridPaneStartingRowIndex);
         formGridPane.add(linkToAddNewDepartment, 2, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
@@ -89,7 +119,19 @@ public class InsertSubjectData {
 
         Button submitButton = new Button("Submit");
         containerGridPane.add(submitButton, 2, 2);
+        submitButton.setOnAction(event -> submitData());
 
         return containerGridPane;
+    }
+
+    private void submitData() {
+        String name = mNameTextField.getText();
+        String id = mIdTextField.getText();
+        String scheme = mSchemeTextField.getText();
+        int semester = Integer.parseInt(mSemesterTextField.getText());
+        int credits = Integer.parseInt(mCreditsTextField.getText());
+        String departmentId = mDepartmentDataComboBox.getValue().departmentId;
+
+        DatabaseHelper.insertIntoSubject(name, id, scheme, semester, credits, departmentId);
     }
 }
