@@ -124,16 +124,16 @@ public class DatabaseContract {
 
     public class Division {
         public static final String TABLE_NAME = "DIVISION";
-        public static final String SID = "SID";
+        public static final String STUDENT_ID = "STUDENT_ID";
         public static final String SEM_SEC_ID = "SEM_SEC_ID";
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
-                SID + " TEXT PRIMARY KEY" +
+                STUDENT_ID + " TEXT PRIMARY KEY" +
                 ", " +
                 SEM_SEC_ID + " TEXT" +
                 ", " +
-                "FOREIGN KEY (" + SID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ")" +
+                "FOREIGN KEY (" + STUDENT_ID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ")" +
                 ", " +
                 "FOREIGN KEY (" + SEM_SEC_ID + ") REFERENCES " + SemesterSection.TABLE_NAME + "(" + SemesterSection.SEM_SEC_ID + ")" +
                 ");";
@@ -165,7 +165,7 @@ public class DatabaseContract {
 
     public class IaMarks {
         public static final String TABLE_NAME = "IA_MARKS";
-        public static final String SID = "SID";
+        public static final String STUDENT_ID = "STUDENT_ID";
         public static final String SEM_SEC_ID = "SEM_SEC_ID";
         public static final String SUBJECT_ID = "SUBJECT_ID";
         public static final String TEST1 = "TEST1";
@@ -174,7 +174,7 @@ public class DatabaseContract {
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
-                SID + " TEXT" +
+                STUDENT_ID + " TEXT" +
                 ", " +
                 SEM_SEC_ID + " TEXT" +
                 ", " +
@@ -186,13 +186,13 @@ public class DatabaseContract {
                 ", " +
                 TEST3 + " INTEGER" +
                 ", " +
-                "FOREIGN KEY (" + SID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ")" +
+                "FOREIGN KEY (" + STUDENT_ID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ")" +
                 ", " +
                 "FOREIGN KEY (" + SEM_SEC_ID + ") REFERENCES " + SemesterSection.TABLE_NAME + "(" + SemesterSection.SEM_SEC_ID + ")" +
                 ", " +
                 "FOREIGN KEY (" + SUBJECT_ID + ") REFERENCES " + Subject.TABLE_NAME + "(" + Subject.SUBJECT_ID + ")" +
                 ", " +
-                "PRIMARY KEY (" + SID + ", " + SEM_SEC_ID + ", " + SUBJECT_ID + ")" +
+                "PRIMARY KEY (" + STUDENT_ID + ", " + SEM_SEC_ID + ", " + SUBJECT_ID + ")" +
                 ");";
     }
 

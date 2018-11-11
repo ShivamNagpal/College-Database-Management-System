@@ -54,6 +54,34 @@ public class DatabaseHelper {
         return list;
     }
 
+    public static List<StudentData> fetchStudentDetails() {
+        String sql = "SELECT " +
+                DatabaseContract.ROW_ID + ", *" +
+                " FROM " +
+                Student.TABLE_NAME;
+        Connection connection = Database.getConnection();
+        List<StudentData> list = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(sql);
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int nameIndex = set.findColumn(Student.NAME);
+            int idIndex = set.findColumn(Student.STUDENT_ID);
+            int dobIndex = set.findColumn(Student.DATE_OF_BIRTH);
+            int addressIndex = set.findColumn(Student.ADDRESS);
+            int phoneIndex = set.findColumn(Student.PHONE);
+            int emailIndex = set.findColumn(Student.EMAIL);
+            int departmentIdIndex = set.findColumn(Student.DEPARTMENT_ID);
+
+            while (set.next()) {
+                list.add(new StudentData(set.getLong(rowIdIndex), set.getString(nameIndex), set.getString(idIndex), set.getString(dobIndex), set.getString(addressIndex), set.getString(phoneIndex), set.getString(emailIndex), set.getString(departmentIdIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
     public static List<ProfessorData> fetchProfessorDetails() {
         String sql = "SELECT " +
                 DatabaseContract.ROW_ID + ", *" +
@@ -128,6 +156,80 @@ public class DatabaseHelper {
 
             while (set.next()) {
                 list.add(new SubjectData(set.getLong(rowIdIndex), set.getString(nameIndex), set.getString(subjectIdIndex), set.getString(schemeIndex), set.getInt(semesterIndex), set.getInt(creditsIndex), set.getString(departmentIdIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
+    public static List<TeachesData> fetchTeachesDetails() {
+        String sql = "SELECT " +
+                DatabaseContract.ROW_ID + ", *" +
+                " FROM " +
+                Teaches.TABLE_NAME;
+        Connection connection = Database.getConnection();
+        List<TeachesData> list = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(sql);
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int professorIdIndex = set.findColumn(Teaches.PROFESSOR_ID);
+            int semSecIdIndex = set.findColumn(Teaches.SEM_SEC_ID);
+            int subjectIdIndex = set.findColumn(Teaches.SUBJECT_ID);
+
+            while (set.next()) {
+                list.add(new TeachesData(set.getLong(rowIdIndex), set.getString(professorIdIndex), set.getString(semSecIdIndex), set.getString(subjectIdIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
+    public static List<DivisionData> fetchDivisionDetails() {
+        String sql = "SELECT " +
+                DatabaseContract.ROW_ID + ", *" +
+                " FROM " +
+                Division.TABLE_NAME;
+        Connection connection = Database.getConnection();
+        List<DivisionData> list = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(sql);
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int studentIdIndex = set.findColumn(Division.STUDENT_ID);
+            int semSecIdIndex = set.findColumn(Division.SEM_SEC_ID);
+
+            while (set.next()) {
+                list.add(new DivisionData(set.getLong(rowIdIndex), set.getString(studentIdIndex), set.getString(semSecIdIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
+    public static List<IaMarksData> fetchIaMarksDetails() {
+        String sql = "SELECT " +
+                DatabaseContract.ROW_ID + ", *" +
+                " FROM " +
+                IaMarks.TABLE_NAME;
+        Connection connection = Database.getConnection();
+        List<IaMarksData> list = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(sql);
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int studentIdIndex = set.findColumn(IaMarks.STUDENT_ID);
+            int semSecIdIndex = set.findColumn(IaMarks.SEM_SEC_ID);
+            int subjectIdIndex = set.findColumn(IaMarks.SUBJECT_ID);
+            int test1Index = set.findColumn(IaMarks.TEST1);
+            int test2Index = set.findColumn(IaMarks.TEST2);
+            int test3Index = set.findColumn(IaMarks.TEST3);
+
+            while (set.next()) {
+                list.add(new IaMarksData(set.getLong(rowIdIndex), set.getString(studentIdIndex), set.getString(semSecIdIndex), set.getString(subjectIdIndex), set.getInt(test1Index), set.getInt(test2Index), set.getInt(test3Index)));
             }
         } catch (SQLException e) {
             Log.e(CLASS_NAME, e.getMessage());
@@ -260,6 +362,76 @@ public class DatabaseHelper {
             statement.setString(1, semesterSectionData.semesterSectionId);
             statement.setInt(2, semesterSectionData.semester);
             statement.setString(3, semesterSectionData.section);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
+    }
+
+    public static int insertIntoTeaches(TeachesData teachesData) {
+        String sql = "INSERT INTO " +
+                Teaches.TABLE_NAME +
+                "(" +
+                Teaches.PROFESSOR_ID + ", " +
+                Teaches.SEM_SEC_ID + ", " +
+                Teaches.SUBJECT_ID +
+                ") VALUES(?, ?, ?)";
+        Connection connection = Database.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, teachesData.professorId);
+            statement.setString(2, teachesData.semesterSectionId);
+            statement.setString(3, teachesData.subjectId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
+    }
+
+    public static int insertIntoDivision(DivisionData divisionData) {
+        String sql = "INSERT INTO " +
+                Division.TABLE_NAME +
+                "(" +
+                Division.STUDENT_ID + ", " +
+                Division.SEM_SEC_ID +
+                ") VALUES(?, ?)";
+        Connection connection = Database.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, divisionData.studentId);
+            statement.setString(2, divisionData.semesterSectionId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
+    }
+
+    public static int insertIntoIaMarks(IaMarksData iaMarksData) {
+        String sql = "INSERT INTO " +
+                IaMarks.TABLE_NAME +
+                "(" +
+                IaMarks.STUDENT_ID + ", " +
+                IaMarks.SEM_SEC_ID + ", " +
+                IaMarks.SUBJECT_ID + ", " +
+                IaMarks.TEST1 + ", " +
+                IaMarks.TEST2 + ", " +
+                IaMarks.TEST3 +
+                ") VALUES(?, ?, ?, ?, ?, ?)";
+        Connection connection = Database.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, iaMarksData.studentId);
+            statement.setString(2, iaMarksData.semSecId);
+            statement.setString(3, iaMarksData.subjectId);
+            statement.setInt(4, iaMarksData.test1);
+            statement.setInt(5, iaMarksData.test2);
+            statement.setInt(6, iaMarksData.test3);
             statement.executeUpdate();
         } catch (SQLException e) {
             Log.e(CLASS_NAME, e.getMessage());
