@@ -7,13 +7,11 @@ import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -101,9 +99,13 @@ public class InsertProfessorData {
         gridPaneStartingRowIndex += 1;
 
         Text departmentIdText = new Text("Department*");
+
+        Callback<ListView<DepartmentData>, ListCell<DepartmentData>> departmentComboBoxCallback = Utils.getDepartmentComboBoxCallback();
+
+
         mDepartmentDataComboBox = new ComboBox<>();
-        mDepartmentDataComboBox.setCellFactory(Utils.departmentChoiceBoxCallback);
-        mDepartmentDataComboBox.setButtonCell(Utils.departmentChoiceBoxCallback.call(null));
+        mDepartmentDataComboBox.setCellFactory(departmentComboBoxCallback);
+        mDepartmentDataComboBox.setButtonCell(departmentComboBoxCallback.call(null));
 
         mDepartmentDataComboBox.setPromptText("Choose a department");
         Task<List<DepartmentData>> fetchDepartmentDetailsTask = new Task<List<DepartmentData>>() {

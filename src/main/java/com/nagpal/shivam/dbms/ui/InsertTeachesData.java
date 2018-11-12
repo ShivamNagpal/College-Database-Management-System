@@ -51,20 +51,7 @@ public class InsertTeachesData {
 
         Text professorIdText = new Text("Professor");
 
-        Callback<ListView<ProfessorData>, ListCell<ProfessorData>> professorComboBoxCallback = new Callback<ListView<ProfessorData>, ListCell<ProfessorData>>() {
-            @Override
-            public ListCell<ProfessorData> call(ListView<ProfessorData> param) {
-                return new ListCell<ProfessorData>() {
-                    @Override
-                    protected void updateItem(ProfessorData item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
-                            setText(item.professorId + " | " + item.name);
-                        }
-                    }
-                };
-            }
-        };
+        Callback<ListView<ProfessorData>, ListCell<ProfessorData>> professorComboBoxCallback = Utils.getProfessorComboBoxCallback();
 
         mProfessorDataComboBox = new ComboBox<>();
         mProfessorDataComboBox.setCellFactory(professorComboBoxCallback);
@@ -91,20 +78,7 @@ public class InsertTeachesData {
 
         Text semesterSectionIdText = new Text("Semester-Section");
 
-        Callback<ListView<SemesterSectionData>, ListCell<SemesterSectionData>> semesterSectionComboBoxCallback = new Callback<ListView<SemesterSectionData>, ListCell<SemesterSectionData>>() {
-            @Override
-            public ListCell<SemesterSectionData> call(ListView<SemesterSectionData> param) {
-                return new ListCell<SemesterSectionData>() {
-                    @Override
-                    protected void updateItem(SemesterSectionData item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
-                            setText(item.semesterSectionId + " | " + item.semester + " | " + item.section);
-                        }
-                    }
-                };
-            }
-        };
+        Callback<ListView<SemesterSectionData>, ListCell<SemesterSectionData>> semesterSectionComboBoxCallback = Utils.getSemesterSectionComboBoxCallback();
 
         mSemesterSectionDataComboBox = new ComboBox<>();
         mSemesterSectionDataComboBox.setCellFactory(semesterSectionComboBoxCallback);
