@@ -105,20 +105,7 @@ public class InsertTeachesData {
 
         Text subjectIdText = new Text("Subject");
 
-        Callback<ListView<SubjectData>, ListCell<SubjectData>> subjectComboBoxCallback = new Callback<ListView<SubjectData>, ListCell<SubjectData>>() {
-            @Override
-            public ListCell<SubjectData> call(ListView<SubjectData> param) {
-                return new ListCell<SubjectData>() {
-                    @Override
-                    protected void updateItem(SubjectData item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
-                            setText(item.subjectId + " | " + item.name);
-                        }
-                    }
-                };
-            }
-        };
+        Callback<ListView<SubjectData>, ListCell<SubjectData>> subjectComboBoxCallback = Utils.getSubjectComboBoxCallback();
 
         mSubjectDataComboBox = new ComboBox<>();
         mSubjectDataComboBox.setCellFactory(subjectComboBoxCallback);

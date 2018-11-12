@@ -1,16 +1,13 @@
 package com.nagpal.shivam.dbms.ui;
 
-import com.nagpal.shivam.dbms.model.DepartmentData;
-import com.nagpal.shivam.dbms.model.ProfessorData;
-import com.nagpal.shivam.dbms.model.SemesterSectionData;
-import com.nagpal.shivam.dbms.model.StudentData;
+import com.nagpal.shivam.dbms.model.*;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
 
 class Utils {
 
-    public static Callback<ListView<DepartmentData>, ListCell<DepartmentData>> getDepartmentComboBoxCallback() {
+    static Callback<ListView<DepartmentData>, ListCell<DepartmentData>> getDepartmentComboBoxCallback() {
         return new Callback<ListView<DepartmentData>, ListCell<DepartmentData>>() {
             @Override
             public ListCell<DepartmentData> call(ListView<DepartmentData> param) {
@@ -28,7 +25,7 @@ class Utils {
         };
     }
 
-    public static Callback<ListView<SemesterSectionData>, ListCell<SemesterSectionData>> getSemesterSectionComboBoxCallback() {
+    static Callback<ListView<SemesterSectionData>, ListCell<SemesterSectionData>> getSemesterSectionComboBoxCallback() {
         return new Callback<ListView<SemesterSectionData>, ListCell<SemesterSectionData>>() {
             @Override
             public ListCell<SemesterSectionData> call(ListView<SemesterSectionData> param) {
@@ -45,7 +42,7 @@ class Utils {
         };
     }
 
-    public static Callback<ListView<ProfessorData>, ListCell<ProfessorData>> getProfessorComboBoxCallback() {
+    static Callback<ListView<ProfessorData>, ListCell<ProfessorData>> getProfessorComboBoxCallback() {
         return new Callback<ListView<ProfessorData>, ListCell<ProfessorData>>() {
             @Override
             public ListCell<ProfessorData> call(ListView<ProfessorData> param) {
@@ -62,7 +59,7 @@ class Utils {
         };
     }
 
-    public static Callback<ListView<StudentData>, ListCell<StudentData>> getStudentComboBoxCallback() {
+    static Callback<ListView<StudentData>, ListCell<StudentData>> getStudentComboBoxCallback() {
         return new Callback<ListView<StudentData>, ListCell<StudentData>>() {
             @Override
             public ListCell<StudentData> call(ListView<StudentData> param) {
@@ -72,6 +69,23 @@ class Utils {
                         super.updateItem(item, empty);
                         if (item != null) {
                             setText(item.studentId + " | " + item.name);
+                        }
+                    }
+                };
+            }
+        };
+    }
+
+    static Callback<ListView<SubjectData>, ListCell<SubjectData>> getSubjectComboBoxCallback() {
+        return new Callback<ListView<SubjectData>, ListCell<SubjectData>>() {
+            @Override
+            public ListCell<SubjectData> call(ListView<SubjectData> param) {
+                return new ListCell<SubjectData>() {
+                    @Override
+                    protected void updateItem(SubjectData item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.subjectId + " | " + item.name);
                         }
                     }
                 };
