@@ -385,6 +385,7 @@ public class DatabaseHelper {
             statement.setString(2, teachesData.semesterSectionId);
             statement.setString(3, teachesData.subjectId);
             statement.executeUpdate();
+            Database.closeSqlComponents(statement);
         } catch (SQLException e) {
             Log.e(CLASS_NAME, e.getMessage());
             return e.getErrorCode();

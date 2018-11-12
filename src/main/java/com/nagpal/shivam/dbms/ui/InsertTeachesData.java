@@ -4,6 +4,7 @@ import com.nagpal.shivam.dbms.data.DatabaseHelper;
 import com.nagpal.shivam.dbms.model.ProfessorData;
 import com.nagpal.shivam.dbms.model.SemesterSectionData;
 import com.nagpal.shivam.dbms.model.SubjectData;
+import com.nagpal.shivam.dbms.model.TeachesData;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,6 +24,11 @@ import static com.nagpal.shivam.dbms.Main.sStage;
 
 
 public class InsertTeachesData {
+
+    private ComboBox<ProfessorData> mProfessorDataComboBox;
+    private ComboBox<SemesterSectionData> mSemesterSectionDataComboBox;
+    private ComboBox<SubjectData> mSubjectDataComboBox;
+
     private InsertTeachesData() {
     }
 
@@ -60,10 +66,10 @@ public class InsertTeachesData {
             }
         };
 
-        ComboBox<ProfessorData> professorDataComboBox = new ComboBox<>();
-        professorDataComboBox.setCellFactory(professorComboBoxCallback);
-        professorDataComboBox.setButtonCell(professorComboBoxCallback.call(null));
-        professorDataComboBox.setPromptText("Choose a Professor");
+        mProfessorDataComboBox = new ComboBox<>();
+        mProfessorDataComboBox.setCellFactory(professorComboBoxCallback);
+        mProfessorDataComboBox.setButtonCell(professorComboBoxCallback.call(null));
+        mProfessorDataComboBox.setPromptText("Choose a Professor");
 
         Task<List<ProfessorData>> fetchProfessorDetailsTask = new Task<List<ProfessorData>>() {
             @Override
@@ -74,13 +80,13 @@ public class InsertTeachesData {
             @Override
             protected void succeeded() {
                 super.succeeded();
-                professorDataComboBox.getItems().addAll(this.getValue());
+                mProfessorDataComboBox.getItems().addAll(this.getValue());
             }
         };
         Thread professorThread = new Thread(fetchProfessorDetailsTask);
         professorThread.start();
         formGridPane.add(professorIdText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(professorDataComboBox, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mProfessorDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         Text semesterSectionIdText = new Text("Semester-Section");
@@ -100,10 +106,10 @@ public class InsertTeachesData {
             }
         };
 
-        ComboBox<SemesterSectionData> semesterSectionDataComboBox = new ComboBox<>();
-        semesterSectionDataComboBox.setCellFactory(semesterSectionComboBoxCallback);
-        semesterSectionDataComboBox.setButtonCell(semesterSectionComboBoxCallback.call(null));
-        semesterSectionDataComboBox.setPromptText("Choose Semester-Section");
+        mSemesterSectionDataComboBox = new ComboBox<>();
+        mSemesterSectionDataComboBox.setCellFactory(semesterSectionComboBoxCallback);
+        mSemesterSectionDataComboBox.setButtonCell(semesterSectionComboBoxCallback.call(null));
+        mSemesterSectionDataComboBox.setPromptText("Choose Semester-Section");
 
         Task<List<SemesterSectionData>> fetchSemesterSectionDetailsTask = new Task<List<SemesterSectionData>>() {
             @Override
@@ -114,13 +120,13 @@ public class InsertTeachesData {
             @Override
             protected void succeeded() {
                 super.succeeded();
-                semesterSectionDataComboBox.getItems().addAll(this.getValue());
+                mSemesterSectionDataComboBox.getItems().addAll(this.getValue());
             }
         };
         Thread semesterSectionThread = new Thread(fetchSemesterSectionDetailsTask);
         semesterSectionThread.start();
         formGridPane.add(semesterSectionIdText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(semesterSectionDataComboBox, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mSemesterSectionDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         Text subjectIdText = new Text("Subject");
@@ -140,10 +146,10 @@ public class InsertTeachesData {
             }
         };
 
-        ComboBox<SubjectData> subjectDataComboBox = new ComboBox<>();
-        subjectDataComboBox.setCellFactory(subjectComboBoxCallback);
-        subjectDataComboBox.setButtonCell(subjectComboBoxCallback.call(null));
-        subjectDataComboBox.setPromptText("Choose Subject");
+        mSubjectDataComboBox = new ComboBox<>();
+        mSubjectDataComboBox.setCellFactory(subjectComboBoxCallback);
+        mSubjectDataComboBox.setButtonCell(subjectComboBoxCallback.call(null));
+        mSubjectDataComboBox.setPromptText("Choose Subject");
 
         Task<List<SubjectData>> fetchSubjectDetailsTask = new Task<List<SubjectData>>() {
             @Override
@@ -154,13 +160,13 @@ public class InsertTeachesData {
             @Override
             protected void succeeded() {
                 super.succeeded();
-                subjectDataComboBox.getItems().addAll(this.getValue());
+                mSubjectDataComboBox.getItems().addAll(this.getValue());
             }
         };
         Thread subjectThread = new Thread(fetchSubjectDetailsTask);
         subjectThread.start();
         formGridPane.add(subjectIdText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(subjectDataComboBox, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mSubjectDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         GridPane containerGridPane = new GridPane();
@@ -172,7 +178,17 @@ public class InsertTeachesData {
 
         Button submitButton = new Button("Submit");
         containerGridPane.add(submitButton, 2, 2);
+        submitButton.setOnAction(event -> submitData());
 
         return containerGridPane;
+    }
+
+    private void submitData() {
+        TeachesData teachesData = new TeachesData();
+        teachesData.professorId = mProfessorDataComboBox.getValue().professorId;
+        teachesData.semesterSectionId = mSemesterSectionDataComboBox.getValue().semesterSectionId;
+        teachesData.subjectId = mSubjectDataComboBox.getValue().subjectId;
+
+        DatabaseHelper.insertIntoTeaches(teachesData);
     }
 }

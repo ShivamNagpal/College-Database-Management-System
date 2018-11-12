@@ -27,6 +27,7 @@ public class Database {
         if (sConnection != null) {
             try {
                 sConnection.close();
+                Log.v(CLASS_NAME, "Database Closed");
             } catch (SQLException e) {
                 Log.e(CLASS_NAME, e.getMessage());
             } finally {
@@ -39,6 +40,7 @@ public class Database {
         if (closeable != null) {
             try {
                 closeable.close();
+                Log.v(CLASS_NAME, "SQL Component " + closeable.getClass().getSimpleName() + " Closed");
             } catch (Exception e) {
                 e.printStackTrace();
             }
