@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper {
-    
+
 
     private static final String CLASS_NAME = DatabaseHelper.class.getSimpleName();
 
