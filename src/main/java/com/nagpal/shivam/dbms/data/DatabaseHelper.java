@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper {
+    
+
     private static final String CLASS_NAME = DatabaseHelper.class.getSimpleName();
 
     public static int createTables() {
@@ -235,6 +237,22 @@ public class DatabaseHelper {
             Log.e(CLASS_NAME, e.getMessage());
         }
         return list;
+    }
+
+    public static ResultSet fetchTableDetails(String tableName) {
+        String sql = "SELECT " +
+                DatabaseContract.ROW_ID + ", *" +
+                " FROM " +
+                tableName;
+        Connection connection = Database.getConnection();
+        ResultSet set = null;
+        try {
+            Statement statement = connection.createStatement();
+            set = statement.executeQuery(sql);
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return set;
     }
 
     public static int insertIntoDepartment(DepartmentData departmentData) {

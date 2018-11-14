@@ -13,15 +13,13 @@ import javafx.scene.text.Text;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
 
-public class InsertDepartmentData {
+public class InsertDepartmentData extends UiScene {
 
     private TextField mNameTextField;
     private TextField mIdTextField;
 
-    private InsertDepartmentData() {
-    }
-
-    public static void setScene() {
+    @Override
+    public void setScene() {
         Pane pane = new InsertDepartmentData().getLayout();
         pane.setPrefSize(800, 600);
         Scene scene = new Scene(pane);
@@ -29,7 +27,8 @@ public class InsertDepartmentData {
         sStage.setScene(scene);
     }
 
-    private Pane getLayout() {
+    @Override
+    protected Pane getLayout() {
         GridPane formGridPane = new GridPane();
         formGridPane.setPadding(new Insets(10));
         formGridPane.setVgap(10);

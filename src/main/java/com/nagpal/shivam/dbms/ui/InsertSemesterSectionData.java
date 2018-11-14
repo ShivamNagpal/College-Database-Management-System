@@ -13,16 +13,14 @@ import javafx.scene.text.Text;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
 
-public class InsertSemesterSectionData {
+public class InsertSemesterSectionData extends UiScene {
 
     private TextField mSemesterSectionIdTextField;
     private TextField mSemesterTextField;
     private TextField mSectionTextField;
 
-    private InsertSemesterSectionData() {
-    }
-
-    public static void setScene() {
+    @Override
+    public void setScene() {
         Pane pane = new InsertSemesterSectionData().getLayout();
         pane.setPrefSize(800, 600);
         Scene scene = new Scene(pane);
@@ -30,7 +28,8 @@ public class InsertSemesterSectionData {
         sStage.setScene(scene);
     }
 
-    private Pane getLayout() {
+    @Override
+    protected Pane getLayout() {
         GridPane formGridPane = new GridPane();
         formGridPane.setPadding(new Insets(10));
         formGridPane.setVgap(10);

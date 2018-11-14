@@ -21,15 +21,13 @@ import java.util.List;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
 
-public class InsertDivisionData {
+public class InsertDivisionData extends UiScene {
 
     private ComboBox<StudentData> mStudentDataComboBox;
     private ComboBox<SemesterSectionData> mSemesterSectionDataComboBox;
 
-    private InsertDivisionData() {
-    }
-
-    public static void setScene() {
+    @Override
+    public void setScene() {
         Pane pane = new InsertDivisionData().getLayout();
         pane.setPrefSize(800, 600);
         Scene scene = new Scene(pane);
@@ -37,7 +35,8 @@ public class InsertDivisionData {
         sStage.setScene(scene);
     }
 
-    private Pane getLayout() {
+    @Override
+    protected Pane getLayout() {
         GridPane formGridPane = new GridPane();
         formGridPane.setPadding(new Insets(10));
         formGridPane.setVgap(10);
