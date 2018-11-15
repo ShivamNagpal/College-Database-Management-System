@@ -21,12 +21,23 @@ import static com.nagpal.shivam.dbms.Main.sStage;
 
 public class InsertIaMarksData extends UiScene {
 
+    private final boolean isEditMode;
     private ComboBox<StudentData> mStudentDataComboBox;
     private ComboBox<SemesterSectionData> mSemesterSectionDataComboBox;
     private ComboBox<SubjectData> mSubjectDataComboBox;
     private TextField mTest1TextField;
     private TextField mTest2TextField;
     private TextField mTest3TextField;
+    private IaMarksData mIaMarksData;
+
+    public InsertIaMarksData() {
+        isEditMode = false;
+    }
+
+    public InsertIaMarksData(IaMarksData iaMarksData) {
+        mIaMarksData = iaMarksData;
+        isEditMode = true;
+    }
 
     @Override
     public void setScene() {
@@ -164,12 +175,30 @@ public class InsertIaMarksData extends UiScene {
     }
 
     private void submitData() {
-        IaMarksData iaMarksData = new IaMarksData();
-        iaMarksData.studentId = mStudentDataComboBox.getValue().studentId;
-        iaMarksData.semSecId = mSemesterSectionDataComboBox.getValue().semesterSectionId;
-        iaMarksData.subjectId = mSubjectDataComboBox.getValue().subjectId;
-        iaMarksData.test1 = Integer.parseInt(mTest1TextField.getText().trim());
-        iaMarksData.test2 = Integer.parseInt(mTest2TextField.getText().trim());
-        iaMarksData.test3 = Integer.parseInt(mTest3TextField.getText().trim());
+        if (!isEditMode) {
+            mIaMarksData = new IaMarksData();
+        }
+        mIaMarksData.studentId = mStudentDataComboBox.getValue().studentId;
+        mIaMarksData.semSecId = mSemesterSectionDataComboBox.getValue().semesterSectionId;
+        mIaMarksData.subjectId = mSubjectDataComboBox.getValue().subjectId;
+        mIaMarksData.test1 = Integer.parseInt(mTest1TextField.getText().trim());
+        mIaMarksData.test2 = Integer.parseInt(mTest2TextField.getText().trim());
+        mIaMarksData.test3 = Integer.parseInt(mTest3TextField.getText().trim());
+
+        Task<Integer> submitTask = new Task<Integer>() {
+            @Override
+            protected Integer call() {
+                int i;
+                if (!isEditMode) {
+                    i = DatabaseHelper.insertIntoIaMarks(mIaMarksData);
+                } else {
+                    i = DatabaseHelper.updateIaMarks(mIaMarksData);
+                }
+                return i;
+            }
+        };
+        Thread submitThread = new Thread(submitTask);
+        submitThread.start();
+
     }
 }

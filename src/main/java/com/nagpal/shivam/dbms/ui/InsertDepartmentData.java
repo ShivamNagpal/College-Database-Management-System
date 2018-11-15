@@ -2,6 +2,7 @@ package com.nagpal.shivam.dbms.ui;
 
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
 import com.nagpal.shivam.dbms.model.DepartmentData;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,8 +16,19 @@ import static com.nagpal.shivam.dbms.Main.sStage;
 
 public class InsertDepartmentData extends UiScene {
 
+    private final boolean isEditMode;
     private TextField mNameTextField;
     private TextField mIdTextField;
+    private DepartmentData mDepartmentData;
+
+    public InsertDepartmentData() {
+        isEditMode = false;
+    }
+
+    public InsertDepartmentData(DepartmentData departmentData) {
+        mDepartmentData = departmentData;
+        isEditMode = true;
+    }
 
     @Override
     public void setScene() {
@@ -66,10 +78,25 @@ public class InsertDepartmentData extends UiScene {
     }
 
     private void submitData() {
-        DepartmentData departmentData = new DepartmentData();
-        departmentData.name = mNameTextField.getText();
-        departmentData.departmentId = mIdTextField.getText();
+        if (!isEditMode) {
+            mDepartmentData = new DepartmentData();
+        }
+        mDepartmentData.name = mNameTextField.getText();
+        mDepartmentData.departmentId = mIdTextField.getText();
 
-        DatabaseHelper.insertIntoDepartment(departmentData);
+        Task<Integer> submitTask = new Task<Integer>() {
+            @Override
+            protected Integer call() {
+                int i;
+                if (!isEditMode) {
+                    i = DatabaseHelper.insertIntoDepartment(mDepartmentData);
+                } else {
+                    i = DatabaseHelper.updateDepartment(mDepartmentData);
+                }
+                return i;
+            }
+        };
+        Thread submitThread = new Thread(submitTask);
+        submitThread.start();
     }
 }

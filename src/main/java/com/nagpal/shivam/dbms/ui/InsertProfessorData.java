@@ -20,6 +20,7 @@ import static com.nagpal.shivam.dbms.Main.sStage;
 
 public class InsertProfessorData extends UiScene {
 
+    private final boolean isEditMode;
     private TextField mNameTextField;
     private TextField mIdTextField;
     private DatePicker mDobDatePicker;
@@ -28,6 +29,16 @@ public class InsertProfessorData extends UiScene {
     private TextField mEmailTextField;
     private TextField mDesignationTextField;
     private ComboBox<DepartmentData> mDepartmentDataComboBox;
+    private ProfessorData mProfessorData;
+
+    public InsertProfessorData() {
+        isEditMode = false;
+    }
+
+    public InsertProfessorData(ProfessorData professorData) {
+        mProfessorData = professorData;
+        isEditMode = true;
+    }
 
     @Override
     public void setScene() {
@@ -142,16 +153,31 @@ public class InsertProfessorData extends UiScene {
     }
 
     private void submitData() {
-        ProfessorData professorData = new ProfessorData();
-        professorData.name = mNameTextField.getText();
-        professorData.professorId = mIdTextField.getText();
-        professorData.dateOfBirth = mDobDatePicker.getValue().format(DateTimeFormatter.ISO_DATE);
-        professorData.address = mAddressTextField.getText();
-        professorData.email = mEmailTextField.getText();
-        professorData.phone = mPhoneTextField.getText();
-        professorData.departmentId = mDepartmentDataComboBox.getValue().departmentId;
-        professorData.designation = mDesignationTextField.getText();
+        if (!isEditMode) {
+            mProfessorData = new ProfessorData();
+        }
+        mProfessorData.name = mNameTextField.getText();
+        mProfessorData.professorId = mIdTextField.getText();
+        mProfessorData.dateOfBirth = mDobDatePicker.getValue().format(DateTimeFormatter.ISO_DATE);
+        mProfessorData.address = mAddressTextField.getText();
+        mProfessorData.email = mEmailTextField.getText();
+        mProfessorData.phone = mPhoneTextField.getText();
+        mProfessorData.departmentId = mDepartmentDataComboBox.getValue().departmentId;
+        mProfessorData.designation = mDesignationTextField.getText();
 
-        DatabaseHelper.insertIntoProfessor(professorData);
+        Task<Integer> submitTask = new Task<Integer>() {
+            @Override
+            protected Integer call() {
+                int i;
+                if (!isEditMode) {
+                    i = DatabaseHelper.insertIntoProfessor(mProfessorData);
+                } else {
+                    i = DatabaseHelper.updateProfessor(mProfessorData);
+                }
+                return i;
+            }
+        };
+        Thread submitThread = new Thread(submitTask);
+        submitThread.start();
     }
 }

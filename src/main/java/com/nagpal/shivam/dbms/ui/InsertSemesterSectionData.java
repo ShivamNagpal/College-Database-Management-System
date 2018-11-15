@@ -2,6 +2,7 @@ package com.nagpal.shivam.dbms.ui;
 
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
 import com.nagpal.shivam.dbms.model.SemesterSectionData;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,9 +16,20 @@ import static com.nagpal.shivam.dbms.Main.sStage;
 
 public class InsertSemesterSectionData extends UiScene {
 
+    private final boolean isEditMode;
     private TextField mSemesterSectionIdTextField;
     private TextField mSemesterTextField;
     private TextField mSectionTextField;
+    private SemesterSectionData mSemesterSectionData;
+
+    public InsertSemesterSectionData() {
+        isEditMode = false;
+    }
+
+    public InsertSemesterSectionData(SemesterSectionData semesterSectionData) {
+        mSemesterSectionData = semesterSectionData;
+        isEditMode = true;
+    }
 
     @Override
     public void setScene() {
@@ -74,11 +86,26 @@ public class InsertSemesterSectionData extends UiScene {
     }
 
     private void submitData() {
-        SemesterSectionData semesterSectionData = new SemesterSectionData();
-        semesterSectionData.semesterSectionId = mSemesterSectionIdTextField.getText();
-        semesterSectionData.semester = Integer.parseInt(mSemesterTextField.getText());
-        semesterSectionData.section = mSectionTextField.getText();
+        if (!isEditMode) {
+            mSemesterSectionData = new SemesterSectionData();
+        }
+        mSemesterSectionData.semesterSectionId = mSemesterSectionIdTextField.getText();
+        mSemesterSectionData.semester = Integer.parseInt(mSemesterTextField.getText());
+        mSemesterSectionData.section = mSectionTextField.getText();
 
-        DatabaseHelper.insertIntoSemesterSection(semesterSectionData);
+        Task<Integer> submitTask = new Task<Integer>() {
+            @Override
+            protected Integer call() {
+                int i;
+                if (!isEditMode) {
+                    i = DatabaseHelper.insertIntoSemesterSection(mSemesterSectionData);
+                } else {
+                    i = DatabaseHelper.updateSemesterSection(mSemesterSectionData);
+                }
+                return i;
+            }
+        };
+        Thread submitThread = new Thread(submitTask);
+        submitThread.start();
     }
 }

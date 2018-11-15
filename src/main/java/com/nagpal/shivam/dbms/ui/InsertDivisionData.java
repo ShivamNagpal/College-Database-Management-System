@@ -23,8 +23,19 @@ import static com.nagpal.shivam.dbms.Main.sStage;
 
 public class InsertDivisionData extends UiScene {
 
+    private final boolean isEditMode;
     private ComboBox<StudentData> mStudentDataComboBox;
     private ComboBox<SemesterSectionData> mSemesterSectionDataComboBox;
+    private DivisionData mDivisionData;
+
+    public InsertDivisionData() {
+        isEditMode = false;
+    }
+
+    public InsertDivisionData(DivisionData divisionData) {
+        mDivisionData = divisionData;
+        isEditMode = true;
+    }
 
     @Override
     public void setScene() {
@@ -114,11 +125,26 @@ public class InsertDivisionData extends UiScene {
     }
 
     private void submitData() {
-        DivisionData divisionData = new DivisionData();
-        divisionData.studentId = mStudentDataComboBox.getValue().studentId;
-        divisionData.semesterSectionId = mSemesterSectionDataComboBox.getValue().semesterSectionId;
+        if (!isEditMode) {
+            mDivisionData = new DivisionData();
+        }
+        mDivisionData.studentId = mStudentDataComboBox.getValue().studentId;
+        mDivisionData.semesterSectionId = mSemesterSectionDataComboBox.getValue().semesterSectionId;
 
-        DatabaseHelper.insertIntoDivision(divisionData);
+        Task<Integer> submitTask = new Task<Integer>() {
+            @Override
+            protected Integer call() {
+                int i;
+                if (!isEditMode) {
+                    i = DatabaseHelper.insertIntoDivision(mDivisionData);
+                } else {
+                    i = DatabaseHelper.updateDivision(mDivisionData);
+                }
+                return i;
+            }
+        };
+        Thread submitThread = new Thread(submitTask);
+        submitThread.start();
     }
 
 }

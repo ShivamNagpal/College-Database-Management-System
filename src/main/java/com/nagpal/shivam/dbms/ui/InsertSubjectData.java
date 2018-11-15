@@ -19,12 +19,23 @@ import static com.nagpal.shivam.dbms.Main.sStage;
 
 public class InsertSubjectData extends UiScene {
 
+    private final boolean isEditMode;
     private TextField mNameTextField;
     private TextField mIdTextField;
     private TextField mSchemeTextField;
     private TextField mSemesterTextField;
     private TextField mCreditsTextField;
     private ComboBox<DepartmentData> mDepartmentDataComboBox;
+    private SubjectData mSubjectData;
+
+    public InsertSubjectData() {
+        isEditMode = false;
+    }
+
+    public InsertSubjectData(SubjectData subjectData) {
+        mSubjectData = subjectData;
+        isEditMode = true;
+    }
 
     @Override
     public void setScene() {
@@ -125,14 +136,29 @@ public class InsertSubjectData extends UiScene {
     }
 
     private void submitData() {
-        SubjectData subjectData = new SubjectData();
-        subjectData.name = mNameTextField.getText();
-        subjectData.subjectId = mIdTextField.getText();
-        subjectData.scheme = mSchemeTextField.getText();
-        subjectData.semester = Integer.parseInt(mSemesterTextField.getText());
-        subjectData.credits = Integer.parseInt(mCreditsTextField.getText());
-        subjectData.departmentId = mDepartmentDataComboBox.getValue().departmentId;
+        if (!isEditMode) {
+            mSubjectData = new SubjectData();
+        }
+        mSubjectData.name = mNameTextField.getText();
+        mSubjectData.subjectId = mIdTextField.getText();
+        mSubjectData.scheme = mSchemeTextField.getText();
+        mSubjectData.semester = Integer.parseInt(mSemesterTextField.getText());
+        mSubjectData.credits = Integer.parseInt(mCreditsTextField.getText());
+        mSubjectData.departmentId = mDepartmentDataComboBox.getValue().departmentId;
 
-        DatabaseHelper.insertIntoSubject(subjectData);
+        Task<Integer> submitTask = new Task<Integer>() {
+            @Override
+            protected Integer call() {
+                int i;
+                if (!isEditMode) {
+                    i = DatabaseHelper.insertIntoSubject(mSubjectData);
+                } else {
+                    i = DatabaseHelper.updateSubject(mSubjectData);
+                }
+                return i;
+            }
+        };
+        Thread submitThread = new Thread(submitTask);
+        submitThread.start();
     }
 }

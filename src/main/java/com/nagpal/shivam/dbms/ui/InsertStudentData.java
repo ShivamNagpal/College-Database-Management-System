@@ -20,6 +20,7 @@ import static com.nagpal.shivam.dbms.Main.sStage;
 
 public class InsertStudentData extends UiScene {
 
+    private final boolean isEditMode;
     private TextField mNameTextField;
     private TextField mIdTextField;
     private DatePicker mDobDatePicker;
@@ -27,6 +28,16 @@ public class InsertStudentData extends UiScene {
     private TextField mPhoneTextField;
     private TextField mEmailTextField;
     private ComboBox<DepartmentData> mDepartmentDataComboBox;
+    private StudentData mStudentData;
+
+    public InsertStudentData() {
+        isEditMode = false;
+    }
+
+    public InsertStudentData(StudentData studentData) {
+        mStudentData = studentData;
+        isEditMode = true;
+    }
 
     @Override
     public void setScene() {
@@ -133,16 +144,31 @@ public class InsertStudentData extends UiScene {
     }
 
     private void submitData() {
-        StudentData studentData = new StudentData();
-        studentData.name = mNameTextField.getText();
-        studentData.studentId = mIdTextField.getText();
-        studentData.dateOfBirth = mDobDatePicker.getValue().format(DateTimeFormatter.ISO_DATE);
-        studentData.address = mAddressTextField.getText();
-        studentData.email = mEmailTextField.getText();
-        studentData.phone = mPhoneTextField.getText();
-        studentData.departmentId = mDepartmentDataComboBox.getValue().departmentId;
+        if (!isEditMode) {
+            mStudentData = new StudentData();
+        }
+        mStudentData.name = mNameTextField.getText();
+        mStudentData.studentId = mIdTextField.getText();
+        mStudentData.dateOfBirth = mDobDatePicker.getValue().format(DateTimeFormatter.ISO_DATE);
+        mStudentData.address = mAddressTextField.getText();
+        mStudentData.email = mEmailTextField.getText();
+        mStudentData.phone = mPhoneTextField.getText();
+        mStudentData.departmentId = mDepartmentDataComboBox.getValue().departmentId;
 
-        DatabaseHelper.insertIntoStudent(studentData);
+        Task<Integer> submitTask = new Task<Integer>() {
+            @Override
+            protected Integer call() {
+                int i;
+                if (!isEditMode) {
+                    i = DatabaseHelper.insertIntoStudent(mStudentData);
+                } else {
+                    i = DatabaseHelper.updateStudent(mStudentData);
+                }
+                return i;
+            }
+        };
+        Thread submitThread = new Thread(submitTask);
+        submitThread.start();
     }
 
 }

@@ -25,9 +25,20 @@ import static com.nagpal.shivam.dbms.Main.sStage;
 
 public class InsertTeachesData extends UiScene {
 
+    private final boolean isEditMode;
     private ComboBox<ProfessorData> mProfessorDataComboBox;
     private ComboBox<SemesterSectionData> mSemesterSectionDataComboBox;
     private ComboBox<SubjectData> mSubjectDataComboBox;
+    private TeachesData mTeachesData;
+
+    public InsertTeachesData() {
+        isEditMode = false;
+    }
+
+    public InsertTeachesData(TeachesData teachesData) {
+        mTeachesData = teachesData;
+        isEditMode = true;
+    }
 
     @Override
     public void setScene() {
@@ -145,11 +156,27 @@ public class InsertTeachesData extends UiScene {
     }
 
     private void submitData() {
-        TeachesData teachesData = new TeachesData();
-        teachesData.professorId = mProfessorDataComboBox.getValue().professorId;
-        teachesData.semesterSectionId = mSemesterSectionDataComboBox.getValue().semesterSectionId;
-        teachesData.subjectId = mSubjectDataComboBox.getValue().subjectId;
-        //TODO: Do this on background thread
-        DatabaseHelper.insertIntoTeaches(teachesData);
+        if (!isEditMode) {
+            mTeachesData = new TeachesData();
+        }
+        mTeachesData.professorId = mProfessorDataComboBox.getValue().professorId;
+        mTeachesData.semesterSectionId = mSemesterSectionDataComboBox.getValue().semesterSectionId;
+        mTeachesData.subjectId = mSubjectDataComboBox.getValue().subjectId;
+
+        Task<Integer> submitTask = new Task<Integer>() {
+            @Override
+            protected Integer call() {
+                int i;
+                if (!isEditMode) {
+                    i = DatabaseHelper.insertIntoTeaches(mTeachesData);
+                } else {
+                    i = DatabaseHelper.updateTeaches(mTeachesData);
+                }
+                return i;
+            }
+        };
+        Thread submitThread = new Thread(submitTask);
+        submitThread.start();
     }
+
 }

@@ -239,22 +239,6 @@ public class DatabaseHelper {
         return list;
     }
 
-    public static ResultSet fetchTableDetails(String tableName) {
-        String sql = "SELECT " +
-                DatabaseContract.ROW_ID + ", *" +
-                " FROM " +
-                tableName;
-        Connection connection = Database.getConnection();
-        ResultSet set = null;
-        try {
-            Statement statement = connection.createStatement();
-            set = statement.executeQuery(sql);
-        } catch (SQLException e) {
-            Log.e(CLASS_NAME, e.getMessage());
-        }
-        return set;
-    }
-
     public static int insertIntoDepartment(DepartmentData departmentData) {
         String sql = "INSERT INTO " +
                 Department.TABLE_NAME +
@@ -458,4 +442,208 @@ public class DatabaseHelper {
         }
         return SqlErrorCodes.SQLITE_OK;
     }
+
+    public static int updateDepartment(DepartmentData departmentData) {
+        String sql = "UPDATE " +
+                Department.TABLE_NAME +
+                " SET " +
+                Department.NAME + "=?, " +
+                Department.DEPARTMENT_ID + "=? " +
+                "WHERE " + DatabaseContract.ROW_ID + " =" + departmentData.rowId;
+        Connection connection = Database.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, departmentData.name);
+            statement.setString(2, departmentData.departmentId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
+    }
+
+    public static int updateStudent(StudentData studentData) {
+        String sql = "UPDATE " +
+                Student.TABLE_NAME +
+                " SET " +
+                Student.NAME + "=?, " +
+                Student.STUDENT_ID + "=?, " +
+                Student.DATE_OF_BIRTH + "=?, " +
+                Student.ADDRESS + "=?, " +
+                Student.EMAIL + "=?, " +
+                Student.PHONE + "=?, " +
+                Student.DEPARTMENT_ID + "=? " +
+                "WHERE " + DatabaseContract.ROW_ID + " =" + studentData.rowId;
+        Connection connection = Database.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, studentData.name);
+            statement.setString(2, studentData.studentId);
+            statement.setString(3, studentData.dateOfBirth);
+            statement.setString(4, studentData.address);
+            statement.setString(5, studentData.email);
+            statement.setString(6, studentData.phone);
+            statement.setString(7, studentData.departmentId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
+    }
+
+    public static int updateProfessor(ProfessorData professorData) {
+        String sql = "UPDATE " +
+                Professor.TABLE_NAME +
+                " SET " +
+                Professor.NAME + "=?, " +
+                Professor.PROFESSOR_ID + "=?, " +
+                Professor.DATE_OF_BIRTH + "=?, " +
+                Professor.ADDRESS + "=?, " +
+                Professor.EMAIL + "=?, " +
+                Professor.PHONE + "=?, " +
+                Professor.DEPARTMENT_ID + "=?, " +
+                Professor.DESIGNATION + "=? " +
+                "WHERE " + DatabaseContract.ROW_ID + " =" + professorData.rowId;
+        Connection connection = Database.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, professorData.name);
+            statement.setString(2, professorData.professorId);
+            statement.setString(3, professorData.dateOfBirth);
+            statement.setString(4, professorData.address);
+            statement.setString(5, professorData.email);
+            statement.setString(6, professorData.phone);
+            statement.setString(7, professorData.departmentId);
+            statement.setString(8, professorData.designation);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
+    }
+
+    public static int updateSubject(SubjectData subjectData) {
+        String sql = "INSERT INTO " +
+                Subject.TABLE_NAME +
+                " SET " +
+                Subject.NAME + "=?, " +
+                Subject.SUBJECT_ID + "=?, " +
+                Subject.SCHEME + "=?, " +
+                Subject.SEMESTER + "=?, " +
+                Subject.CREDITS + "=?, " +
+                Subject.DEPARTMENT_ID + "=? " +
+                "WHERE " + DatabaseContract.ROW_ID + " =" + subjectData.rowId;
+        Connection connection = Database.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, subjectData.name);
+            statement.setString(2, subjectData.subjectId);
+            statement.setString(3, subjectData.scheme);
+            statement.setInt(4, subjectData.semester);
+            statement.setInt(5, subjectData.credits);
+            statement.setString(6, subjectData.departmentId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
+    }
+
+    public static int updateSemesterSection(SemesterSectionData semesterSectionData) {
+        String sql = "UPDATE " +
+                SemesterSection.TABLE_NAME +
+                " SET " +
+                SemesterSection.SEM_SEC_ID + "=?, " +
+                SemesterSection.SEMESTER + "=?, " +
+                SemesterSection.SECTION + "=? " +
+                "WHERE " + DatabaseContract.ROW_ID + " =" + semesterSectionData.rowId;
+        Connection connection = Database.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, semesterSectionData.semesterSectionId);
+            statement.setInt(2, semesterSectionData.semester);
+            statement.setString(3, semesterSectionData.section);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
+    }
+
+    public static int updateTeaches(TeachesData teachesData) {
+        String sql = "INSERT INTO " +
+                Teaches.TABLE_NAME +
+                " SET " +
+                Teaches.PROFESSOR_ID + "=?, " +
+                Teaches.SEM_SEC_ID + "=?, " +
+                Teaches.SUBJECT_ID + "=? " +
+                "WHERE " + DatabaseContract.ROW_ID + " =" + teachesData.rowId;
+        Connection connection = Database.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, teachesData.professorId);
+            statement.setString(2, teachesData.semesterSectionId);
+            statement.setString(3, teachesData.subjectId);
+            statement.executeUpdate();
+            Database.closeSqlComponents(statement);
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
+    }
+
+    public static int updateDivision(DivisionData divisionData) {
+        String sql = "UPDATE " +
+                Division.TABLE_NAME +
+                " SET " +
+                Division.STUDENT_ID + "=?, " +
+                Division.SEM_SEC_ID + "=? " +
+                "WHERE " + DatabaseContract.ROW_ID + " =" + divisionData.rowId;
+        Connection connection = Database.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, divisionData.studentId);
+            statement.setString(2, divisionData.semesterSectionId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
+    }
+
+    public static int updateIaMarks(IaMarksData iaMarksData) {
+        String sql = "UPDATE " +
+                IaMarks.TABLE_NAME +
+                " SET " +
+                IaMarks.STUDENT_ID + "=?, " +
+                IaMarks.SEM_SEC_ID + "=?, " +
+                IaMarks.SUBJECT_ID + "=?, " +
+                IaMarks.TEST1 + "=?, " +
+                IaMarks.TEST2 + "=?, " +
+                IaMarks.TEST3 + "=? " +
+                "WHERE " + DatabaseContract.ROW_ID + " =" + iaMarksData.rowId;
+        Connection connection = Database.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, iaMarksData.studentId);
+            statement.setString(2, iaMarksData.semSecId);
+            statement.setString(3, iaMarksData.subjectId);
+            statement.setInt(4, iaMarksData.test1);
+            statement.setInt(5, iaMarksData.test2);
+            statement.setInt(6, iaMarksData.test3);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
+    }
+
 }
