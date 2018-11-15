@@ -1,7 +1,9 @@
 package com.nagpal.shivam.dbms.model;
 
-public class SemesterSectionData {
+import com.nagpal.shivam.dbms.data.PreviewIgnoredAttribute;
 
+public class SemesterSectionData {
+    @PreviewIgnoredAttribute
     public long rowId;
     public String semesterSectionId;
     public int semester;

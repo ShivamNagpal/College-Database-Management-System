@@ -1,6 +1,7 @@
 package com.nagpal.shivam.dbms.ui;
 
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
+import com.nagpal.shivam.dbms.data.PreviewIgnoredAttribute;
 import com.nagpal.shivam.dbms.model.TeachesData;
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
@@ -90,6 +91,9 @@ public class PreviewTeaches extends UiScene {
     private void addTableColumns() {
         Field[] fields = TeachesData.class.getFields();
         for (Field f : fields) {
+            if (f.isAnnotationPresent(PreviewIgnoredAttribute.class)) {
+                continue;
+            }
             String columnName = f.getName();
             TableColumn<TeachesData, String> tableColumn = new TableColumn<>(columnName);
             tableColumn.setCellValueFactory(param -> {

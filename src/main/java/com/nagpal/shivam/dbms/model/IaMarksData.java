@@ -1,6 +1,9 @@
 package com.nagpal.shivam.dbms.model;
 
+import com.nagpal.shivam.dbms.data.PreviewIgnoredAttribute;
+
 public class IaMarksData {
+    @PreviewIgnoredAttribute
     public long rowId;
     public String studentId;
     public String semSecId;

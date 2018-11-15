@@ -1,6 +1,9 @@
 package com.nagpal.shivam.dbms.model;
 
+import com.nagpal.shivam.dbms.data.PreviewIgnoredAttribute;
+
 public class DepartmentData {
+    @PreviewIgnoredAttribute
     public long rowId;
     public String name;
     public String departmentId;

@@ -50,7 +50,6 @@ public class DatabaseContract {
     }
 
     public class Student {
-        @Ignored
         public static final String TABLE_NAME = "STUDENT";
         public static final String NAME = "NAME";
         public static final String STUDENT_ID = "STUDENT_ID";
@@ -60,7 +59,6 @@ public class DatabaseContract {
         public static final String EMAIL = "EMAIL";
         public static final String DEPARTMENT_ID = "DEPARTMENT_ID";
 
-        @Ignored
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
                 NAME + " TEXT NOT NULL" +
