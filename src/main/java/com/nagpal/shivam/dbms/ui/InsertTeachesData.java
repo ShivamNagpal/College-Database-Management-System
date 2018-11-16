@@ -42,7 +42,7 @@ public class InsertTeachesData extends UiScene {
 
     @Override
     public void setScene() {
-        Pane pane = new InsertTeachesData().getLayout();
+        Pane pane = getLayout();
         pane.setPrefSize(800, 600);
         sStage.setMinHeight(600);
         Scene scene = new Scene(pane);

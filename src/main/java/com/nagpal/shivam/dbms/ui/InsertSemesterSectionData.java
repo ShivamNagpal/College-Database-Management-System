@@ -33,7 +33,7 @@ public class InsertSemesterSectionData extends UiScene {
 
     @Override
     public void setScene() {
-        Pane pane = new InsertSemesterSectionData().getLayout();
+        Pane pane = getLayout();
         pane.setPrefSize(800, 600);
         Scene scene = new Scene(pane);
         sStage.setTitle("Insert new semester-section");

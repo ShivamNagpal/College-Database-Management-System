@@ -32,7 +32,7 @@ public class InsertDepartmentData extends UiScene {
 
     @Override
     public void setScene() {
-        Pane pane = new InsertDepartmentData().getLayout();
+        Pane pane = getLayout();
         pane.setPrefSize(800, 600);
         Scene scene = new Scene(pane);
         sStage.setTitle("Insert new department");

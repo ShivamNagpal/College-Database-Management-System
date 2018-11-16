@@ -39,7 +39,7 @@ public class InsertSubjectData extends UiScene {
 
     @Override
     public void setScene() {
-        Pane pane = new InsertSubjectData().getLayout();
+        Pane pane = getLayout();
         pane.setPrefSize(800, 600);
         Scene scene = new Scene(pane);
         sStage.setTitle("Insert new subject");

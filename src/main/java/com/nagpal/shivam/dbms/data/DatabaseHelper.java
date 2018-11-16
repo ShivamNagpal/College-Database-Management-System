@@ -56,6 +56,32 @@ public class DatabaseHelper {
         return list;
     }
 
+    public static List<DepartmentData> fetchParticularDepartment(String departmentId, boolean include) {
+        String operator = include ? " = " : " != ";
+        String sql = "SELECT " +
+                DatabaseContract.ROW_ID + ", *" +
+                " FROM " +
+                Department.TABLE_NAME +
+                " WHERE " +
+                Department.DEPARTMENT_ID + operator + "'" + departmentId + "'";
+        Connection connection = Database.getConnection();
+        List<DepartmentData> list = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(sql);
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int nameIndex = set.findColumn(Department.NAME);
+            int departmentIdIndex = set.findColumn(Department.DEPARTMENT_ID);
+
+            while (set.next()) {
+                list.add(new DepartmentData(set.getLong(rowIdIndex), set.getString(nameIndex), set.getString(departmentIdIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
     public static List<StudentData> fetchStudentDetails() {
         String sql = "SELECT " +
                 DatabaseContract.ROW_ID + ", *" +

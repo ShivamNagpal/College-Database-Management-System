@@ -3,10 +3,13 @@ package com.nagpal.shivam.dbms.ui;
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
 import com.nagpal.shivam.dbms.data.PreviewIgnoredAttribute;
 import com.nagpal.shivam.dbms.model.ProfessorData;
+import com.nagpal.shivam.dbms.navigation.Intent;
+import com.nagpal.shivam.dbms.navigation.NavUtil;
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -39,7 +42,7 @@ public class PreviewProfessor extends UiScene {
                 source = source.getParent();
             }
 
-            if (source == null || ((TableRow) source).isEmpty()) {
+            if (source != null && ((TableRow) source).isEmpty()) {
                 mTableView.getSelectionModel().clearSelection();
             }
         });
@@ -72,9 +75,13 @@ public class PreviewProfessor extends UiScene {
         professorThread.start();
 
         Button backButton = new Button("Back");
+        backButton.setOnAction(event -> backAction());
         Button addButton = new Button("Add");
+        addButton.setOnAction(event -> addAction());
         Button editButton = new Button("Edit");
+        editButton.setOnAction(event -> editAction());
         Button deleteButton = new Button("Delete");
+        deleteButton.setOnAction(event -> deleteAction());
 
         BorderPane borderPane = new BorderPane();
         ToolBar toolBar = new ToolBar(backButton,
@@ -136,4 +143,31 @@ public class PreviewProfessor extends UiScene {
             mTableView.getColumns().add(tableColumn);
         }
     }
+
+    private void backAction() {
+        super.onBackPressed();
+    }
+
+    private void addAction() {
+        Intent intent = new Intent(this, InsertProfessorData.class);
+        NavUtil.startScene(intent);
+    }
+
+    private void editAction() {
+        ObservableList<ProfessorData> professorDataArrayList = mTableView.getSelectionModel().getSelectedItems();
+        if (professorDataArrayList.size() == 1) {
+            Intent intent = new Intent(this, InsertProfessorData.class);
+            intent.setData(ProfessorData.class, professorDataArrayList.get(0));
+            NavUtil.startScene(intent);
+        }
+
+    }
+
+    private void deleteAction() {
+        ObservableList<ProfessorData> professorDataArrayList = mTableView.getSelectionModel().getSelectedItems();
+        if (professorDataArrayList.size() > 0) {
+
+        }
+    }
+
 }

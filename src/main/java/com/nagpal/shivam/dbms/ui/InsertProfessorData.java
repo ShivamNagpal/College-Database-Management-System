@@ -13,7 +13,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
@@ -33,21 +35,27 @@ public class InsertProfessorData extends UiScene {
 
     public InsertProfessorData() {
         isEditMode = false;
+        sStage.setTitle("Insert new professor detail");
     }
 
     public InsertProfessorData(ProfessorData professorData) {
         mProfessorData = professorData;
         isEditMode = true;
+        sStage.setTitle("Edit professor detail");
     }
 
     @Override
     public void setScene() {
-        Pane pane = new InsertProfessorData().getLayout();
+        Pane pane = getLayout();
         pane.setPrefSize(800, 600);
+        fetchForeignKeys();
+        if (isEditMode) {
+            fillDetails();
+        }
         Scene scene = new Scene(pane);
-        sStage.setTitle("Insert new professor");
         sStage.setScene(scene);
     }
+
 
     @Override
     protected Pane getLayout() {
@@ -118,20 +126,7 @@ public class InsertProfessorData extends UiScene {
         mDepartmentDataComboBox.setButtonCell(departmentComboBoxCallback.call(null));
 
         mDepartmentDataComboBox.setPromptText("Choose a department");
-        Task<List<DepartmentData>> fetchDepartmentDetailsTask = new Task<List<DepartmentData>>() {
-            @Override
-            protected List<DepartmentData> call() {
-                return DatabaseHelper.fetchDepartmentDetails();
-            }
 
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                mDepartmentDataComboBox.getItems().addAll(this.getValue());
-            }
-        };
-        Thread thread = new Thread(fetchDepartmentDetailsTask);
-        thread.start();
         Text linkToAddNewDepartment = new Text("Not Found!, Add new Department First");
         formGridPane.add(departmentIdText, 0, gridPaneStartingRowIndex);
         formGridPane.add(mDepartmentDataComboBox, 1, gridPaneStartingRowIndex);
@@ -142,6 +137,7 @@ public class InsertProfessorData extends UiScene {
 
         Button backButton = new Button("Back");
         containerGridPane.add(backButton, 0, 0);
+        backButton.setOnAction(event -> super.onBackPressed());
 
         containerGridPane.add(formGridPane, 1, 1);
 
@@ -180,4 +176,43 @@ public class InsertProfessorData extends UiScene {
         Thread submitThread = new Thread(submitTask);
         submitThread.start();
     }
+
+    private void fetchForeignKeys() {
+        Task<List<DepartmentData>> fetchDepartmentDetailsTask = new Task<List<DepartmentData>>() {
+            @Override
+            protected List<DepartmentData> call() {
+                List<DepartmentData> departmentData = null;
+                if (isEditMode) {
+                    departmentData = new ArrayList<>();
+                    departmentData.addAll(DatabaseHelper.fetchParticularDepartment(mProfessorData.departmentId, true));
+                    departmentData.addAll(DatabaseHelper.fetchParticularDepartment(mProfessorData.departmentId, false));
+                } else {
+                    departmentData = DatabaseHelper.fetchDepartmentDetails();
+                }
+                return departmentData;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                mDepartmentDataComboBox.getItems().addAll(this.getValue());
+                if (isEditMode) {
+                    mDepartmentDataComboBox.getSelectionModel().select(0);
+                }
+            }
+        };
+        Thread thread = new Thread(fetchDepartmentDetailsTask);
+        thread.start();
+    }
+
+    private void fillDetails() {
+        mNameTextField.setText(mProfessorData.name);
+        mIdTextField.setText(mProfessorData.professorId);
+        mDobDatePicker.setValue(LocalDate.parse(mProfessorData.dateOfBirth));
+        mAddressTextField.setText(mProfessorData.address);
+        mEmailTextField.setText(mProfessorData.email);
+        mPhoneTextField.setText(mProfessorData.phone);
+        mDesignationTextField.setText(mProfessorData.designation);
+    }
+
 }
