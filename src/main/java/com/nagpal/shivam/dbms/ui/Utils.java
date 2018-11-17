@@ -1,8 +1,13 @@
 package com.nagpal.shivam.dbms.ui;
 
 import com.nagpal.shivam.dbms.model.*;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 
 class Utils {
@@ -89,6 +94,20 @@ class Utils {
                         }
                     }
                 };
+            }
+        };
+    }
+
+    static EventHandler<MouseEvent> getPreviewEventHandler(TableView mTableView) {
+        return event -> {
+            Node source = event.getPickResult().getIntersectedNode();
+
+            while (source != null && !(source instanceof TableRow)) {
+                source = source.getParent();
+            }
+
+            if (source != null && ((TableRow) source).isEmpty()) {
+                mTableView.getSelectionModel().clearSelection();
             }
         };
     }

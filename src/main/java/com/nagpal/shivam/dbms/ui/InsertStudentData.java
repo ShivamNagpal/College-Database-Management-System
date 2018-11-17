@@ -13,7 +13,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
@@ -29,22 +31,29 @@ public class InsertStudentData extends UiScene {
     private TextField mEmailTextField;
     private ComboBox<DepartmentData> mDepartmentDataComboBox;
     private StudentData mStudentData;
+    private String mTitle;
 
     public InsertStudentData() {
         isEditMode = false;
+        mTitle = "Insert new student detail";
     }
 
     public InsertStudentData(StudentData studentData) {
         mStudentData = studentData;
         isEditMode = true;
+        mTitle = "Edit student detail";
     }
 
     @Override
     public void setScene() {
         Pane pane = getLayout();
         pane.setPrefSize(800, 600);
+        fetchForeignKeys();
+        if (isEditMode) {
+            fillDetails();
+        }
+        sStage.setTitle(mTitle);
         Scene scene = new Scene(pane);
-        sStage.setTitle("Insert new student");
         sStage.setScene(scene);
     }
 
@@ -109,20 +118,7 @@ public class InsertStudentData extends UiScene {
         mDepartmentDataComboBox.setButtonCell(departmentComboBoxCallback.call(null));
 
         mDepartmentDataComboBox.setPromptText("Choose a department");
-        Task<List<DepartmentData>> fetchDepartmentDetailsTask = new Task<List<DepartmentData>>() {
-            @Override
-            protected List<DepartmentData> call() {
-                return DatabaseHelper.fetchDepartmentDetails();
-            }
 
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                mDepartmentDataComboBox.getItems().addAll(this.getValue());
-            }
-        };
-        Thread thread = new Thread(fetchDepartmentDetailsTask);
-        thread.start();
         Text linkToAddNewDepartment = new Text("Not Found!, Add new Department First");
         formGridPane.add(departmentIdText, 0, gridPaneStartingRowIndex);
         formGridPane.add(mDepartmentDataComboBox, 1, gridPaneStartingRowIndex);
@@ -133,6 +129,7 @@ public class InsertStudentData extends UiScene {
 
         Button backButton = new Button("Back");
         containerGridPane.add(backButton, 0, 0);
+        backButton.setOnAction(event -> super.onBackPressed());
 
         containerGridPane.add(formGridPane, 1, 1);
 
@@ -149,7 +146,11 @@ public class InsertStudentData extends UiScene {
         }
         mStudentData.name = mNameTextField.getText();
         mStudentData.studentId = mIdTextField.getText();
-        mStudentData.dateOfBirth = mDobDatePicker.getValue().format(DateTimeFormatter.ISO_DATE);
+
+        LocalDate value = mDobDatePicker.getValue();
+        if (value != null) {
+            mStudentData.dateOfBirth = value.format(DateTimeFormatter.ISO_DATE);
+        }
         mStudentData.address = mAddressTextField.getText();
         mStudentData.email = mEmailTextField.getText();
         mStudentData.phone = mPhoneTextField.getText();
@@ -169,6 +170,45 @@ public class InsertStudentData extends UiScene {
         };
         Thread submitThread = new Thread(submitTask);
         submitThread.start();
+    }
+
+    private void fetchForeignKeys() {
+        Task<List<DepartmentData>> fetchDepartmentDetailsTask = new Task<List<DepartmentData>>() {
+            @Override
+            protected List<DepartmentData> call() {
+                List<DepartmentData> departmentData = null;
+                if (isEditMode) {
+                    departmentData = new ArrayList<>();
+                    departmentData.addAll(DatabaseHelper.fetchParticularDepartment(mStudentData.departmentId, true));
+                    departmentData.addAll(DatabaseHelper.fetchParticularDepartment(mStudentData.departmentId, false));
+                } else {
+                    departmentData = DatabaseHelper.fetchDepartmentDetails();
+                }
+                return departmentData;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                mDepartmentDataComboBox.getItems().addAll(this.getValue());
+                if (isEditMode) {
+                    mDepartmentDataComboBox.getSelectionModel().select(0);
+                }
+            }
+        };
+        Thread thread = new Thread(fetchDepartmentDetailsTask);
+        thread.start();
+    }
+
+    private void fillDetails() {
+        mNameTextField.setText(mStudentData.name);
+        mIdTextField.setText(mStudentData.studentId);
+        if (mStudentData.dateOfBirth != null) {
+            mDobDatePicker.setValue(LocalDate.parse(mStudentData.dateOfBirth));
+        }
+        mAddressTextField.setText(mStudentData.address);
+        mEmailTextField.setText(mStudentData.email);
+        mPhoneTextField.setText(mStudentData.phone);
     }
 
 }

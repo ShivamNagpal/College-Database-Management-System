@@ -13,7 +13,6 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -35,17 +34,7 @@ public class PreviewProfessor extends UiScene {
         pane.setMinSize(800, 600);
         Scene scene = new Scene(pane);
         sStage.setTitle("Professor Preview");
-        scene.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
-            Node source = evt.getPickResult().getIntersectedNode();
-
-            while (source != null && !(source instanceof TableRow)) {
-                source = source.getParent();
-            }
-
-            if (source != null && ((TableRow) source).isEmpty()) {
-                mTableView.getSelectionModel().clearSelection();
-            }
-        });
+        scene.addEventFilter(MouseEvent.MOUSE_CLICKED, Utils.getPreviewEventHandler(mTableView));
         sStage.setScene(scene);
     }
 

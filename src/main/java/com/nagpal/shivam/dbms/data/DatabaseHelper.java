@@ -110,6 +110,37 @@ public class DatabaseHelper {
         return list;
     }
 
+    public static List<StudentData> fetchParticularStudent(String studentId, boolean include) {
+        String operator = include ? " = " : " != ";
+        String sql = "SELECT " +
+                DatabaseContract.ROW_ID + ", *" +
+                " FROM " +
+                Student.TABLE_NAME +
+                " WHERE " +
+                Student.STUDENT_ID + operator + "'" + studentId + "'";
+        Connection connection = Database.getConnection();
+        List<StudentData> list = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(sql);
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int nameIndex = set.findColumn(Student.NAME);
+            int idIndex = set.findColumn(Student.STUDENT_ID);
+            int dobIndex = set.findColumn(Student.DATE_OF_BIRTH);
+            int addressIndex = set.findColumn(Student.ADDRESS);
+            int phoneIndex = set.findColumn(Student.PHONE);
+            int emailIndex = set.findColumn(Student.EMAIL);
+            int departmentIdIndex = set.findColumn(Student.DEPARTMENT_ID);
+
+            while (set.next()) {
+                list.add(new StudentData(set.getLong(rowIdIndex), set.getString(nameIndex), set.getString(idIndex), set.getString(dobIndex), set.getString(addressIndex), set.getString(phoneIndex), set.getString(emailIndex), set.getString(departmentIdIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
     public static List<ProfessorData> fetchProfessorDetails() {
         String sql = "SELECT " +
                 DatabaseContract.ROW_ID + ", *" +
@@ -139,6 +170,39 @@ public class DatabaseHelper {
         return list;
     }
 
+    public static List<ProfessorData> fetchParticularProfessor(String professorId, boolean include) {
+        String operator = include ? " = " : " != ";
+        String sql = "SELECT " +
+                DatabaseContract.ROW_ID + ", *" +
+                " FROM " +
+                Professor.TABLE_NAME +
+                " WHERE " +
+                Professor.PROFESSOR_ID + operator + "'" + professorId + "'";
+        Connection connection = Database.getConnection();
+        List<ProfessorData> list = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(sql);
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int nameIndex = set.findColumn(Professor.NAME);
+            int idIndex = set.findColumn(Professor.PROFESSOR_ID);
+            int dobIndex = set.findColumn(Professor.DATE_OF_BIRTH);
+            int addressIndex = set.findColumn(Professor.ADDRESS);
+            int phoneIndex = set.findColumn(Professor.PHONE);
+            int emailIndex = set.findColumn(Professor.EMAIL);
+            int designationIndex = set.findColumn(Professor.DESIGNATION);
+            int departmentIdIndex = set.findColumn(Professor.DEPARTMENT_ID);
+
+            while (set.next()) {
+                list.add(new ProfessorData(set.getLong(rowIdIndex), set.getString(nameIndex), set.getString(idIndex), set.getString(dobIndex), set.getString(addressIndex), set.getString(phoneIndex), set.getString(emailIndex), set.getString(designationIndex), set.getString(departmentIdIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
+
     public static List<SemesterSectionData> fetchSemesterSectionDetails() {
         String sql = "SELECT " +
                 DatabaseContract.ROW_ID + ", *" +
@@ -163,11 +227,69 @@ public class DatabaseHelper {
         return list;
     }
 
+    public static List<SemesterSectionData> fetchParticularSemesterSection(String semesterSectionId, boolean include) {
+        String operator = include ? " = " : " != ";
+        String sql = "SELECT " +
+                DatabaseContract.ROW_ID + ", *" +
+                " FROM " +
+                SemesterSection.TABLE_NAME +
+                " WHERE " +
+                SemesterSection.SEM_SEC_ID + operator + "'" + semesterSectionId + "'";
+        Connection connection = Database.getConnection();
+        List<SemesterSectionData> list = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(sql);
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int idIndex = set.findColumn(SemesterSection.SEM_SEC_ID);
+            int semesterIndex = set.findColumn(SemesterSection.SEMESTER);
+            int sectionIndex = set.findColumn(SemesterSection.SECTION);
+
+            while (set.next()) {
+                list.add(new SemesterSectionData(set.getLong(rowIdIndex), set.getString(idIndex), set.getInt(semesterIndex), set.getString(sectionIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
     public static List<SubjectData> fetchSubjectDetails() {
         String sql = "SELECT " +
                 DatabaseContract.ROW_ID + ", *" +
                 " FROM " +
                 Subject.TABLE_NAME;
+        Connection connection = Database.getConnection();
+        List<SubjectData> list = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(sql);
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int nameIndex = set.findColumn(Subject.NAME);
+            int subjectIdIndex = set.findColumn(Subject.SUBJECT_ID);
+            int schemeIndex = set.findColumn(Subject.SCHEME);
+            int semesterIndex = set.findColumn(Subject.SEMESTER);
+            int creditsIndex = set.findColumn(Subject.CREDITS);
+            int departmentIdIndex = set.findColumn(Subject.DEPARTMENT_ID);
+
+
+            while (set.next()) {
+                list.add(new SubjectData(set.getLong(rowIdIndex), set.getString(nameIndex), set.getString(subjectIdIndex), set.getString(schemeIndex), set.getInt(semesterIndex), set.getInt(creditsIndex), set.getString(departmentIdIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
+    public static List<SubjectData> fetchParticularSubject(String subjectId, boolean include) {
+        String operator = include ? " = " : " != ";
+        String sql = "SELECT " +
+                DatabaseContract.ROW_ID + ", *" +
+                " FROM " +
+                Subject.TABLE_NAME +
+                " WHERE " +
+                Subject.SUBJECT_ID + operator + "'" + subjectId + "'";
         Connection connection = Database.getConnection();
         List<SubjectData> list = new ArrayList<>();
         try {

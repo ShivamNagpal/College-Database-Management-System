@@ -21,22 +21,29 @@ public class InsertSemesterSectionData extends UiScene {
     private TextField mSemesterTextField;
     private TextField mSectionTextField;
     private SemesterSectionData mSemesterSectionData;
+    private String mTitle;
+
 
     public InsertSemesterSectionData() {
         isEditMode = false;
+        mTitle = "Insert new semester-section detail";
     }
 
     public InsertSemesterSectionData(SemesterSectionData semesterSectionData) {
         mSemesterSectionData = semesterSectionData;
         isEditMode = true;
+        mTitle = "Edit semester-section detail";
     }
 
     @Override
     public void setScene() {
         Pane pane = getLayout();
         pane.setPrefSize(800, 600);
+        if (isEditMode) {
+            fillDetails();
+        }
         Scene scene = new Scene(pane);
-        sStage.setTitle("Insert new semester-section");
+        sStage.setTitle(mTitle);
         sStage.setScene(scene);
     }
 
@@ -54,7 +61,7 @@ public class InsertSemesterSectionData extends UiScene {
         mSemesterSectionIdTextField = new TextField();
         mSemesterSectionIdTextField.setPromptText("Enter Semester-Section Id");
         formGridPane.add(semesterSectionIdText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(semesterSectionIdText, 1, gridPaneStartingRowIndex);
+        formGridPane.add(mSemesterSectionIdTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         Text semesterText = new Text("Semester");
@@ -75,6 +82,7 @@ public class InsertSemesterSectionData extends UiScene {
 
         Button backButton = new Button("Back");
         containerGridPane.add(backButton, 0, 0);
+        backButton.setOnAction(event -> super.onBackPressed());
 
         containerGridPane.add(formGridPane, 1, 1);
 
@@ -91,6 +99,7 @@ public class InsertSemesterSectionData extends UiScene {
         }
         mSemesterSectionData.semesterSectionId = mSemesterSectionIdTextField.getText();
         mSemesterSectionData.semester = Integer.parseInt(mSemesterTextField.getText());
+        //TODO: Check For NumberFormat Exception
         mSemesterSectionData.section = mSectionTextField.getText();
 
         Task<Integer> submitTask = new Task<Integer>() {
@@ -108,4 +117,11 @@ public class InsertSemesterSectionData extends UiScene {
         Thread submitThread = new Thread(submitTask);
         submitThread.start();
     }
+
+    private void fillDetails() {
+        mSemesterSectionIdTextField.setText(mSemesterSectionData.semesterSectionId);
+        mSemesterTextField.setText(Integer.toString(mSemesterSectionData.semester));
+        mSectionTextField.setText(mSemesterSectionData.section);
+    }
+
 }

@@ -13,6 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
@@ -27,22 +28,29 @@ public class InsertSubjectData extends UiScene {
     private TextField mCreditsTextField;
     private ComboBox<DepartmentData> mDepartmentDataComboBox;
     private SubjectData mSubjectData;
+    private String mTitle;
 
     public InsertSubjectData() {
         isEditMode = false;
+        mTitle = "Insert new subject detail";
     }
 
     public InsertSubjectData(SubjectData subjectData) {
         mSubjectData = subjectData;
         isEditMode = true;
+        mTitle = "Edit subject detail";
     }
 
     @Override
     public void setScene() {
         Pane pane = getLayout();
         pane.setPrefSize(800, 600);
+        fetchForeignKeys();
+        if (isEditMode) {
+            fillDetails();
+        }
         Scene scene = new Scene(pane);
-        sStage.setTitle("Insert new subject");
+        sStage.setTitle(mTitle);
         sStage.setScene(scene);
     }
 
@@ -100,21 +108,7 @@ public class InsertSubjectData extends UiScene {
         mDepartmentDataComboBox.setButtonCell(departmentComboBoxCallback.call(null));
 
         mDepartmentDataComboBox.setPromptText("Choose a department");
-        Task<List<DepartmentData>> fetchDepartmentDetailsTask = new Task<List<DepartmentData>>() {
-            @Override
-            protected List<DepartmentData> call() {
-                return DatabaseHelper.fetchDepartmentDetails();
-            }
 
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                mDepartmentDataComboBox.getItems().addAll(this.getValue());
-            }
-        };
-
-        Thread thread = new Thread(fetchDepartmentDetailsTask);
-        thread.start();
         Text linkToAddNewDepartment = new Text("Not Found!, Add new Department First");
         formGridPane.add(departmentIdText, 0, gridPaneStartingRowIndex);
         formGridPane.add(mDepartmentDataComboBox, 1, gridPaneStartingRowIndex);
@@ -125,6 +119,7 @@ public class InsertSubjectData extends UiScene {
 
         Button backButton = new Button("Back");
         containerGridPane.add(backButton, 0, 0);
+        backButton.setOnAction(event -> super.onBackPressed());
 
         containerGridPane.add(formGridPane, 1, 1);
 
@@ -144,6 +139,7 @@ public class InsertSubjectData extends UiScene {
         mSubjectData.scheme = mSchemeTextField.getText();
         mSubjectData.semester = Integer.parseInt(mSemesterTextField.getText());
         mSubjectData.credits = Integer.parseInt(mCreditsTextField.getText());
+        //TODO: Check for NumberFormatException and Notify the User.
         mSubjectData.departmentId = mDepartmentDataComboBox.getValue().departmentId;
 
         Task<Integer> submitTask = new Task<Integer>() {
@@ -161,4 +157,42 @@ public class InsertSubjectData extends UiScene {
         Thread submitThread = new Thread(submitTask);
         submitThread.start();
     }
+
+    private void fetchForeignKeys() {
+        Task<List<DepartmentData>> fetchDepartmentDetailsTask = new Task<List<DepartmentData>>() {
+            @Override
+            protected List<DepartmentData> call() {
+                List<DepartmentData> departmentData = null;
+                if (isEditMode) {
+                    departmentData = new ArrayList<>();
+                    departmentData.addAll(DatabaseHelper.fetchParticularDepartment(mSubjectData.departmentId, true));
+                    departmentData.addAll(DatabaseHelper.fetchParticularDepartment(mSubjectData.departmentId, false));
+                } else {
+                    departmentData = DatabaseHelper.fetchDepartmentDetails();
+                }
+                return departmentData;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                mDepartmentDataComboBox.getItems().addAll(this.getValue());
+                if (isEditMode) {
+                    mDepartmentDataComboBox.getSelectionModel().select(0);
+                }
+            }
+        };
+
+        Thread thread = new Thread(fetchDepartmentDetailsTask);
+        thread.start();
+    }
+
+    private void fillDetails() {
+        mNameTextField.setText(mSubjectData.name);
+        mIdTextField.setText(mSubjectData.subjectId);
+        mSchemeTextField.setText(mSubjectData.scheme);
+        mSemesterTextField.setText(Integer.toString(mSubjectData.semester));
+        mCreditsTextField.setText(Integer.toString(mSubjectData.credits));
+    }
+
 }

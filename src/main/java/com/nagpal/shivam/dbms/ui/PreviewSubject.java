@@ -3,14 +3,16 @@ package com.nagpal.shivam.dbms.ui;
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
 import com.nagpal.shivam.dbms.data.PreviewIgnoredAttribute;
 import com.nagpal.shivam.dbms.model.SubjectData;
+import com.nagpal.shivam.dbms.navigation.Intent;
+import com.nagpal.shivam.dbms.navigation.NavUtil;
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -32,17 +34,7 @@ public class PreviewSubject extends UiScene {
         pane.setMinSize(800, 600);
         Scene scene = new Scene(pane);
         sStage.setTitle("Subject Preview");
-        scene.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
-            Node source = evt.getPickResult().getIntersectedNode();
-
-            while (source != null && !(source instanceof TableRow)) {
-                source = source.getParent();
-            }
-
-            if (source == null || ((TableRow) source).isEmpty()) {
-                mTableView.getSelectionModel().clearSelection();
-            }
-        });
+        scene.addEventFilter(MouseEvent.MOUSE_CLICKED, Utils.getPreviewEventHandler(mTableView));
         sStage.setScene(scene);
     }
 
@@ -72,9 +64,13 @@ public class PreviewSubject extends UiScene {
         subjectThread.start();
 
         Button backButton = new Button("Back");
+        backButton.setOnAction(event -> backAction());
         Button addButton = new Button("Add");
+        addButton.setOnAction(event -> addAction());
         Button editButton = new Button("Edit");
+        editButton.setOnAction(event -> editAction());
         Button deleteButton = new Button("Delete");
+        deleteButton.setOnAction(event -> deleteAction());
 
         BorderPane borderPane = new BorderPane();
         ToolBar toolBar = new ToolBar(backButton,
@@ -136,4 +132,31 @@ public class PreviewSubject extends UiScene {
             mTableView.getColumns().add(tableColumn);
         }
     }
+
+    private void backAction() {
+        super.onBackPressed();
+    }
+
+    private void addAction() {
+        Intent intent = new Intent(this, InsertSubjectData.class);
+        NavUtil.startScene(intent);
+    }
+
+    private void editAction() {
+        ObservableList<SubjectData> subjectDataObservableList = mTableView.getSelectionModel().getSelectedItems();
+        if (subjectDataObservableList.size() == 1) {
+            Intent intent = new Intent(this, InsertSubjectData.class);
+            intent.setData(SubjectData.class, subjectDataObservableList.get(0));
+            NavUtil.startScene(intent);
+        }
+
+    }
+
+    private void deleteAction() {
+        ObservableList<SubjectData> subjectDataObservableList = mTableView.getSelectionModel().getSelectedItems();
+        if (subjectDataObservableList.size() > 0) {
+
+        }
+    }
+
 }

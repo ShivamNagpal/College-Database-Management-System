@@ -20,22 +20,28 @@ public class InsertDepartmentData extends UiScene {
     private TextField mNameTextField;
     private TextField mIdTextField;
     private DepartmentData mDepartmentData;
+    private String mTitle;
 
     public InsertDepartmentData() {
         isEditMode = false;
+        mTitle = "Insert new department detail";
     }
 
     public InsertDepartmentData(DepartmentData departmentData) {
         mDepartmentData = departmentData;
         isEditMode = true;
+        mTitle = "Edit department detail";
     }
 
     @Override
     public void setScene() {
         Pane pane = getLayout();
         pane.setPrefSize(800, 600);
+        if (isEditMode) {
+            fillDetails();
+        }
+        sStage.setTitle(mTitle);
         Scene scene = new Scene(pane);
-        sStage.setTitle("Insert new department");
         sStage.setScene(scene);
     }
 
@@ -67,6 +73,7 @@ public class InsertDepartmentData extends UiScene {
 
         Button backButton = new Button("Back");
         containerGridPane.add(backButton, 0, 0);
+        backButton.setOnAction(event -> super.onBackPressed());
 
         containerGridPane.add(formGridPane, 1, 1);
 
@@ -99,4 +106,10 @@ public class InsertDepartmentData extends UiScene {
         Thread submitThread = new Thread(submitTask);
         submitThread.start();
     }
+
+    private void fillDetails() {
+        mNameTextField.setText(mDepartmentData.name);
+        mIdTextField.setText(mDepartmentData.departmentId);
+    }
+
 }

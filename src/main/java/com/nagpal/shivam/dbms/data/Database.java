@@ -1,6 +1,7 @@
 package com.nagpal.shivam.dbms.data;
 
 import com.nagpal.shivam.dbms.Log;
+import org.sqlite.SQLiteConfig;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,7 +15,9 @@ public class Database {
     public static Connection getConnection() {
         if (sConnection == null) {
             try {
-                sConnection = DriverManager.getConnection(url);
+                SQLiteConfig sqLiteConfig = new SQLiteConfig();
+                sqLiteConfig.enforceForeignKeys(true);
+                sConnection = DriverManager.getConnection(url, sqLiteConfig.toProperties());
                 Log.v(CLASS_NAME, "Database Connected");
             } catch (SQLException e) {
                 Log.e(CLASS_NAME, e.getMessage());

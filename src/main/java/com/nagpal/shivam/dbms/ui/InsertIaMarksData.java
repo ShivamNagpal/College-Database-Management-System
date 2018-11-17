@@ -15,6 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
@@ -29,22 +30,29 @@ public class InsertIaMarksData extends UiScene {
     private TextField mTest2TextField;
     private TextField mTest3TextField;
     private IaMarksData mIaMarksData;
+    private String mTitle;
 
     public InsertIaMarksData() {
         isEditMode = false;
+        mTitle = "Insert new IA Marks detail";
     }
 
     public InsertIaMarksData(IaMarksData iaMarksData) {
         mIaMarksData = iaMarksData;
         isEditMode = true;
+        mTitle = "Edit Ia Marks detail";
     }
 
     @Override
     public void setScene() {
         Pane pane = getLayout();
         pane.setPrefSize(800, 600);
+        fetchForeignKeys();
+        if (isEditMode) {
+            fillDetails();
+        }
         Scene scene = new Scene(pane);
-        sStage.setTitle("Insert new student");
+        sStage.setTitle(mTitle);
         sStage.setScene(scene);
     }
 
@@ -67,20 +75,6 @@ public class InsertIaMarksData extends UiScene {
         mStudentDataComboBox.setButtonCell(studentComboBoxCallback.call(null));
         mStudentDataComboBox.setPromptText("Choose a Student");
 
-        Task<List<StudentData>> fetchStudentDetailsTask = new Task<List<StudentData>>() {
-            @Override
-            protected List<StudentData> call() {
-                return DatabaseHelper.fetchStudentDetails();
-            }
-
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                mStudentDataComboBox.getItems().addAll(this.getValue());
-            }
-        };
-        Thread studentThread = new Thread(fetchStudentDetailsTask);
-        studentThread.start();
         formGridPane.add(studentIdText, 0, gridPaneStartingRowIndex);
         formGridPane.add(mStudentDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
@@ -94,20 +88,6 @@ public class InsertIaMarksData extends UiScene {
         mSemesterSectionDataComboBox.setButtonCell(semesterSectionComboBoxCallback.call(null));
         mSemesterSectionDataComboBox.setPromptText("Choose a Semester-Section");
 
-        Task<List<SemesterSectionData>> fetchSemesterSectionDetailsTask = new Task<List<SemesterSectionData>>() {
-            @Override
-            protected List<SemesterSectionData> call() {
-                return DatabaseHelper.fetchSemesterSectionDetails();
-            }
-
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                mSemesterSectionDataComboBox.getItems().addAll(this.getValue());
-            }
-        };
-        Thread semesterSectionThread = new Thread(fetchSemesterSectionDetailsTask);
-        semesterSectionThread.start();
         formGridPane.add(semesterSectionIdText, 0, gridPaneStartingRowIndex);
         formGridPane.add(mSemesterSectionDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
@@ -121,20 +101,6 @@ public class InsertIaMarksData extends UiScene {
         mSubjectDataComboBox.setButtonCell(subjectComboBoxCallback.call(null));
         mSubjectDataComboBox.setPromptText("Choose Subject");
 
-        Task<List<SubjectData>> fetchSubjectDetailsTask = new Task<List<SubjectData>>() {
-            @Override
-            protected List<SubjectData> call() {
-                return DatabaseHelper.fetchSubjectDetails();
-            }
-
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                mSubjectDataComboBox.getItems().addAll(this.getValue());
-            }
-        };
-        Thread subjectThread = new Thread(fetchSubjectDetailsTask);
-        subjectThread.start();
         formGridPane.add(subjectIdText, 0, gridPaneStartingRowIndex);
         formGridPane.add(mSubjectDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
@@ -164,6 +130,7 @@ public class InsertIaMarksData extends UiScene {
 
         Button backButton = new Button("Back");
         containerGridPane.add(backButton, 0, 0);
+        backButton.setOnAction(event -> super.onBackPressed());
 
         containerGridPane.add(formGridPane, 1, 1);
 
@@ -184,6 +151,7 @@ public class InsertIaMarksData extends UiScene {
         mIaMarksData.test1 = Integer.parseInt(mTest1TextField.getText().trim());
         mIaMarksData.test2 = Integer.parseInt(mTest2TextField.getText().trim());
         mIaMarksData.test3 = Integer.parseInt(mTest3TextField.getText().trim());
+        // TODO: Check for Number Format Exception
 
         Task<Integer> submitTask = new Task<Integer>() {
             @Override
@@ -201,4 +169,91 @@ public class InsertIaMarksData extends UiScene {
         submitThread.start();
 
     }
+
+    private void fetchForeignKeys() {
+        Task<List<StudentData>> fetchStudentDetailsTask = new Task<List<StudentData>>() {
+            @Override
+            protected List<StudentData> call() {
+                List<StudentData> studentData = null;
+                if (isEditMode) {
+                    studentData = new ArrayList<>();
+                    studentData.addAll(DatabaseHelper.fetchParticularStudent(mIaMarksData.studentId, true));
+                    studentData.addAll(DatabaseHelper.fetchParticularStudent(mIaMarksData.studentId, false));
+                } else {
+                    studentData = DatabaseHelper.fetchStudentDetails();
+                }
+                return studentData;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                mStudentDataComboBox.getItems().addAll(this.getValue());
+                if (isEditMode) {
+                    mStudentDataComboBox.getSelectionModel().select(0);
+                }
+            }
+        };
+        Thread studentThread = new Thread(fetchStudentDetailsTask);
+        studentThread.start();
+
+        Task<List<SemesterSectionData>> fetchSemesterSectionDetailsTask = new Task<List<SemesterSectionData>>() {
+            @Override
+            protected List<SemesterSectionData> call() {
+                List<SemesterSectionData> semesterSectionData = null;
+                if (isEditMode) {
+                    semesterSectionData = new ArrayList<>();
+                    semesterSectionData.addAll(DatabaseHelper.fetchParticularSemesterSection(mIaMarksData.semSecId, true));
+                    semesterSectionData.addAll(DatabaseHelper.fetchParticularSemesterSection(mIaMarksData.semSecId, false));
+                } else {
+                    semesterSectionData = DatabaseHelper.fetchSemesterSectionDetails();
+                }
+                return semesterSectionData;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                mSemesterSectionDataComboBox.getItems().addAll(this.getValue());
+                if (isEditMode) {
+                    mSemesterSectionDataComboBox.getSelectionModel().select(0);
+                }
+            }
+        };
+        Thread semesterSectionThread = new Thread(fetchSemesterSectionDetailsTask);
+        semesterSectionThread.start();
+
+        Task<List<SubjectData>> fetchSubjectDetailsTask = new Task<List<SubjectData>>() {
+            @Override
+            protected List<SubjectData> call() {
+                List<SubjectData> subjectData = null;
+                if (isEditMode) {
+                    subjectData = new ArrayList<>();
+                    subjectData.addAll(DatabaseHelper.fetchParticularSubject(mIaMarksData.subjectId, true));
+                    subjectData.addAll(DatabaseHelper.fetchParticularSubject(mIaMarksData.subjectId, false));
+                } else {
+                    subjectData = DatabaseHelper.fetchSubjectDetails();
+                }
+                return subjectData;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                mSubjectDataComboBox.getItems().addAll(this.getValue());
+                if (isEditMode) {
+                    mSubjectDataComboBox.getSelectionModel().select(0);
+                }
+            }
+        };
+        Thread subjectThread = new Thread(fetchSubjectDetailsTask);
+        subjectThread.start();
+    }
+
+    private void fillDetails() {
+        mTest1TextField.setText(Integer.toString(mIaMarksData.test1));
+        mTest2TextField.setText(Integer.toString(mIaMarksData.test2));
+        mTest3TextField.setText(Integer.toString(mIaMarksData.test3));
+    }
+
 }

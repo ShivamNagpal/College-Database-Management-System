@@ -32,16 +32,17 @@ public class InsertProfessorData extends UiScene {
     private TextField mDesignationTextField;
     private ComboBox<DepartmentData> mDepartmentDataComboBox;
     private ProfessorData mProfessorData;
+    private String mTitle;
 
     public InsertProfessorData() {
         isEditMode = false;
-        sStage.setTitle("Insert new professor detail");
+        mTitle = "Insert new professor detail";
     }
 
     public InsertProfessorData(ProfessorData professorData) {
         mProfessorData = professorData;
         isEditMode = true;
-        sStage.setTitle("Edit professor detail");
+        mTitle = "Edit professor detail";
     }
 
     @Override
@@ -53,6 +54,7 @@ public class InsertProfessorData extends UiScene {
             fillDetails();
         }
         Scene scene = new Scene(pane);
+        sStage.setTitle(mTitle);
         sStage.setScene(scene);
     }
 
@@ -154,7 +156,10 @@ public class InsertProfessorData extends UiScene {
         }
         mProfessorData.name = mNameTextField.getText();
         mProfessorData.professorId = mIdTextField.getText();
-        mProfessorData.dateOfBirth = mDobDatePicker.getValue().format(DateTimeFormatter.ISO_DATE);
+        LocalDate value = mDobDatePicker.getValue();
+        if (value != null) {
+            mProfessorData.dateOfBirth = value.format(DateTimeFormatter.ISO_DATE);
+        }
         mProfessorData.address = mAddressTextField.getText();
         mProfessorData.email = mEmailTextField.getText();
         mProfessorData.phone = mPhoneTextField.getText();
@@ -208,7 +213,9 @@ public class InsertProfessorData extends UiScene {
     private void fillDetails() {
         mNameTextField.setText(mProfessorData.name);
         mIdTextField.setText(mProfessorData.professorId);
-        mDobDatePicker.setValue(LocalDate.parse(mProfessorData.dateOfBirth));
+        if (mProfessorData.dateOfBirth != null) {
+            mDobDatePicker.setValue(LocalDate.parse(mProfessorData.dateOfBirth));
+        }
         mAddressTextField.setText(mProfessorData.address);
         mEmailTextField.setText(mProfessorData.email);
         mPhoneTextField.setText(mProfessorData.phone);
