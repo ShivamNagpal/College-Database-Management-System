@@ -1,7 +1,9 @@
 package com.nagpal.shivam.dbms.ui;
 
+import com.nagpal.shivam.dbms.data.DatabaseContract;
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
 import com.nagpal.shivam.dbms.data.PreviewIgnoredAttribute;
+import com.nagpal.shivam.dbms.data.SqlErrorCodes;
 import com.nagpal.shivam.dbms.model.ProfessorData;
 import com.nagpal.shivam.dbms.navigation.Intent;
 import com.nagpal.shivam.dbms.navigation.NavUtil;
@@ -20,6 +22,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
@@ -153,9 +156,29 @@ public class PreviewProfessor extends UiScene {
     }
 
     private void deleteAction() {
-        ObservableList<ProfessorData> professorDataArrayList = mTableView.getSelectionModel().getSelectedItems();
-        if (professorDataArrayList.size() > 0) {
+        ObservableList<ProfessorData> professorDataObservableList = mTableView.getSelectionModel().getSelectedItems();
+        if (professorDataObservableList.size() > 0) {
+            Task<ArrayList<ProfessorData>> deleteTask = new Task<ArrayList<ProfessorData>>() {
+                @Override
+                protected ArrayList<ProfessorData> call() {
+                    ArrayList<ProfessorData> al = new ArrayList<>();
+                    for (ProfessorData data : professorDataObservableList) {
+                        int i = DatabaseHelper.deleteRow(DatabaseContract.Professor.TABLE_NAME, data.rowId);
+                        if (i == SqlErrorCodes.SQLITE_OK) {
+                            al.add(data);
+                        }
+                    }
+                    return al;
+                }
 
+                @Override
+                protected void succeeded() {
+                    super.succeeded();
+                    mTableView.getItems().removeAll(this.getValue());
+                }
+            };
+            Thread deleteThread = new Thread(deleteTask);
+            deleteThread.start();
         }
     }
 

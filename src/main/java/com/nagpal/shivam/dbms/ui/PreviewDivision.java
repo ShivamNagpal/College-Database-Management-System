@@ -1,7 +1,9 @@
 package com.nagpal.shivam.dbms.ui;
 
+import com.nagpal.shivam.dbms.data.DatabaseContract;
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
 import com.nagpal.shivam.dbms.data.PreviewIgnoredAttribute;
+import com.nagpal.shivam.dbms.data.SqlErrorCodes;
 import com.nagpal.shivam.dbms.model.DivisionData;
 import com.nagpal.shivam.dbms.navigation.Intent;
 import com.nagpal.shivam.dbms.navigation.NavUtil;
@@ -20,6 +22,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
@@ -152,9 +155,29 @@ public class PreviewDivision extends UiScene {
     }
 
     private void deleteAction() {
-        ObservableList<DivisionData> professorDataArrayList = mTableView.getSelectionModel().getSelectedItems();
-        if (professorDataArrayList.size() > 0) {
+        ObservableList<DivisionData> divisionDataObservableList = mTableView.getSelectionModel().getSelectedItems();
+        if (divisionDataObservableList.size() > 0) {
+            Task<ArrayList<DivisionData>> deleteTask = new Task<ArrayList<DivisionData>>() {
+                @Override
+                protected ArrayList<DivisionData> call() {
+                    ArrayList<DivisionData> al = new ArrayList<>();
+                    for (DivisionData data : divisionDataObservableList) {
+                        int i = DatabaseHelper.deleteRow(DatabaseContract.Division.TABLE_NAME, data.rowId);
+                        if (i == SqlErrorCodes.SQLITE_OK) {
+                            al.add(data);
+                        }
+                    }
+                    return al;
+                }
 
+                @Override
+                protected void succeeded() {
+                    super.succeeded();
+                    mTableView.getItems().removeAll(this.getValue());
+                }
+            };
+            Thread deleteThread = new Thread(deleteTask);
+            deleteThread.start();
         }
     }
 

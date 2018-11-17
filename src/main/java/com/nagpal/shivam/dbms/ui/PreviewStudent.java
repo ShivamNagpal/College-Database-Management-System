@@ -1,7 +1,9 @@
 package com.nagpal.shivam.dbms.ui;
 
+import com.nagpal.shivam.dbms.data.DatabaseContract;
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
 import com.nagpal.shivam.dbms.data.PreviewIgnoredAttribute;
+import com.nagpal.shivam.dbms.data.SqlErrorCodes;
 import com.nagpal.shivam.dbms.model.StudentData;
 import com.nagpal.shivam.dbms.navigation.Intent;
 import com.nagpal.shivam.dbms.navigation.NavUtil;
@@ -20,6 +22,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
@@ -156,7 +159,27 @@ public class PreviewStudent extends UiScene {
     private void deleteAction() {
         ObservableList<StudentData> studentDataObservableList = mTableView.getSelectionModel().getSelectedItems();
         if (studentDataObservableList.size() > 0) {
+            Task<ArrayList<StudentData>> deleteTask = new Task<ArrayList<StudentData>>() {
+                @Override
+                protected ArrayList<StudentData> call() {
+                    ArrayList<StudentData> al = new ArrayList<>();
+                    for (StudentData data : studentDataObservableList) {
+                        int i = DatabaseHelper.deleteRow(DatabaseContract.Student.TABLE_NAME, data.rowId);
+                        if (i == SqlErrorCodes.SQLITE_OK) {
+                            al.add(data);
+                        }
+                    }
+                    return al;
+                }
 
+                @Override
+                protected void succeeded() {
+                    super.succeeded();
+                    mTableView.getItems().removeAll(this.getValue());
+                }
+            };
+            Thread deleteThread = new Thread(deleteTask);
+            deleteThread.start();
         }
     }
 

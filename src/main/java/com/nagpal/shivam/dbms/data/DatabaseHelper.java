@@ -794,4 +794,19 @@ public class DatabaseHelper {
         return SqlErrorCodes.SQLITE_OK;
     }
 
+    public static int deleteRow(String tableName, long rowId) {
+        String sql = "DELETE FROM " +
+                tableName +
+                " WHERE " + DatabaseContract.ROW_ID + " =" + rowId;
+        Connection connection = Database.getConnection();
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(sql);
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
+    }
+
 }
