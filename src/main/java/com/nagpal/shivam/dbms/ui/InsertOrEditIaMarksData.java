@@ -1,20 +1,14 @@
 package com.nagpal.shivam.dbms.ui;
 
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
-import com.nagpal.shivam.dbms.model.ProfessorData;
+import com.nagpal.shivam.dbms.model.IaMarksData;
 import com.nagpal.shivam.dbms.model.SemesterSectionData;
+import com.nagpal.shivam.dbms.model.StudentData;
 import com.nagpal.shivam.dbms.model.SubjectData;
-import com.nagpal.shivam.dbms.model.TeachesData;
 import javafx.concurrent.Task;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
@@ -23,34 +17,39 @@ import java.util.List;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
 
-
-public class InsertTeachesData extends UiScene {
+public class InsertOrEditIaMarksData extends UiScene {
 
     private final boolean isEditMode;
-    private ComboBox<ProfessorData> mProfessorDataComboBox;
+    private ComboBox<StudentData> mStudentDataComboBox;
     private ComboBox<SemesterSectionData> mSemesterSectionDataComboBox;
     private ComboBox<SubjectData> mSubjectDataComboBox;
-    private TeachesData mTeachesData;
+    private TextField mTest1TextField;
+    private TextField mTest2TextField;
+    private TextField mTest3TextField;
+    private IaMarksData mIaMarksData;
     private String mTitle;
 
-    public InsertTeachesData() {
+    public InsertOrEditIaMarksData() {
         isEditMode = false;
-        mTitle = "Insert new teaches detail";
+        mTitle = "Insert new IA Marks detail";
     }
 
-    public InsertTeachesData(TeachesData teachesData) {
-        mTeachesData = teachesData;
+    public InsertOrEditIaMarksData(IaMarksData iaMarksData) {
+        mIaMarksData = iaMarksData;
         isEditMode = true;
-        mTitle = "Edit teaches detail";
+        mTitle = "Edit Ia Marks detail";
     }
 
     @Override
     public void setScene() {
         Pane pane = getLayout();
         pane.setPrefSize(800, 600);
-        sStage.setMinHeight(600);
         fetchForeignKeys();
+        if (isEditMode) {
+            fillDetails();
+        }
         Scene scene = new Scene(pane);
+        scene.getStylesheets().add("css/InsertOrEditScene.css");
         sStage.setTitle(mTitle);
         sStage.setScene(scene);
     }
@@ -58,24 +57,21 @@ public class InsertTeachesData extends UiScene {
     @Override
     protected Pane getLayout() {
         GridPane formGridPane = new GridPane();
-        formGridPane.setPadding(new Insets(10));
-        formGridPane.setVgap(10);
-        formGridPane.setHgap(10);
-        formGridPane.setAlignment(Pos.CENTER);
+        formGridPane.getStyleClass().add("formGridPane");
 
         int gridPaneStartingRowIndex = 0;
 
-        Text professorIdText = new Text("Professor");
+        Text studentIdText = new Text("Student");
 
-        Callback<ListView<ProfessorData>, ListCell<ProfessorData>> professorComboBoxCallback = Utils.getProfessorComboBoxCallback();
+        Callback<ListView<StudentData>, ListCell<StudentData>> studentComboBoxCallback = Utils.getStudentComboBoxCallback();
 
-        mProfessorDataComboBox = new ComboBox<>();
-        mProfessorDataComboBox.setCellFactory(professorComboBoxCallback);
-        mProfessorDataComboBox.setButtonCell(professorComboBoxCallback.call(null));
-        mProfessorDataComboBox.setPromptText("Choose a Professor");
+        mStudentDataComboBox = new ComboBox<>();
+        mStudentDataComboBox.setCellFactory(studentComboBoxCallback);
+        mStudentDataComboBox.setButtonCell(studentComboBoxCallback.call(null));
+        mStudentDataComboBox.setPromptText("Choose a Student");
 
-        formGridPane.add(professorIdText, 0, gridPaneStartingRowIndex);
-        formGridPane.add(mProfessorDataComboBox, 1, gridPaneStartingRowIndex);
+        formGridPane.add(studentIdText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(mStudentDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         Text semesterSectionIdText = new Text("Semester-Section");
@@ -85,7 +81,7 @@ public class InsertTeachesData extends UiScene {
         mSemesterSectionDataComboBox = new ComboBox<>();
         mSemesterSectionDataComboBox.setCellFactory(semesterSectionComboBoxCallback);
         mSemesterSectionDataComboBox.setButtonCell(semesterSectionComboBoxCallback.call(null));
-        mSemesterSectionDataComboBox.setPromptText("Choose Semester-Section");
+        mSemesterSectionDataComboBox.setPromptText("Choose a Semester-Section");
 
         formGridPane.add(semesterSectionIdText, 0, gridPaneStartingRowIndex);
         formGridPane.add(mSemesterSectionDataComboBox, 1, gridPaneStartingRowIndex);
@@ -104,71 +100,107 @@ public class InsertTeachesData extends UiScene {
         formGridPane.add(mSubjectDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        GridPane containerGridPane = new GridPane();
+        Text test1Text = new Text("Test1");
+        mTest1TextField = new TextField();
+        mTest1TextField.setPromptText("Enter Test1 Marks");
+        formGridPane.add(test1Text, 0, gridPaneStartingRowIndex);
+        formGridPane.add(mTest1TextField, 1, gridPaneStartingRowIndex);
+        gridPaneStartingRowIndex += 1;
+
+        Text test2Text = new Text("Test2");
+        mTest2TextField = new TextField();
+        mTest2TextField.setPromptText("Enter Test2 Marks");
+        formGridPane.add(test2Text, 0, gridPaneStartingRowIndex);
+        formGridPane.add(mTest2TextField, 1, gridPaneStartingRowIndex);
+        gridPaneStartingRowIndex += 1;
+
+        Text test3Text = new Text("Test3");
+        mTest3TextField = new TextField();
+        mTest3TextField.setPromptText("Enter Test3 Scores");
+        formGridPane.add(test3Text, 0, gridPaneStartingRowIndex);
+        formGridPane.add(mTest3TextField, 1, gridPaneStartingRowIndex);
+        gridPaneStartingRowIndex += 1;
+
+        BorderPane borderPane = new BorderPane();
 
         Button backButton = new Button("Back");
-        containerGridPane.add(backButton, 0, 0);
         backButton.setOnAction(event -> super.onBackPressed());
 
-        containerGridPane.add(formGridPane, 1, 1);
+        ToolBar toolBar = new ToolBar(backButton);
 
         Button submitButton = new Button("Submit");
-        containerGridPane.add(submitButton, 2, 2);
         submitButton.setOnAction(event -> submitData());
 
-        return containerGridPane;
+        FlowPane submitButtonFlowPane = new FlowPane(submitButton);
+        submitButtonFlowPane.getStyleClass().add("submitButtonFlowPane");
+
+        VBox vBox = new VBox(formGridPane, submitButtonFlowPane);
+        vBox.setSpacing(30);
+
+        FlowPane vBoxFlowPane = new FlowPane(vBox);
+        vBoxFlowPane.getStyleClass().add("vBoxFlowPane");
+
+        borderPane.setTop(toolBar);
+        borderPane.setCenter(vBoxFlowPane);
+
+        return borderPane;
     }
 
     private void submitData() {
         if (!isEditMode) {
-            mTeachesData = new TeachesData();
+            mIaMarksData = new IaMarksData();
         }
-        mTeachesData.professorId = mProfessorDataComboBox.getValue().professorId;
-        mTeachesData.semesterSectionId = mSemesterSectionDataComboBox.getValue().semesterSectionId;
-        mTeachesData.subjectId = mSubjectDataComboBox.getValue().subjectId;
+        mIaMarksData.studentId = mStudentDataComboBox.getValue().studentId;
+        mIaMarksData.semSecId = mSemesterSectionDataComboBox.getValue().semesterSectionId;
+        mIaMarksData.subjectId = mSubjectDataComboBox.getValue().subjectId;
+        mIaMarksData.test1 = Integer.parseInt(mTest1TextField.getText().trim());
+        mIaMarksData.test2 = Integer.parseInt(mTest2TextField.getText().trim());
+        mIaMarksData.test3 = Integer.parseInt(mTest3TextField.getText().trim());
+        // TODO: Check for Number Format Exception
 
         Task<Integer> submitTask = new Task<Integer>() {
             @Override
             protected Integer call() {
                 int i;
                 if (!isEditMode) {
-                    i = DatabaseHelper.insertIntoTeaches(mTeachesData);
+                    i = DatabaseHelper.insertIntoIaMarks(mIaMarksData);
                 } else {
-                    i = DatabaseHelper.updateTeaches(mTeachesData);
+                    i = DatabaseHelper.updateIaMarks(mIaMarksData);
                 }
                 return i;
             }
         };
         Thread submitThread = new Thread(submitTask);
         submitThread.start();
+
     }
 
     private void fetchForeignKeys() {
-        Task<List<ProfessorData>> fetchProfessorDetailsTask = new Task<List<ProfessorData>>() {
+        Task<List<StudentData>> fetchStudentDetailsTask = new Task<List<StudentData>>() {
             @Override
-            protected List<ProfessorData> call() {
-                List<ProfessorData> professorData = null;
+            protected List<StudentData> call() {
+                List<StudentData> studentData = null;
                 if (isEditMode) {
-                    professorData = new ArrayList<>();
-                    professorData.addAll(DatabaseHelper.fetchParticularProfessor(mTeachesData.professorId, true));
-                    professorData.addAll(DatabaseHelper.fetchParticularProfessor(mTeachesData.professorId, false));
+                    studentData = new ArrayList<>();
+                    studentData.addAll(DatabaseHelper.fetchParticularStudent(mIaMarksData.studentId, true));
+                    studentData.addAll(DatabaseHelper.fetchParticularStudent(mIaMarksData.studentId, false));
                 } else {
-                    professorData = DatabaseHelper.fetchProfessorDetails();
+                    studentData = DatabaseHelper.fetchStudentDetails();
                 }
-                return professorData;
+                return studentData;
             }
 
             @Override
             protected void succeeded() {
                 super.succeeded();
-                mProfessorDataComboBox.getItems().addAll(this.getValue());
+                mStudentDataComboBox.getItems().addAll(this.getValue());
                 if (isEditMode) {
-                    mProfessorDataComboBox.getSelectionModel().select(0);
+                    mStudentDataComboBox.getSelectionModel().select(0);
                 }
             }
         };
-        Thread professorThread = new Thread(fetchProfessorDetailsTask);
-        professorThread.start();
+        Thread studentThread = new Thread(fetchStudentDetailsTask);
+        studentThread.start();
 
         Task<List<SemesterSectionData>> fetchSemesterSectionDetailsTask = new Task<List<SemesterSectionData>>() {
             @Override
@@ -176,8 +208,8 @@ public class InsertTeachesData extends UiScene {
                 List<SemesterSectionData> semesterSectionData = null;
                 if (isEditMode) {
                     semesterSectionData = new ArrayList<>();
-                    semesterSectionData.addAll(DatabaseHelper.fetchParticularSemesterSection(mTeachesData.semesterSectionId, true));
-                    semesterSectionData.addAll(DatabaseHelper.fetchParticularSemesterSection(mTeachesData.semesterSectionId, false));
+                    semesterSectionData.addAll(DatabaseHelper.fetchParticularSemesterSection(mIaMarksData.semSecId, true));
+                    semesterSectionData.addAll(DatabaseHelper.fetchParticularSemesterSection(mIaMarksData.semSecId, false));
                 } else {
                     semesterSectionData = DatabaseHelper.fetchSemesterSectionDetails();
                 }
@@ -202,8 +234,8 @@ public class InsertTeachesData extends UiScene {
                 List<SubjectData> subjectData = null;
                 if (isEditMode) {
                     subjectData = new ArrayList<>();
-                    subjectData.addAll(DatabaseHelper.fetchParticularSubject(mTeachesData.subjectId, true));
-                    subjectData.addAll(DatabaseHelper.fetchParticularSubject(mTeachesData.subjectId, false));
+                    subjectData.addAll(DatabaseHelper.fetchParticularSubject(mIaMarksData.subjectId, true));
+                    subjectData.addAll(DatabaseHelper.fetchParticularSubject(mIaMarksData.subjectId, false));
                 } else {
                     subjectData = DatabaseHelper.fetchSubjectDetails();
                 }
@@ -221,6 +253,12 @@ public class InsertTeachesData extends UiScene {
         };
         Thread subjectThread = new Thread(fetchSubjectDetailsTask);
         subjectThread.start();
+    }
+
+    private void fillDetails() {
+        mTest1TextField.setText(Integer.toString(mIaMarksData.test1));
+        mTest2TextField.setText(Integer.toString(mIaMarksData.test2));
+        mTest3TextField.setText(Integer.toString(mIaMarksData.test3));
     }
 
 }

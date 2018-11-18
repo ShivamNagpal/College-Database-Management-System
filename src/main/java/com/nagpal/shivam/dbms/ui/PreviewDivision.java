@@ -140,14 +140,14 @@ public class PreviewDivision extends UiScene {
     }
 
     private void addAction() {
-        Intent intent = new Intent(this, InsertDivisionData.class);
+        Intent intent = new Intent(this, InsertOrDivisionData.class);
         NavUtil.startScene(intent);
     }
 
     private void editAction() {
         ObservableList<DivisionData> divisionDataObservableList = mTableView.getSelectionModel().getSelectedItems();
         if (divisionDataObservableList.size() == 1) {
-            Intent intent = new Intent(this, InsertDivisionData.class);
+            Intent intent = new Intent(this, InsertOrDivisionData.class);
             intent.setData(DivisionData.class, divisionDataObservableList.get(0));
             NavUtil.startScene(intent);
         }

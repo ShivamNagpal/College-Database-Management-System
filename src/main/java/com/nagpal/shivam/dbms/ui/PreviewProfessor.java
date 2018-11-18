@@ -141,14 +141,14 @@ public class PreviewProfessor extends UiScene {
     }
 
     private void addAction() {
-        Intent intent = new Intent(this, InsertProfessorData.class);
+        Intent intent = new Intent(this, InsertOrEditProfessorData.class);
         NavUtil.startScene(intent);
     }
 
     private void editAction() {
         ObservableList<ProfessorData> professorDataArrayList = mTableView.getSelectionModel().getSelectedItems();
         if (professorDataArrayList.size() == 1) {
-            Intent intent = new Intent(this, InsertProfessorData.class);
+            Intent intent = new Intent(this, InsertOrEditProfessorData.class);
             intent.setData(ProfessorData.class, professorDataArrayList.get(0));
             NavUtil.startScene(intent);
         }

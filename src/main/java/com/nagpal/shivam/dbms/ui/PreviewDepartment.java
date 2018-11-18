@@ -140,14 +140,14 @@ public class PreviewDepartment extends UiScene {
     }
 
     private void addAction() {
-        Intent intent = new Intent(this, InsertDepartmentData.class);
+        Intent intent = new Intent(this, InsertOrEditDepartmentData.class);
         NavUtil.startScene(intent);
     }
 
     private void editAction() {
         ObservableList<DepartmentData> departmentDataObservableList = mTableView.getSelectionModel().getSelectedItems();
         if (departmentDataObservableList.size() == 1) {
-            Intent intent = new Intent(this, InsertDepartmentData.class);
+            Intent intent = new Intent(this, InsertOrEditDepartmentData.class);
             intent.setData(DepartmentData.class, departmentDataObservableList.get(0));
             NavUtil.startScene(intent);
         }

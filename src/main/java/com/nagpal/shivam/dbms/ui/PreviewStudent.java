@@ -142,14 +142,14 @@ public class PreviewStudent extends UiScene {
     }
 
     private void addAction() {
-        Intent intent = new Intent(this, InsertStudentData.class);
+        Intent intent = new Intent(this, InsertOrEditStudentData.class);
         NavUtil.startScene(intent);
     }
 
     private void editAction() {
         ObservableList<StudentData> studentDataObservableList = mTableView.getSelectionModel().getSelectedItems();
         if (studentDataObservableList.size() == 1) {
-            Intent intent = new Intent(this, InsertStudentData.class);
+            Intent intent = new Intent(this, InsertOrEditStudentData.class);
             intent.setData(StudentData.class, studentDataObservableList.get(0));
             NavUtil.startScene(intent);
         }

@@ -3,18 +3,16 @@ package com.nagpal.shivam.dbms.ui;
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
 import com.nagpal.shivam.dbms.model.SemesterSectionData;
 import javafx.concurrent.Task;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.ToolBar;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
 
-public class InsertSemesterSectionData extends UiScene {
+public class InsertOrEditSemesterSectionData extends UiScene {
 
     private final boolean isEditMode;
     private TextField mSemesterSectionIdTextField;
@@ -24,12 +22,12 @@ public class InsertSemesterSectionData extends UiScene {
     private String mTitle;
 
 
-    public InsertSemesterSectionData() {
+    public InsertOrEditSemesterSectionData() {
         isEditMode = false;
         mTitle = "Insert new semester-section detail";
     }
 
-    public InsertSemesterSectionData(SemesterSectionData semesterSectionData) {
+    public InsertOrEditSemesterSectionData(SemesterSectionData semesterSectionData) {
         mSemesterSectionData = semesterSectionData;
         isEditMode = true;
         mTitle = "Edit semester-section detail";
@@ -44,16 +42,14 @@ public class InsertSemesterSectionData extends UiScene {
         }
         Scene scene = new Scene(pane);
         sStage.setTitle(mTitle);
+        scene.getStylesheets().add("css/InsertOrEditScene.css");
         sStage.setScene(scene);
     }
 
     @Override
     protected Pane getLayout() {
         GridPane formGridPane = new GridPane();
-        formGridPane.setPadding(new Insets(10));
-        formGridPane.setVgap(10);
-        formGridPane.setHgap(10);
-        formGridPane.setAlignment(Pos.CENTER);
+        formGridPane.getStyleClass().add("formGridPane");
 
         int gridPaneStartingRowIndex = 0;
 
@@ -78,19 +74,29 @@ public class InsertSemesterSectionData extends UiScene {
         formGridPane.add(mSectionTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        GridPane containerGridPane = new GridPane();
+        BorderPane borderPane = new BorderPane();
 
         Button backButton = new Button("Back");
-        containerGridPane.add(backButton, 0, 0);
         backButton.setOnAction(event -> super.onBackPressed());
 
-        containerGridPane.add(formGridPane, 1, 1);
+        ToolBar toolBar = new ToolBar(backButton);
 
         Button submitButton = new Button("Submit");
-        containerGridPane.add(submitButton, 2, 2);
         submitButton.setOnAction(event -> submitData());
 
-        return containerGridPane;
+        FlowPane submitButtonFlowPane = new FlowPane(submitButton);
+        submitButtonFlowPane.getStyleClass().add("submitButtonFlowPane");
+
+        VBox vBox = new VBox(formGridPane, submitButtonFlowPane);
+        vBox.setSpacing(30);
+
+        FlowPane vBoxFlowPane = new FlowPane(vBox);
+        vBoxFlowPane.getStyleClass().add("vBoxFlowPane");
+
+        borderPane.setTop(toolBar);
+        borderPane.setCenter(vBoxFlowPane);
+
+        return borderPane;
     }
 
     private void submitData() {

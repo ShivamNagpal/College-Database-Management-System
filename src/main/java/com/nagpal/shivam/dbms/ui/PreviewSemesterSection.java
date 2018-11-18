@@ -140,14 +140,14 @@ public class PreviewSemesterSection extends UiScene {
     }
 
     private void addAction() {
-        Intent intent = new Intent(this, InsertSemesterSectionData.class);
+        Intent intent = new Intent(this, InsertOrEditSemesterSectionData.class);
         NavUtil.startScene(intent);
     }
 
     private void editAction() {
         ObservableList<SemesterSectionData> semesterSectionDataObservableList = mTableView.getSelectionModel().getSelectedItems();
         if (semesterSectionDataObservableList.size() == 1) {
-            Intent intent = new Intent(this, InsertSemesterSectionData.class);
+            Intent intent = new Intent(this, InsertOrEditSemesterSectionData.class);
             intent.setData(SemesterSectionData.class, semesterSectionDataObservableList.get(0));
             NavUtil.startScene(intent);
         }

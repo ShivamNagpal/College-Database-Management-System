@@ -140,14 +140,14 @@ public class PreviewIaMarks extends UiScene {
     }
 
     private void addAction() {
-        Intent intent = new Intent(this, InsertIaMarksData.class);
+        Intent intent = new Intent(this, InsertOrEditIaMarksData.class);
         NavUtil.startScene(intent);
     }
 
     private void editAction() {
         ObservableList<IaMarksData> iaMarksDataObservableList = mTableView.getSelectionModel().getSelectedItems();
         if (iaMarksDataObservableList.size() == 1) {
-            Intent intent = new Intent(this, InsertIaMarksData.class);
+            Intent intent = new Intent(this, InsertOrEditIaMarksData.class);
             intent.setData(IaMarksData.class, iaMarksDataObservableList.get(0));
             NavUtil.startScene(intent);
         }
