@@ -34,9 +34,7 @@ public class DatabaseHelper {
     }
 
     public static List<DepartmentData> fetchDepartmentDetails() {
-        String sql = "SELECT " +
-                DatabaseContract.ROW_ID + ", *" +
-                " FROM " +
+        String sql = "SELECT * FROM " +
                 Department.TABLE_NAME;
         Connection connection = Database.getConnection();
         List<DepartmentData> list = new ArrayList<>();
@@ -58,9 +56,7 @@ public class DatabaseHelper {
 
     public static List<DepartmentData> fetchParticularDepartment(String departmentId, boolean include) {
         String operator = include ? " = " : " != ";
-        String sql = "SELECT " +
-                DatabaseContract.ROW_ID + ", *" +
-                " FROM " +
+        String sql = "SELECT * FROM " +
                 Department.TABLE_NAME +
                 " WHERE " +
                 Department.DEPARTMENT_ID + operator + "'" + departmentId + "'";
@@ -83,9 +79,7 @@ public class DatabaseHelper {
     }
 
     public static List<StudentData> fetchStudentDetails() {
-        String sql = "SELECT " +
-                DatabaseContract.ROW_ID + ", *" +
-                " FROM " +
+        String sql = "SELECT * FROM " +
                 Student.TABLE_NAME;
         Connection connection = Database.getConnection();
         List<StudentData> list = new ArrayList<>();
@@ -112,9 +106,7 @@ public class DatabaseHelper {
 
     public static List<StudentData> fetchParticularStudent(String studentId, boolean include) {
         String operator = include ? " = " : " != ";
-        String sql = "SELECT " +
-                DatabaseContract.ROW_ID + ", *" +
-                " FROM " +
+        String sql = "SELECT * FROM " +
                 Student.TABLE_NAME +
                 " WHERE " +
                 Student.STUDENT_ID + operator + "'" + studentId + "'";
@@ -142,9 +134,7 @@ public class DatabaseHelper {
     }
 
     public static List<ProfessorData> fetchProfessorDetails() {
-        String sql = "SELECT " +
-                DatabaseContract.ROW_ID + ", *" +
-                " FROM " +
+        String sql = "SELECT * FROM " +
                 Professor.TABLE_NAME;
         Connection connection = Database.getConnection();
         List<ProfessorData> list = new ArrayList<>();
@@ -172,9 +162,7 @@ public class DatabaseHelper {
 
     public static List<ProfessorData> fetchParticularProfessor(String professorId, boolean include) {
         String operator = include ? " = " : " != ";
-        String sql = "SELECT " +
-                DatabaseContract.ROW_ID + ", *" +
-                " FROM " +
+        String sql = "SELECT * FROM " +
                 Professor.TABLE_NAME +
                 " WHERE " +
                 Professor.PROFESSOR_ID + operator + "'" + professorId + "'";
@@ -204,9 +192,7 @@ public class DatabaseHelper {
 
 
     public static List<SemesterSectionData> fetchSemesterSectionDetails() {
-        String sql = "SELECT " +
-                DatabaseContract.ROW_ID + ", *" +
-                " FROM " +
+        String sql = "SELECT * FROM " +
                 SemesterSection.TABLE_NAME;
         Connection connection = Database.getConnection();
         List<SemesterSectionData> list = new ArrayList<>();
@@ -229,9 +215,7 @@ public class DatabaseHelper {
 
     public static List<SemesterSectionData> fetchParticularSemesterSection(String semesterSectionId, boolean include) {
         String operator = include ? " = " : " != ";
-        String sql = "SELECT " +
-                DatabaseContract.ROW_ID + ", *" +
-                " FROM " +
+        String sql = "SELECT * FROM " +
                 SemesterSection.TABLE_NAME +
                 " WHERE " +
                 SemesterSection.SEM_SEC_ID + operator + "'" + semesterSectionId + "'";
@@ -255,9 +239,7 @@ public class DatabaseHelper {
     }
 
     public static List<SubjectData> fetchSubjectDetails() {
-        String sql = "SELECT " +
-                DatabaseContract.ROW_ID + ", *" +
-                " FROM " +
+        String sql = "SELECT * FROM " +
                 Subject.TABLE_NAME;
         Connection connection = Database.getConnection();
         List<SubjectData> list = new ArrayList<>();
@@ -284,9 +266,7 @@ public class DatabaseHelper {
 
     public static List<SubjectData> fetchParticularSubject(String subjectId, boolean include) {
         String operator = include ? " = " : " != ";
-        String sql = "SELECT " +
-                DatabaseContract.ROW_ID + ", *" +
-                " FROM " +
+        String sql = "SELECT * FROM " +
                 Subject.TABLE_NAME +
                 " WHERE " +
                 Subject.SUBJECT_ID + operator + "'" + subjectId + "'";
@@ -314,9 +294,7 @@ public class DatabaseHelper {
     }
 
     public static List<TeachesData> fetchTeachesDetails() {
-        String sql = "SELECT " +
-                DatabaseContract.ROW_ID + ", *" +
-                " FROM " +
+        String sql = "SELECT * FROM " +
                 Teaches.TABLE_NAME;
         Connection connection = Database.getConnection();
         List<TeachesData> list = new ArrayList<>();
@@ -338,9 +316,7 @@ public class DatabaseHelper {
     }
 
     public static List<DivisionData> fetchDivisionDetails() {
-        String sql = "SELECT " +
-                DatabaseContract.ROW_ID + ", *" +
-                " FROM " +
+        String sql = "SELECT * FROM " +
                 Division.TABLE_NAME;
         Connection connection = Database.getConnection();
         List<DivisionData> list = new ArrayList<>();
@@ -361,9 +337,7 @@ public class DatabaseHelper {
     }
 
     public static List<IaMarksData> fetchIaMarksDetails() {
-        String sql = "SELECT " +
-                DatabaseContract.ROW_ID + ", *" +
-                " FROM " +
+        String sql = "SELECT * FROM " +
                 IaMarks.TABLE_NAME;
         Connection connection = Database.getConnection();
         List<IaMarksData> list = new ArrayList<>();

@@ -1,7 +1,8 @@
 package com.nagpal.shivam.dbms.data;
 
 public class DatabaseContract {
-    public static final String ROW_ID = "ROWID";
+    public static final String ROW_ID = "_ROWID";
+    public static final String ROW_ID_DATA_TYPE = "BIGINT(8) UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT";
 
     public class Professor {
         public static final String TABLE_NAME = "PROFESSOR";
@@ -16,21 +17,23 @@ public class DatabaseContract {
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
-                NAME + " TEXT NOT NULL" +
+                ROW_ID + " " + ROW_ID_DATA_TYPE +
                 ", " +
-                PROFESSOR_ID + " TEXT PRIMARY KEY" +
+                NAME + " VARCHAR(64) NOT NULL" +
                 ", " +
-                DATE_OF_BIRTH + " TEXT" +
+                PROFESSOR_ID + " VARCHAR(64) PRIMARY KEY" +
                 ", " +
-                ADDRESS + " TEXT" +
+                DATE_OF_BIRTH + " DATE" +
                 ", " +
-                PHONE + " TEXT" +
+                ADDRESS + " VARCHAR(256)" +
                 ", " +
-                EMAIL + " TEXT" +
+                PHONE + " VARCHAR(15)" +
                 ", " +
-                DEPARTMENT_ID + " TEXT NOT NULL" +
+                EMAIL + " VARCHAR(64)" +
                 ", " +
-                DESIGNATION + " TEXT" +
+                DEPARTMENT_ID + " VARCHAR(64) NOT NULL" +
+                ", " +
+                DESIGNATION + " VARCHAR(64)" +
                 ", " +
                 "FOREIGN KEY (" + DEPARTMENT_ID + ") REFERENCES " + Department.TABLE_NAME + "(" + Department.DEPARTMENT_ID + ")" +
                 ");";
@@ -43,9 +46,11 @@ public class DatabaseContract {
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
-                NAME + " TEXT NOT NULL UNIQUE" +
+                ROW_ID + " " + ROW_ID_DATA_TYPE +
                 ", " +
-                DEPARTMENT_ID + " TEXT PRIMARY KEY" +
+                NAME + " VARCHAR(64) NOT NULL UNIQUE" +
+                ", " +
+                DEPARTMENT_ID + " VARCHAR(64) PRIMARY KEY" +
                 ");";
     }
 
@@ -61,19 +66,21 @@ public class DatabaseContract {
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
-                NAME + " TEXT NOT NULL" +
+                ROW_ID + " " + ROW_ID_DATA_TYPE +
                 ", " +
-                STUDENT_ID + " TEXT PRIMARY KEY" +
+                NAME + " VARCHAR(64) NOT NULL" +
                 ", " +
-                DATE_OF_BIRTH + " TEXT" +
+                STUDENT_ID + " VARCHAR(64) PRIMARY KEY" +
                 ", " +
-                ADDRESS + " TEXT" +
+                DATE_OF_BIRTH + " DATE" +
                 ", " +
-                PHONE + " TEXT" +
+                ADDRESS + " VARCHAR(256)" +
                 ", " +
-                EMAIL + " TEXT" +
+                PHONE + " VARCHAR(15)" +
                 ", " +
-                DEPARTMENT_ID + " TEXT NOT NULL" +
+                EMAIL + " VARCHAR(64)" +
+                ", " +
+                DEPARTMENT_ID + " VARCHAR(64) NOT NULL" +
                 ", " +
                 "FOREIGN KEY (" + DEPARTMENT_ID + ") REFERENCES " + Department.TABLE_NAME + "(" + Department.DEPARTMENT_ID + ")" +
                 ");";
@@ -90,17 +97,19 @@ public class DatabaseContract {
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
-                NAME + " TEXT NOT NULL" +
+                ROW_ID + " " + ROW_ID_DATA_TYPE +
                 ", " +
-                SUBJECT_ID + " TEXT PRIMARY KEY" +
+                NAME + " VARCHAR(64) NOT NULL" +
                 ", " +
-                DEPARTMENT_ID + " TEXT NOT NULL" +
+                SUBJECT_ID + " VARCHAR(64) PRIMARY KEY" +
                 ", " +
-                SCHEME + " TEXT" +
+                DEPARTMENT_ID + " VARCHAR(64) NOT NULL" +
                 ", " +
-                SEMESTER + " INTEGER" +
+                SCHEME + " VARCHAR(64)" +
                 ", " +
-                CREDITS + " INTEGER" +
+                SEMESTER + " INT" +
+                ", " +
+                CREDITS + " INT" +
                 ", " +
                 "FOREIGN KEY (" + DEPARTMENT_ID + ") REFERENCES " + Department.TABLE_NAME + "(" + Department.DEPARTMENT_ID + ")" +
                 ");";
@@ -114,11 +123,13 @@ public class DatabaseContract {
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
-                SEM_SEC_ID + " TEXT PRIMARY KEY" +
+                ROW_ID + " " + ROW_ID_DATA_TYPE +
                 ", " +
-                SEMESTER + " INTEGER" +
+                SEM_SEC_ID + " VARCHAR(64) PRIMARY KEY" +
                 ", " +
-                SECTION + " TEXT" +
+                SEMESTER + " INT" +
+                ", " +
+                SECTION + " VARCHAR(64)" +
                 ");";
     }
 
@@ -129,9 +140,11 @@ public class DatabaseContract {
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
-                STUDENT_ID + " TEXT PRIMARY KEY" +
+                ROW_ID + " " + ROW_ID_DATA_TYPE +
                 ", " +
-                SEM_SEC_ID + " TEXT" +
+                STUDENT_ID + " VARCHAR(64) PRIMARY KEY" +
+                ", " +
+                SEM_SEC_ID + " VARCHAR(64)" +
                 ", " +
                 "FOREIGN KEY (" + STUDENT_ID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ")" +
                 ", " +
@@ -147,11 +160,13 @@ public class DatabaseContract {
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
-                PROFESSOR_ID + " TEXT" +
+                ROW_ID + " " + ROW_ID_DATA_TYPE +
                 ", " +
-                SEM_SEC_ID + " TEXT" +
+                PROFESSOR_ID + " VARCHAR(64)" +
                 ", " +
-                SUBJECT_ID + " TEXT" +
+                SEM_SEC_ID + " VARCHAR(64)" +
+                ", " +
+                SUBJECT_ID + " VARCHAR(64)" +
                 ", " +
                 "FOREIGN KEY (" + PROFESSOR_ID + ") REFERENCES " + Professor.TABLE_NAME + "(" + Professor.PROFESSOR_ID + ")" +
                 ", " +
@@ -174,17 +189,19 @@ public class DatabaseContract {
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
-                STUDENT_ID + " TEXT" +
+                ROW_ID + " " + ROW_ID_DATA_TYPE +
                 ", " +
-                SEM_SEC_ID + " TEXT" +
+                STUDENT_ID + " VARCHAR(64)" +
                 ", " +
-                SUBJECT_ID + " TEXT" +
+                SEM_SEC_ID + " VARCHAR(64)" +
                 ", " +
-                TEST1 + " INTEGER" +
+                SUBJECT_ID + " VARCHAR(64)" +
                 ", " +
-                TEST2 + " INTEGER" +
+                TEST1 + " INT" +
                 ", " +
-                TEST3 + " INTEGER" +
+                TEST2 + " INT" +
+                ", " +
+                TEST3 + " INT" +
                 ", " +
                 "FOREIGN KEY (" + STUDENT_ID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ")" +
                 ", " +

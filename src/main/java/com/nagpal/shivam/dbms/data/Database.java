@@ -1,23 +1,25 @@
 package com.nagpal.shivam.dbms.data;
 
 import com.nagpal.shivam.dbms.Log;
-import org.sqlite.SQLiteConfig;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Database {
+    private static final String URL = "jdbc:mysql://localhost:3306/";
+    private static final String DATABASE_NAME = "college";
     private static String CLASS_NAME = Database.class.getSimpleName();
     private static Connection sConnection;
-    private static String url = "jdbc:sqlite:database.db";
 
     public static Connection getConnection() {
         if (sConnection == null) {
             try {
-                SQLiteConfig sqLiteConfig = new SQLiteConfig();
-                sqLiteConfig.enforceForeignKeys(true);
-                sConnection = DriverManager.getConnection(url, sqLiteConfig.toProperties());
+                Connection connection = DriverManager.getConnection(URL, "shivam", "shivam");
+                Statement statement = connection.createStatement();
+                statement.execute("CREATE SCHEMA IF NOT EXISTS " + DATABASE_NAME);
+                sConnection = DriverManager.getConnection(URL + DATABASE_NAME, "shivam", "shivam");
                 Log.v(CLASS_NAME, "Database Connected");
             } catch (SQLException e) {
                 Log.e(CLASS_NAME, e.getMessage());
