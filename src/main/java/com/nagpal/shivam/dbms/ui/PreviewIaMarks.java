@@ -38,6 +38,7 @@ public class PreviewIaMarks extends UiScene {
         sStage.setTitle("IaMarks Preview");
         scene.addEventFilter(MouseEvent.MOUSE_CLICKED, Utils.getPreviewEventHandler(mTableView));
         sStage.setScene(scene);
+        pane.requestFocus();
     }
 
     @Override

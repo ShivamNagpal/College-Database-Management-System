@@ -8,7 +8,6 @@ import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 import java.util.ArrayList;
@@ -38,12 +37,13 @@ public class InsertOrDivisionData extends UiScene {
     @Override
     public void setScene() {
         Pane pane = getLayout();
-        pane.setPrefSize(800, 600);
+        pane.getStyleClass().add("parentPane");
         fetchForeignKeys();
         Scene scene = new Scene(pane);
         scene.getStylesheets().add("css/InsertOrEditScene.css");
         sStage.setTitle(mTitle);
         sStage.setScene(scene);
+        pane.requestFocus();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class InsertOrDivisionData extends UiScene {
 
         int gridPaneStartingRowIndex = 0;
 
-        Text studentIdText = new Text("Student");
+        Label studentIdLabel = new Label("Student");
 
         Callback<ListView<StudentData>, ListCell<StudentData>> studentComboBoxCallback = Utils.getStudentComboBoxCallback();
 
@@ -62,11 +62,11 @@ public class InsertOrDivisionData extends UiScene {
         mStudentDataComboBox.setButtonCell(studentComboBoxCallback.call(null));
         mStudentDataComboBox.setPromptText("Choose a Student");
 
-        formGridPane.add(studentIdText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(studentIdLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mStudentDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text semesterSectionIdText = new Text("Semester-Section");
+        Label semesterSectionIdLabel = new Label("Semester-Section");
 
         Callback<ListView<SemesterSectionData>, ListCell<SemesterSectionData>> semesterSectionComboBoxCallback = Utils.getSemesterSectionComboBoxCallback();
 
@@ -75,7 +75,7 @@ public class InsertOrDivisionData extends UiScene {
         mSemesterSectionDataComboBox.setButtonCell(semesterSectionComboBoxCallback.call(null));
         mSemesterSectionDataComboBox.setPromptText("Choose a Semester-Section");
 
-        formGridPane.add(semesterSectionIdText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(semesterSectionIdLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mSemesterSectionDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 

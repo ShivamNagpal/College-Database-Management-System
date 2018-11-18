@@ -7,7 +7,6 @@ import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class InsertOrEditSubjectData extends UiScene {
     @Override
     public void setScene() {
         Pane pane = getLayout();
-        pane.setPrefSize(800, 600);
+        pane.getStyleClass().add("parentPane");
         fetchForeignKeys();
         if (isEditMode) {
             fillDetails();
@@ -50,6 +49,7 @@ public class InsertOrEditSubjectData extends UiScene {
         scene.getStylesheets().add("css/InsertOrEditScene.css");
         sStage.setTitle(mTitle);
         sStage.setScene(scene);
+        pane.requestFocus();
     }
 
     @Override
@@ -59,42 +59,42 @@ public class InsertOrEditSubjectData extends UiScene {
 
         int gridPaneStartingRowIndex = 0;
 
-        Text nameText = new Text("Name*");
+        Label nameLabel = new Label("Name*");
         mNameTextField = new TextField();
         mNameTextField.setPromptText("Enter Name");
-        formGridPane.add(nameText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(nameLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mNameTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text idText = new Text("Id*");
+        Label idLabel = new Label("Id*");
         mIdTextField = new TextField();
         mIdTextField.setPromptText("Enter Id");
-        formGridPane.add(idText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(idLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mIdTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text schemeText = new Text("Scheme");
+        Label schemeLabel = new Label("Scheme");
         mSchemeTextField = new TextField();
         mSchemeTextField.setPromptText("Enter Scheme");
-        formGridPane.add(schemeText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(schemeLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mSchemeTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text semesterText = new Text("Semester");
+        Label semesterLabel = new Label("Semester");
         mSemesterTextField = new TextField();
         mSemesterTextField.setPromptText("Enter Semester");
-        formGridPane.add(semesterText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(semesterLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mSemesterTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text creditsText = new Text("Credits");
+        Label creditsLabel = new Label("Credits");
         mCreditsTextField = new TextField();
         mCreditsTextField.setPromptText("Enter Credits");
-        formGridPane.add(creditsText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(creditsLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mCreditsTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text departmentIdText = new Text("Department*");
+        Label departmentIdLabel = new Label("Department*");
         Callback<ListView<DepartmentData>, ListCell<DepartmentData>> departmentComboBoxCallback = Utils.getDepartmentComboBoxCallback();
 
 
@@ -104,8 +104,8 @@ public class InsertOrEditSubjectData extends UiScene {
 
         mDepartmentDataComboBox.setPromptText("Choose a department");
 
-        Text linkToAddNewDepartment = new Text("Not Found!, Add new Department First");
-        formGridPane.add(departmentIdText, 0, gridPaneStartingRowIndex);
+        Label linkToAddNewDepartment = new Label("Not Found!, Add new Department First");
+        formGridPane.add(departmentIdLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mDepartmentDataComboBox, 1, gridPaneStartingRowIndex);
         formGridPane.add(linkToAddNewDepartment, 2, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;

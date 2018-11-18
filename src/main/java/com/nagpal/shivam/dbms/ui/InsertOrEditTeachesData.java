@@ -9,7 +9,6 @@ import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 import java.util.ArrayList;
@@ -41,13 +40,13 @@ public class InsertOrEditTeachesData extends UiScene {
     @Override
     public void setScene() {
         Pane pane = getLayout();
-        pane.setPrefSize(800, 600);
-        sStage.setMinHeight(600);
+        pane.getStyleClass().add("parentPane");
         fetchForeignKeys();
         Scene scene = new Scene(pane);
         sStage.setTitle(mTitle);
         scene.getStylesheets().add("css/InsertOrEditScene.css");
         sStage.setScene(scene);
+        pane.requestFocus();
     }
 
     @Override
@@ -57,7 +56,7 @@ public class InsertOrEditTeachesData extends UiScene {
 
         int gridPaneStartingRowIndex = 0;
 
-        Text professorIdText = new Text("Professor");
+        Label professorIdLabel = new Label("Professor");
 
         Callback<ListView<ProfessorData>, ListCell<ProfessorData>> professorComboBoxCallback = Utils.getProfessorComboBoxCallback();
 
@@ -66,11 +65,11 @@ public class InsertOrEditTeachesData extends UiScene {
         mProfessorDataComboBox.setButtonCell(professorComboBoxCallback.call(null));
         mProfessorDataComboBox.setPromptText("Choose a Professor");
 
-        formGridPane.add(professorIdText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(professorIdLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mProfessorDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text semesterSectionIdText = new Text("Semester-Section");
+        Label semesterSectionIdLabel = new Label("Semester-Section");
 
         Callback<ListView<SemesterSectionData>, ListCell<SemesterSectionData>> semesterSectionComboBoxCallback = Utils.getSemesterSectionComboBoxCallback();
 
@@ -79,11 +78,11 @@ public class InsertOrEditTeachesData extends UiScene {
         mSemesterSectionDataComboBox.setButtonCell(semesterSectionComboBoxCallback.call(null));
         mSemesterSectionDataComboBox.setPromptText("Choose Semester-Section");
 
-        formGridPane.add(semesterSectionIdText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(semesterSectionIdLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mSemesterSectionDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text subjectIdText = new Text("Subject");
+        Label subjectIdLabel = new Label("Subject");
 
         Callback<ListView<SubjectData>, ListCell<SubjectData>> subjectComboBoxCallback = Utils.getSubjectComboBoxCallback();
 
@@ -92,7 +91,7 @@ public class InsertOrEditTeachesData extends UiScene {
         mSubjectDataComboBox.setButtonCell(subjectComboBoxCallback.call(null));
         mSubjectDataComboBox.setPromptText("Choose Subject");
 
-        formGridPane.add(subjectIdText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(subjectIdLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mSubjectDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 

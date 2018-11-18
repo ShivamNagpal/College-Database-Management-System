@@ -108,6 +108,11 @@ class Utils {
 
             if (source != null && ((TableRow) source).isEmpty()) {
                 mTableView.getSelectionModel().clearSelection();
+
+                while (source.getParent() != null) {
+                    source = source.getParent();
+                }
+                source.requestFocus();
             }
         };
     }

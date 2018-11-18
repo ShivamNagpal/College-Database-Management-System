@@ -9,7 +9,6 @@ import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class InsertOrEditIaMarksData extends UiScene {
     @Override
     public void setScene() {
         Pane pane = getLayout();
-        pane.setPrefSize(800, 600);
+        pane.getStyleClass().add("parentPane");
         fetchForeignKeys();
         if (isEditMode) {
             fillDetails();
@@ -52,6 +51,7 @@ public class InsertOrEditIaMarksData extends UiScene {
         scene.getStylesheets().add("css/InsertOrEditScene.css");
         sStage.setTitle(mTitle);
         sStage.setScene(scene);
+        pane.requestFocus();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class InsertOrEditIaMarksData extends UiScene {
 
         int gridPaneStartingRowIndex = 0;
 
-        Text studentIdText = new Text("Student");
+        Label studentIdLabel = new Label("Student");
 
         Callback<ListView<StudentData>, ListCell<StudentData>> studentComboBoxCallback = Utils.getStudentComboBoxCallback();
 
@@ -70,11 +70,11 @@ public class InsertOrEditIaMarksData extends UiScene {
         mStudentDataComboBox.setButtonCell(studentComboBoxCallback.call(null));
         mStudentDataComboBox.setPromptText("Choose a Student");
 
-        formGridPane.add(studentIdText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(studentIdLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mStudentDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text semesterSectionIdText = new Text("Semester-Section");
+        Label semesterSectionIdLabel = new Label("Semester-Section");
 
         Callback<ListView<SemesterSectionData>, ListCell<SemesterSectionData>> semesterSectionComboBoxCallback = Utils.getSemesterSectionComboBoxCallback();
 
@@ -83,11 +83,11 @@ public class InsertOrEditIaMarksData extends UiScene {
         mSemesterSectionDataComboBox.setButtonCell(semesterSectionComboBoxCallback.call(null));
         mSemesterSectionDataComboBox.setPromptText("Choose a Semester-Section");
 
-        formGridPane.add(semesterSectionIdText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(semesterSectionIdLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mSemesterSectionDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text subjectIdText = new Text("Subject");
+        Label subjectIdLabel = new Label("Subject");
 
         Callback<ListView<SubjectData>, ListCell<SubjectData>> subjectComboBoxCallback = Utils.getSubjectComboBoxCallback();
 
@@ -96,28 +96,28 @@ public class InsertOrEditIaMarksData extends UiScene {
         mSubjectDataComboBox.setButtonCell(subjectComboBoxCallback.call(null));
         mSubjectDataComboBox.setPromptText("Choose Subject");
 
-        formGridPane.add(subjectIdText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(subjectIdLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mSubjectDataComboBox, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text test1Text = new Text("Test1");
+        Label test1Label = new Label("Test1");
         mTest1TextField = new TextField();
         mTest1TextField.setPromptText("Enter Test1 Marks");
-        formGridPane.add(test1Text, 0, gridPaneStartingRowIndex);
+        formGridPane.add(test1Label, 0, gridPaneStartingRowIndex);
         formGridPane.add(mTest1TextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text test2Text = new Text("Test2");
+        Label test2Label = new Label("Test2");
         mTest2TextField = new TextField();
         mTest2TextField.setPromptText("Enter Test2 Marks");
-        formGridPane.add(test2Text, 0, gridPaneStartingRowIndex);
+        formGridPane.add(test2Label, 0, gridPaneStartingRowIndex);
         formGridPane.add(mTest2TextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text test3Text = new Text("Test3");
+        Label test3Label = new Label("Test3");
         mTest3TextField = new TextField();
         mTest3TextField.setPromptText("Enter Test3 Scores");
-        formGridPane.add(test3Text, 0, gridPaneStartingRowIndex);
+        formGridPane.add(test3Label, 0, gridPaneStartingRowIndex);
         formGridPane.add(mTest3TextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 

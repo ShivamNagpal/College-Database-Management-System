@@ -39,6 +39,7 @@ public class PreviewSubject extends UiScene {
         sStage.setTitle("Subject Preview");
         scene.addEventFilter(MouseEvent.MOUSE_CLICKED, Utils.getPreviewEventHandler(mTableView));
         sStage.setScene(scene);
+        pane.requestFocus();
     }
 
     @Override

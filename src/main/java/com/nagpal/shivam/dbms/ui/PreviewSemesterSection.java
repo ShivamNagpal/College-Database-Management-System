@@ -38,6 +38,7 @@ public class PreviewSemesterSection extends UiScene {
         sStage.setTitle("SemesterSection Preview");
         scene.addEventFilter(MouseEvent.MOUSE_CLICKED, Utils.getPreviewEventHandler(mTableView));
         sStage.setScene(scene);
+        pane.requestFocus();
     }
 
     @Override

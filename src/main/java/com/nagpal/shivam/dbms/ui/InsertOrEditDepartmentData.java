@@ -5,10 +5,10 @@ import com.nagpal.shivam.dbms.model.DepartmentData;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
 
@@ -34,7 +34,7 @@ public class InsertOrEditDepartmentData extends UiScene {
     @Override
     public void setScene() {
         Pane pane = getLayout();
-        pane.setPrefSize(800, 600);
+        pane.getStyleClass().add("parentPane");
         if (isEditMode) {
             fillDetails();
         }
@@ -42,6 +42,7 @@ public class InsertOrEditDepartmentData extends UiScene {
         sStage.setTitle(mTitle);
         scene.getStylesheets().add("css/InsertOrEditScene.css");
         sStage.setScene(scene);
+        pane.requestFocus();
     }
 
     @Override
@@ -51,17 +52,17 @@ public class InsertOrEditDepartmentData extends UiScene {
 
         int gridPaneStartingRowIndex = 0;
 
-        Text nameText = new Text("Name*");
+        Label nameLabel = new Label("Name*");
         mNameTextField = new TextField();
         mNameTextField.setPromptText("Enter Name");
-        formGridPane.add(nameText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(nameLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mNameTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text idText = new Text("Id*");
+        Label idLabel = new Label("Id*");
         mIdTextField = new TextField();
         mIdTextField.setPromptText("Enter Id");
-        formGridPane.add(idText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(idLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mIdTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 

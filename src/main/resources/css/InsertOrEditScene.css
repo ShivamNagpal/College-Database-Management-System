@@ -1,3 +1,7 @@
+.label {
+    -fx-font-size: 15px;
+}
+
 .formGridPane {
     -fx-vgap: 20;
     -fx-hgap: 20;
@@ -11,4 +15,9 @@
 
 .vBoxFlowPane {
     -fx-alignment: center;
+}
+
+.parentPane {
+    -fx-min-width: 800;
+    -fx-min-height: 600;
 }

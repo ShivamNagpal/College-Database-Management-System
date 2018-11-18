@@ -38,6 +38,7 @@ public class PreviewDepartment extends UiScene {
         sStage.setTitle("Department Preview");
         scene.addEventFilter(MouseEvent.MOUSE_CLICKED, Utils.getPreviewEventHandler(mTableView));
         sStage.setScene(scene);
+        pane.requestFocus();
     }
 
     @Override

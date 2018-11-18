@@ -7,7 +7,6 @@ import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 import java.time.LocalDate;
@@ -45,7 +44,7 @@ public class InsertOrEditProfessorData extends UiScene {
     @Override
     public void setScene() {
         Pane pane = getLayout();
-        pane.setPrefSize(800, 600);
+        pane.getStyleClass().add("parentPane");
         fetchForeignKeys();
         if (isEditMode) {
             fillDetails();
@@ -54,6 +53,7 @@ public class InsertOrEditProfessorData extends UiScene {
         scene.getStylesheets().add("css/InsertOrEditScene.css");
         sStage.setTitle(mTitle);
         sStage.setScene(scene);
+        pane.requestFocus();
     }
 
 
@@ -64,56 +64,56 @@ public class InsertOrEditProfessorData extends UiScene {
 
         int gridPaneStartingRowIndex = 0;
 
-        Text nameText = new Text("Name*");
+        Label nameLabel = new Label("Name*");
         mNameTextField = new TextField();
         mNameTextField.setPromptText("Enter Name");
-        formGridPane.add(nameText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(nameLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mNameTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text idText = new Text("Id*");
+        Label idLabel = new Label("Id*");
         mIdTextField = new TextField();
         mIdTextField.setPromptText("Enter Id");
-        formGridPane.add(idText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(idLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mIdTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text dobText = new Text("Date of Birth");
+        Label dobLabel = new Label("Date of Birth");
         mDobDatePicker = new DatePicker();
         mDobDatePicker.setPromptText("Choose a date");
-        formGridPane.add(dobText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(dobLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mDobDatePicker, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text addressText = new Text("Address");
+        Label addressLabel = new Label("Address");
         mAddressTextField = new TextField();
         mAddressTextField.setPromptText("Enter Address");
-        formGridPane.add(addressText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(addressLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mAddressTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text phoneText = new Text("Phone");
+        Label phoneLabel = new Label("Phone");
         mPhoneTextField = new TextField();
         mPhoneTextField.setPromptText("Enter Phone Number");
-        formGridPane.add(phoneText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(phoneLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mPhoneTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text emailText = new Text("Email");
+        Label emailLabel = new Label("Email");
         mEmailTextField = new TextField();
         mEmailTextField.setPromptText("Enter Email Address");
-        formGridPane.add(emailText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(emailLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mEmailTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text designationText = new Text("Designation");
+        Label designationLabel = new Label("Designation");
         mDesignationTextField = new TextField();
         mDesignationTextField.setPromptText("Enter Designation");
-        formGridPane.add(designationText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(designationLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mDesignationTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text departmentIdText = new Text("Department*");
+        Label departmentIdLabel = new Label("Department*");
 
         Callback<ListView<DepartmentData>, ListCell<DepartmentData>> departmentComboBoxCallback = Utils.getDepartmentComboBoxCallback();
 
@@ -124,8 +124,8 @@ public class InsertOrEditProfessorData extends UiScene {
 
         mDepartmentDataComboBox.setPromptText("Choose a department");
 
-        Text linkToAddNewDepartment = new Text("Not Found!, Add new Department First");
-        formGridPane.add(departmentIdText, 0, gridPaneStartingRowIndex);
+        Label linkToAddNewDepartment = new Label("Not Found!, Add new Department First");
+        formGridPane.add(departmentIdLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mDepartmentDataComboBox, 1, gridPaneStartingRowIndex);
         formGridPane.add(linkToAddNewDepartment, 2, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;

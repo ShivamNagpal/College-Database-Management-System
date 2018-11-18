@@ -38,6 +38,7 @@ public class PreviewDivision extends UiScene {
         sStage.setTitle("Division Preview");
         scene.addEventFilter(MouseEvent.MOUSE_CLICKED, Utils.getPreviewEventHandler(mTableView));
         sStage.setScene(scene);
+        pane.requestFocus();
     }
 
     @Override

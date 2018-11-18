@@ -1,0 +1,11 @@
+.parentPane {
+    -fx-min-width: 800;
+    -fx-min-height: 600;
+}
+
+.button {
+    -fx-pref-width: 200;
+    -fx-background-radius: 100;
+    -fx-padding: 20;
+    -fx-alignment: center;
+}

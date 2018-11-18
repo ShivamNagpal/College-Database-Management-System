@@ -5,10 +5,10 @@ import com.nagpal.shivam.dbms.model.SemesterSectionData;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
 
@@ -36,7 +36,7 @@ public class InsertOrEditSemesterSectionData extends UiScene {
     @Override
     public void setScene() {
         Pane pane = getLayout();
-        pane.setPrefSize(800, 600);
+        pane.getStyleClass().add("parentPane");
         if (isEditMode) {
             fillDetails();
         }
@@ -44,6 +44,7 @@ public class InsertOrEditSemesterSectionData extends UiScene {
         sStage.setTitle(mTitle);
         scene.getStylesheets().add("css/InsertOrEditScene.css");
         sStage.setScene(scene);
+        pane.requestFocus();
     }
 
     @Override
@@ -53,24 +54,24 @@ public class InsertOrEditSemesterSectionData extends UiScene {
 
         int gridPaneStartingRowIndex = 0;
 
-        Text semesterSectionIdText = new Text("Semester-Section Id*");
+        Label semesterSectionIdLabel = new Label("Semester-Section Id*");
         mSemesterSectionIdTextField = new TextField();
         mSemesterSectionIdTextField.setPromptText("Enter Semester-Section Id");
-        formGridPane.add(semesterSectionIdText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(semesterSectionIdLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mSemesterSectionIdTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text semesterText = new Text("Semester");
+        Label semesterLabel = new Label("Semester");
         mSemesterTextField = new TextField();
         mSemesterTextField.setPromptText("Enter Semester");
-        formGridPane.add(semesterText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(semesterLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mSemesterTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Text sectionText = new Text("Section");
+        Label sectionLabel = new Label("Section");
         mSectionTextField = new TextField();
         mSectionTextField.setPromptText("Enter Section");
-        formGridPane.add(sectionText, 0, gridPaneStartingRowIndex);
+        formGridPane.add(sectionLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mSectionTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 

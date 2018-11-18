@@ -20,10 +20,12 @@ public class PreviewDatabase extends UiScene {
     @Override
     public void setScene() {
         Pane pane = getLayout();
-        pane.setPrefSize(800, 600);
+        pane.getStyleClass().add("parentPane");
         Scene scene = new Scene(pane);
+        scene.getStylesheets().add("css/PreviewDatabaseScene.css");
         sStage.setTitle("Database Preview");
         sStage.setScene(scene);
+        pane.requestFocus();
     }
 
     @Override
@@ -35,7 +37,7 @@ public class PreviewDatabase extends UiScene {
         linkedHashMap.put("Subject", PreviewSubject.class);
         linkedHashMap.put("Division", PreviewDivision.class);
         linkedHashMap.put("Teaches", PreviewTeaches.class);
-        linkedHashMap.put("SemesterSection", PreviewSemesterSection.class);
+        linkedHashMap.put("Semester-Section", PreviewSemesterSection.class);
         linkedHashMap.put("IaMarks", PreviewIaMarks.class);
         TilePane tilePane = new TilePane();
 
