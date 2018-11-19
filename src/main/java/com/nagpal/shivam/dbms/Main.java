@@ -1,8 +1,7 @@
 package com.nagpal.shivam.dbms;
 
 import com.nagpal.shivam.dbms.data.Database;
-import com.nagpal.shivam.dbms.data.DatabaseHelper;
-import com.nagpal.shivam.dbms.ui.PreviewDatabase;
+import com.nagpal.shivam.dbms.ui.LogIn;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -18,14 +17,13 @@ public class Main extends Application {
     @Override
     public void init() throws Exception {
         super.init();
-        DatabaseHelper.createTables();
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         sStage = primaryStage;
         sStage.show();
-        new PreviewDatabase().setScene();
+        new LogIn().setScene();
     }
 
     @Override

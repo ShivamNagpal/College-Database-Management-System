@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class InsertDummyData {
     public static void main(String[] args) {
+        Database.putParameters("jdbc:mysql://localhost:3306", "shivam", "shivam");
         DatabaseHelper.createTables();
         insertDummyDataInDepartment();
         insertDummyDataInProfessor();

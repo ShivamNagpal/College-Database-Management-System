@@ -8,24 +8,34 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Database {
-    private static final String URL = "jdbc:mysql://localhost:3306/";
     private static final String DATABASE_NAME = "college";
+    private static String sUrl;
+    private static String sUsername;
+    private static String sPassword;
     private static String CLASS_NAME = Database.class.getSimpleName();
     private static Connection sConnection;
+    private static String lastError;
 
     public static Connection getConnection() {
         if (sConnection == null) {
             try {
-                Connection connection = DriverManager.getConnection(URL, "shivam", "shivam");
+                Connection connection = DriverManager.getConnection(sUrl, sUsername, sPassword);
                 Statement statement = connection.createStatement();
                 statement.execute("CREATE SCHEMA IF NOT EXISTS " + DATABASE_NAME);
-                sConnection = DriverManager.getConnection(URL + DATABASE_NAME, "shivam", "shivam");
+                sConnection = DriverManager.getConnection(sUrl + "/" + DATABASE_NAME, sUsername, sPassword);
                 Log.v(CLASS_NAME, "Database Connected");
             } catch (SQLException e) {
-                Log.e(CLASS_NAME, e.getMessage());
+                lastError = e.getMessage();
+                Log.e(CLASS_NAME, lastError);
             }
         }
         return sConnection;
+    }
+
+    public static void putParameters(String url, String username, String password) {
+        sUrl = url;
+        sUsername = username;
+        sPassword = password;
     }
 
     public static void closeConnection() {
@@ -50,5 +60,9 @@ public class Database {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static String getLastError() {
+        return lastError;
     }
 }
