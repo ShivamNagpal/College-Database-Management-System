@@ -1,7 +1,6 @@
 package com.nagpal.shivam.dbms.ui;
 
 import com.nagpal.shivam.dbms.data.Database;
-import com.nagpal.shivam.dbms.data.DatabaseHelper;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -9,8 +8,11 @@ import javafx.scene.layout.*;
 import static com.nagpal.shivam.dbms.Main.sStage;
 
 public class LogIn extends UiScene {
-    private TextField mUsernameTextField;
+    public static final String JDBC_MYSQL_CONNECTION_URL = "jdbc:mysql://localhost:3306";
+    public static final String SCHEMA_NAME = "college";
     private TextField mServerUrlTextField;
+    private TextField mSchemaTextField;
+    private TextField mUsernameTextField;
     private PasswordField mPasswordField;
 
     @Override
@@ -34,10 +36,17 @@ public class LogIn extends UiScene {
         Label serverUrlLabel = new Label("Server Url");
         mServerUrlTextField = new TextField();
         mServerUrlTextField.setPromptText("Enter Server Url");
-        mServerUrlTextField.setText("jdbc:mysql://localhost:3306");
-
+        mServerUrlTextField.setText(JDBC_MYSQL_CONNECTION_URL);
         formGridPane.add(serverUrlLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mServerUrlTextField, 1, gridPaneStartingRowIndex);
+        gridPaneStartingRowIndex += 1;
+
+        Label schemaLabel = new Label("Schema");
+        mSchemaTextField = new TextField();
+        mSchemaTextField.setPromptText("Enter Schema Name");
+        mSchemaTextField.setText(SCHEMA_NAME);
+        formGridPane.add(schemaLabel, 0, gridPaneStartingRowIndex);
+        formGridPane.add(mSchemaTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         Label usernameLabel = new Label("Username");
@@ -74,14 +83,8 @@ public class LogIn extends UiScene {
     }
 
     private void submitData() {
-        String url = mServerUrlTextField.getText().trim();
-        int len = url.length();
-        if (url.charAt(len - 1) == '/') {
-            url = url.substring(0, len - 1);
-        }
-        Database.putParameters(url, mUsernameTextField.getText().trim(), mPasswordField.getText());
+        Database.putParameters(mServerUrlTextField.getText().trim(), mSchemaTextField.getText().trim(), mUsernameTextField.getText().trim(), mPasswordField.getText());
         if (Database.getConnection() != null) {
-            DatabaseHelper.createTables();
             new PreviewDatabase().setScene();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, Database.getLastError(), ButtonType.OK);

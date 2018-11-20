@@ -13,26 +13,6 @@ public class DatabaseHelper {
 
     private static final String CLASS_NAME = DatabaseHelper.class.getSimpleName();
 
-    public static int createTables() {
-        Connection connection = Database.getConnection();
-        try {
-            Statement statement = connection.createStatement();
-
-            statement.execute(Department.SQL_CREATE_TABLE);
-            statement.execute(Professor.SQL_CREATE_TABLE);
-            statement.execute(Student.SQL_CREATE_TABLE);
-            statement.execute(Subject.SQL_CREATE_TABLE);
-            statement.execute(SemesterSection.SQL_CREATE_TABLE);
-            statement.execute(Teaches.SQL_CREATE_TABLE);
-            statement.execute(Division.SQL_CREATE_TABLE);
-            statement.execute(IaMarks.SQL_CREATE_TABLE);
-        } catch (SQLException e) {
-            Log.e(CLASS_NAME, e.getMessage());
-            return e.getErrorCode();
-        }
-        return SqlErrorCodes.SQLITE_OK;
-    }
-
     public static List<DepartmentData> fetchDepartmentDetails() {
         String sql = "SELECT * FROM " +
                 Department.TABLE_NAME;
@@ -648,7 +628,7 @@ public class DatabaseHelper {
     }
 
     public static int updateSubject(SubjectData subjectData) {
-        String sql = "INSERT INTO " +
+        String sql = "UPDATE " +
                 Subject.TABLE_NAME +
                 " SET " +
                 Subject.NAME + "=?, " +
@@ -698,7 +678,7 @@ public class DatabaseHelper {
     }
 
     public static int updateTeaches(TeachesData teachesData) {
-        String sql = "INSERT INTO " +
+        String sql = "UPDATE " +
                 Teaches.TABLE_NAME +
                 " SET " +
                 Teaches.PROFESSOR_ID + "=?, " +

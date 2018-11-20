@@ -1,4 +1,4 @@
-package com.nagpal.shivam.dbms.dummy;
+package com.nagpal.shivam.dbms.setup;
 
 import com.nagpal.shivam.dbms.data.Database;
 import com.nagpal.shivam.dbms.data.DatabaseHelper;
@@ -7,9 +7,10 @@ import com.nagpal.shivam.dbms.model.*;
 import java.util.ArrayList;
 
 public class InsertDummyData {
-    public static void main(String[] args) {
-        Database.putParameters("jdbc:mysql://localhost:3306", "shivam", "shivam");
-        DatabaseHelper.createTables();
+    public static void main(String[] args) throws Exception {
+        String[] credentials = Utils.getRootCredentials();
+        Database.putParameters(credentials[0], credentials[1], credentials[2], credentials[3]);
+
         insertDummyDataInDepartment();
         insertDummyDataInProfessor();
         insertDummyDataInStudent();
@@ -18,6 +19,7 @@ public class InsertDummyData {
         insertDummyDataInTeaches();
         insertDummyDataInDivision();
         insertDummyDataInIaMarks();
+
         Database.closeConnection();
     }
 

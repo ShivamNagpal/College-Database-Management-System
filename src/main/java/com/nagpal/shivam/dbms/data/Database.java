@@ -5,11 +5,10 @@ import com.nagpal.shivam.dbms.Log;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class Database {
-    private static final String DATABASE_NAME = "college";
     private static String sUrl;
+    private static String sSchema;
     private static String sUsername;
     private static String sPassword;
     private static String CLASS_NAME = Database.class.getSimpleName();
@@ -19,10 +18,10 @@ public class Database {
     public static Connection getConnection() {
         if (sConnection == null) {
             try {
-                Connection connection = DriverManager.getConnection(sUrl, sUsername, sPassword);
-                Statement statement = connection.createStatement();
-                statement.execute("CREATE SCHEMA IF NOT EXISTS " + DATABASE_NAME);
-                sConnection = DriverManager.getConnection(sUrl + "/" + DATABASE_NAME, sUsername, sPassword);
+                if (sUrl.charAt(sUrl.length() - 1) != '/') {
+                    sUrl += '/';
+                }
+                sConnection = DriverManager.getConnection(sUrl + sSchema, sUsername, sPassword);
                 Log.v(CLASS_NAME, "Database Connected");
             } catch (SQLException e) {
                 lastError = e.getMessage();
@@ -32,8 +31,9 @@ public class Database {
         return sConnection;
     }
 
-    public static void putParameters(String url, String username, String password) {
+    public static void putParameters(String url, String schema, String username, String password) {
         sUrl = url;
+        sSchema = schema;
         sUsername = username;
         sPassword = password;
     }

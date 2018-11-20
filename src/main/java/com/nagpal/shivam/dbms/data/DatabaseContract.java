@@ -36,6 +36,8 @@ public class DatabaseContract {
                 DESIGNATION + " VARCHAR(64)" +
                 ", " +
                 "FOREIGN KEY (" + DEPARTMENT_ID + ") REFERENCES " + Department.TABLE_NAME + "(" + Department.DEPARTMENT_ID + ")" +
+                ", " +
+                "FULLTEXT full_text_idx(" + NAME + "," + PROFESSOR_ID + "," + ADDRESS + "," + PHONE + "," + EMAIL + "," + DEPARTMENT_ID + "," + DESIGNATION + ")" +
                 ");";
     }
 
@@ -51,6 +53,8 @@ public class DatabaseContract {
                 NAME + " VARCHAR(64) NOT NULL UNIQUE" +
                 ", " +
                 DEPARTMENT_ID + " VARCHAR(64) PRIMARY KEY" +
+                ", " +
+                "FULLTEXT full_text_idx(" + NAME + "," + DEPARTMENT_ID + ")" +
                 ");";
     }
 
@@ -83,6 +87,8 @@ public class DatabaseContract {
                 DEPARTMENT_ID + " VARCHAR(64) NOT NULL" +
                 ", " +
                 "FOREIGN KEY (" + DEPARTMENT_ID + ") REFERENCES " + Department.TABLE_NAME + "(" + Department.DEPARTMENT_ID + ")" +
+                ", " +
+                "FULLTEXT full_text_idx(" + NAME + "," + STUDENT_ID + "," + ADDRESS + "," + PHONE + "," + EMAIL + "," + DEPARTMENT_ID + ")" +
                 ");";
     }
 
@@ -92,7 +98,9 @@ public class DatabaseContract {
         public static final String SUBJECT_ID = "SUBJECT_ID";
         public static final String SCHEME = "SCHEME";
         public static final String SEMESTER = "SEMESTER";
+        public static final String SEMESTER_IDX = "SEMESTER_IDX";
         public static final String CREDITS = "CREDITS";
+        public static final String CREDITS_IDX = "CREDITS_IDX";
         public static final String DEPARTMENT_ID = "DEPARTMENT_ID";
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
@@ -109,16 +117,35 @@ public class DatabaseContract {
                 ", " +
                 SEMESTER + " INT" +
                 ", " +
+                SEMESTER_IDX + " TINYTEXT" +
+                ", " +
                 CREDITS + " INT" +
                 ", " +
+                CREDITS_IDX + " TINYTEXT" +
+                ", " +
                 "FOREIGN KEY (" + DEPARTMENT_ID + ") REFERENCES " + Department.TABLE_NAME + "(" + Department.DEPARTMENT_ID + ")" +
+                ", " +
+                "FULLTEXT full_text_idx(" + NAME + "," + SUBJECT_ID + "," + DEPARTMENT_ID + "," + SCHEME + "," + SEMESTER_IDX + "," + CREDITS_IDX + ")" +
                 ");";
+
+        public static final String SQL_CREATE_FULLTEXT_INDEX_TRIGGER_INSERT = "CREATE TRIGGER " + TABLE_NAME + "_FULL_TEXT_INDEX_TRIGGER_INSERT BEFORE INSERT ON " +
+                TABLE_NAME + " FOR EACH ROW BEGIN " +
+                "SET NEW." + SEMESTER_IDX + " = CAST(NEW." + SEMESTER + " AS CHAR); " +
+                "SET NEW." + CREDITS_IDX + " = CAST(NEW." + CREDITS + " AS CHAR);" +
+                "END;";
+
+        public static final String SQL_CREATE_FULLTEXT_INDEX_TRIGGER_UPDATE = "CREATE TRIGGER " + TABLE_NAME + "_FULL_TEXT_INDEX_TRIGGER_UPDATE BEFORE UPDATE ON " +
+                TABLE_NAME + " FOR EACH ROW BEGIN " +
+                "SET NEW." + SEMESTER_IDX + " = CAST(NEW." + SEMESTER + " AS CHAR); " +
+                "SET NEW." + CREDITS_IDX + " = CAST(NEW." + CREDITS + " AS CHAR);" +
+                "END;";
     }
 
     public class SemesterSection {
         public static final String TABLE_NAME = "SEMESTER_SECTION";
         public static final String SEM_SEC_ID = "SEM_SEC_ID";
         public static final String SEMESTER = "SEMESTER";
+        public static final String SEMESTER_IDX = "SEMESTER_IDX";
         public static final String SECTION = "SECTION";
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
@@ -129,8 +156,22 @@ public class DatabaseContract {
                 ", " +
                 SEMESTER + " INT" +
                 ", " +
+                SEMESTER_IDX + " TINYTEXT" +
+                ", " +
                 SECTION + " VARCHAR(64)" +
+                ", " +
+                "FULLTEXT full_text_idx(" + SEM_SEC_ID + "," + SEMESTER_IDX + "," + SECTION + ")" +
                 ");";
+
+        public static final String SQL_CREATE_FULLTEXT_INDEX_TRIGGER_INSERT = "CREATE TRIGGER " + TABLE_NAME + "_FULL_TEXT_INDEX_TRIGGER_INSERT BEFORE INSERT ON " +
+                TABLE_NAME + " FOR EACH ROW BEGIN " +
+                "SET NEW." + SEMESTER_IDX + " = CAST(NEW." + SEMESTER + " AS CHAR); " +
+                "END;";
+
+        public static final String SQL_CREATE_FULLTEXT_INDEX_TRIGGER_UPDATE = "CREATE TRIGGER " + TABLE_NAME + "_FULL_TEXT_INDEX_TRIGGER_UPDATE BEFORE UPDATE ON " +
+                TABLE_NAME + " FOR EACH ROW BEGIN " +
+                "SET NEW." + SEMESTER_IDX + " = CAST(NEW." + SEMESTER + " AS CHAR); " +
+                "END;";
     }
 
     public class Division {
@@ -149,6 +190,8 @@ public class DatabaseContract {
                 "FOREIGN KEY (" + STUDENT_ID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ")" +
                 ", " +
                 "FOREIGN KEY (" + SEM_SEC_ID + ") REFERENCES " + SemesterSection.TABLE_NAME + "(" + SemesterSection.SEM_SEC_ID + ")" +
+                ", " +
+                "FULLTEXT full_text_idx(" + STUDENT_ID + "," + SEM_SEC_ID + ")" +
                 ");";
     }
 
@@ -175,6 +218,8 @@ public class DatabaseContract {
                 "FOREIGN KEY (" + SUBJECT_ID + ") REFERENCES " + Subject.TABLE_NAME + "(" + Subject.SUBJECT_ID + ")" +
                 ", " +
                 "PRIMARY KEY (" + PROFESSOR_ID + ", " + SEM_SEC_ID + ", " + SUBJECT_ID + ")" +
+                ", " +
+                "FULLTEXT full_text_idx(" + PROFESSOR_ID + "," + SEM_SEC_ID + "," + SUBJECT_ID + ")" +
                 ");";
     }
 
@@ -184,8 +229,11 @@ public class DatabaseContract {
         public static final String SEM_SEC_ID = "SEM_SEC_ID";
         public static final String SUBJECT_ID = "SUBJECT_ID";
         public static final String TEST1 = "TEST1";
+        public static final String TEST1_IDX = "TEST1_IDX";
         public static final String TEST2 = "TEST2";
+        public static final String TEST2_IDX = "TEST2_IDX";
         public static final String TEST3 = "TEST3";
+        public static final String TEST3_IDX = "TEST3_IDX";
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
@@ -199,9 +247,15 @@ public class DatabaseContract {
                 ", " +
                 TEST1 + " INT" +
                 ", " +
+                TEST1_IDX + " TINYTEXT" +
+                ", " +
                 TEST2 + " INT" +
                 ", " +
+                TEST2_IDX + " TINYTEXT" +
+                ", " +
                 TEST3 + " INT" +
+                ", " +
+                TEST3_IDX + " TINYTEXT" +
                 ", " +
                 "FOREIGN KEY (" + STUDENT_ID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ")" +
                 ", " +
@@ -210,7 +264,23 @@ public class DatabaseContract {
                 "FOREIGN KEY (" + SUBJECT_ID + ") REFERENCES " + Subject.TABLE_NAME + "(" + Subject.SUBJECT_ID + ")" +
                 ", " +
                 "PRIMARY KEY (" + STUDENT_ID + ", " + SEM_SEC_ID + ", " + SUBJECT_ID + ")" +
+                ", " +
+                "FULLTEXT full_text_idx(" + STUDENT_ID + "," + SEM_SEC_ID + "," + SUBJECT_ID + "," + TEST1_IDX + "," + TEST2_IDX + "," + TEST3_IDX + ")" +
                 ");";
+
+        public static final String SQL_CREATE_FULLTEXT_INDEX_TRIGGER_INSERT = "CREATE TRIGGER " + TABLE_NAME + "_FULL_TEXT_INDEX_TRIGGER_INSERT BEFORE INSERT ON " +
+                TABLE_NAME + " FOR EACH ROW BEGIN " +
+                "SET NEW." + TEST1_IDX + " = CAST(NEW." + TEST1 + " AS CHAR); " +
+                "SET NEW." + TEST2_IDX + " = CAST(NEW." + TEST2 + " AS CHAR); " +
+                "SET NEW." + TEST3_IDX + " = CAST(NEW." + TEST3 + " AS CHAR); " +
+                "END;";
+
+        public static final String SQL_CREATE_FULLTEXT_INDEX_TRIGGER_UPDATE = "CREATE TRIGGER " + TABLE_NAME + "_FULL_TEXT_INDEX_TRIGGER_UPDATE BEFORE UPDATE ON " +
+                TABLE_NAME + " FOR EACH ROW BEGIN " +
+                "SET NEW." + TEST1_IDX + " = CAST(NEW." + TEST1 + " AS CHAR); " +
+                "SET NEW." + TEST2_IDX + " = CAST(NEW." + TEST2 + " AS CHAR); " +
+                "SET NEW." + TEST3_IDX + " = CAST(NEW." + TEST3 + " AS CHAR); " +
+                "END;";
     }
 
 }
