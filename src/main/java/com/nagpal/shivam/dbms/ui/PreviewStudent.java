@@ -10,16 +10,18 @@ import com.nagpal.shivam.dbms.navigation.NavUtil;
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -31,6 +33,10 @@ public class PreviewStudent extends UiScene {
 
 
     private TableView<StudentData> mTableView;
+    private Task<List<StudentData>> mStudentDataTask;
+    private ComboBox<String> mSearchModeComboBox;
+    private TextField mSearchTextField;
+    private Task<List<StudentData>> mSearchDataTask;
 
     @Override
     public void setScene() {
@@ -50,22 +56,9 @@ public class PreviewStudent extends UiScene {
         addTableColumns();
         mTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        Task<List<StudentData>> studentDataTask = new Task<List<StudentData>>() {
-            @Override
-            protected List<StudentData> call() {
-                return DatabaseHelper.fetchStudentDetails();
-            }
+        mStudentDataTask = getStudentDataTask();
 
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                List<StudentData> al = this.getValue();
-                mTableView.setItems(FXCollections.observableList(al));
-                mTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-            }
-        };
-
-        Thread studentThread = new Thread(studentDataTask);
+        Thread studentThread = new Thread(mStudentDataTask);
         studentThread.start();
 
         Button backButton = new Button("Back");
@@ -77,17 +70,84 @@ public class PreviewStudent extends UiScene {
         Button deleteButton = new Button("Delete");
         deleteButton.setOnAction(event -> deleteAction());
 
+        Pane emptyPane = new Pane();
+        HBox.setHgrow(emptyPane, Priority.ALWAYS);
+
+        mSearchModeComboBox = new ComboBox<>();
+        mSearchModeComboBox.getItems().addAll(DatabaseHelper.SEARCH_MODE_NATURAL_LANGUAGE, DatabaseHelper.SEARCH_MODE_BOOLEAN);
+        mSearchModeComboBox.getSelectionModel().select(0);
+        mSearchModeComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> searchAction());
+
+        mSearchTextField = new TextField();
+        mSearchTextField.setPromptText(Constants.search);
+        mSearchTextField.addEventHandler(KeyEvent.KEY_RELEASED, event -> searchAction());
+
+        HBox searchHBox = new HBox(mSearchModeComboBox, mSearchTextField);
+
         BorderPane borderPane = new BorderPane();
         ToolBar toolBar = new ToolBar(backButton,
                 new Separator(Orientation.VERTICAL),
                 addButton,
                 editButton,
-                deleteButton
+                deleteButton,
+                emptyPane,
+                searchHBox
         );
         borderPane.setTop(toolBar);
         borderPane.setPadding(new Insets(15));
         borderPane.setCenter(mTableView);
         return borderPane;
+    }
+
+    private Task<List<StudentData>> getStudentDataTask() {
+        return new Task<List<StudentData>>() {
+            @Override
+            protected List<StudentData> call() {
+                return DatabaseHelper.fetchStudentDetails();
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                mTableView.getItems().clear();
+                mTableView.getItems().addAll(this.getValue());
+                mTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            }
+        };
+    }
+
+    private void searchAction() {
+        if (mStudentDataTask != null) {
+            mStudentDataTask.cancel(true);
+        }
+        if (mSearchDataTask != null) {
+            mSearchDataTask.cancel(true);
+        }
+
+        String key = mSearchTextField.getText();
+        if (key == null || key.isEmpty()) {
+            mStudentDataTask = getStudentDataTask();
+            Thread thread = new Thread(mStudentDataTask);
+            thread.start();
+        } else {
+            String mode = mSearchModeComboBox.getSelectionModel().getSelectedItem();
+            mSearchDataTask = new Task<List<StudentData>>() {
+                @Override
+                protected List<StudentData> call() {
+                    return DatabaseHelper.searchStudentDetails(key, mode);
+                }
+
+                @Override
+                protected void succeeded() {
+                    super.succeeded();
+                    mTableView.getItems().clear();
+                    mTableView.getItems().addAll(this.getValue());
+                }
+            };
+            Thread thread = new Thread(mSearchDataTask);
+            thread.start();
+        }
+
     }
 
     private void addTableColumns() {

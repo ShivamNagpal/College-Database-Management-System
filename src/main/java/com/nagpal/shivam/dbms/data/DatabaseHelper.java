@@ -139,6 +139,36 @@ public class DatabaseHelper {
         return list;
     }
 
+    public static List<StudentData> searchStudentDetails(String searchString, String mode) {
+        String sql = "SELECT * FROM " +
+                Student.TABLE_NAME +
+                " WHERE MATCH(" + Student.NAME + "," + Student.STUDENT_ID + "," + Student.ADDRESS + "," + Student.PHONE + "," + Student.EMAIL + "," + Student.DEPARTMENT_ID + ") " +
+                "AGAINST(? IN " + mode.toUpperCase() + ")";
+
+        Connection connection = Database.getConnection();
+        List<StudentData> list = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, searchString);
+            ResultSet set = preparedStatement.executeQuery();
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int nameIndex = set.findColumn(Student.NAME);
+            int idIndex = set.findColumn(Student.STUDENT_ID);
+            int dobIndex = set.findColumn(Student.DATE_OF_BIRTH);
+            int addressIndex = set.findColumn(Student.ADDRESS);
+            int phoneIndex = set.findColumn(Student.PHONE);
+            int emailIndex = set.findColumn(Student.EMAIL);
+            int departmentIdIndex = set.findColumn(Student.DEPARTMENT_ID);
+
+            while (set.next()) {
+                list.add(new StudentData(set.getLong(rowIdIndex), set.getString(nameIndex), set.getString(idIndex), set.getString(dobIndex), set.getString(addressIndex), set.getString(phoneIndex), set.getString(emailIndex), set.getString(departmentIdIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
     public static List<ProfessorData> fetchProfessorDetails() {
         String sql = "SELECT * FROM " +
                 Professor.TABLE_NAME;
@@ -196,6 +226,36 @@ public class DatabaseHelper {
         return list;
     }
 
+    public static List<ProfessorData> searchProfessorDetails(String searchString, String mode) {
+        String sql = "SELECT * FROM " +
+                Professor.TABLE_NAME +
+                " WHERE MATCH(" + Professor.NAME + "," + Professor.PROFESSOR_ID + "," + Professor.ADDRESS + "," + Professor.PHONE + "," + Professor.EMAIL + "," + Professor.DEPARTMENT_ID + "," + Professor.DESIGNATION + ") " +
+                "AGAINST(? IN " + mode.toUpperCase() + ")";
+        Connection connection = Database.getConnection();
+        List<ProfessorData> list = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, searchString);
+            ResultSet set = preparedStatement.executeQuery();
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int nameIndex = set.findColumn(Professor.NAME);
+            int idIndex = set.findColumn(Professor.PROFESSOR_ID);
+            int dobIndex = set.findColumn(Professor.DATE_OF_BIRTH);
+            int addressIndex = set.findColumn(Professor.ADDRESS);
+            int phoneIndex = set.findColumn(Professor.PHONE);
+            int emailIndex = set.findColumn(Professor.EMAIL);
+            int designationIndex = set.findColumn(Professor.DESIGNATION);
+            int departmentIdIndex = set.findColumn(Professor.DEPARTMENT_ID);
+
+            while (set.next()) {
+                list.add(new ProfessorData(set.getLong(rowIdIndex), set.getString(nameIndex), set.getString(idIndex), set.getString(dobIndex), set.getString(addressIndex), set.getString(phoneIndex), set.getString(emailIndex), set.getString(designationIndex), set.getString(departmentIdIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
 
     public static List<SemesterSectionData> fetchSemesterSectionDetails() {
         String sql = "SELECT * FROM " +
@@ -230,6 +290,31 @@ public class DatabaseHelper {
         try {
             Statement statement = connection.createStatement();
             ResultSet set = statement.executeQuery(sql);
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int idIndex = set.findColumn(SemesterSection.SEM_SEC_ID);
+            int semesterIndex = set.findColumn(SemesterSection.SEMESTER);
+            int sectionIndex = set.findColumn(SemesterSection.SECTION);
+
+            while (set.next()) {
+                list.add(new SemesterSectionData(set.getLong(rowIdIndex), set.getString(idIndex), set.getInt(semesterIndex), set.getString(sectionIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
+    public static List<SemesterSectionData> searchSemesterSectionDetails(String searchString, String mode) {
+        String sql = "SELECT * FROM " +
+                SemesterSection.TABLE_NAME +
+                " WHERE MATCH(" + SemesterSection.SEM_SEC_ID + "," + SemesterSection.SEMESTER_IDX + "," + SemesterSection.SECTION + ") " +
+                "AGAINST(? IN " + mode.toUpperCase() + ")";
+        Connection connection = Database.getConnection();
+        List<SemesterSectionData> list = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, searchString);
+            ResultSet set = preparedStatement.executeQuery();
             int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
             int idIndex = set.findColumn(SemesterSection.SEM_SEC_ID);
             int semesterIndex = set.findColumn(SemesterSection.SEMESTER);
@@ -299,6 +384,35 @@ public class DatabaseHelper {
         return list;
     }
 
+    public static List<SubjectData> searchSubjectDetails(String searchString, String mode) {
+        String sql = "SELECT * FROM " +
+                Subject.TABLE_NAME +
+                " WHERE MATCH(" + Subject.NAME + "," + Subject.SUBJECT_ID + "," + Subject.DEPARTMENT_ID + "," + Subject.SCHEME + "," + Subject.SEMESTER_IDX + "," + Subject.CREDITS_IDX + ") " +
+                "AGAINST(? IN " + mode.toUpperCase() + ")";
+        Connection connection = Database.getConnection();
+        List<SubjectData> list = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, searchString);
+            ResultSet set = preparedStatement.executeQuery();
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int nameIndex = set.findColumn(Subject.NAME);
+            int subjectIdIndex = set.findColumn(Subject.SUBJECT_ID);
+            int schemeIndex = set.findColumn(Subject.SCHEME);
+            int semesterIndex = set.findColumn(Subject.SEMESTER);
+            int creditsIndex = set.findColumn(Subject.CREDITS);
+            int departmentIdIndex = set.findColumn(Subject.DEPARTMENT_ID);
+
+
+            while (set.next()) {
+                list.add(new SubjectData(set.getLong(rowIdIndex), set.getString(nameIndex), set.getString(subjectIdIndex), set.getString(schemeIndex), set.getInt(semesterIndex), set.getInt(creditsIndex), set.getString(departmentIdIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
     public static List<TeachesData> fetchTeachesDetails() {
         String sql = "SELECT * FROM " +
                 Teaches.TABLE_NAME;
@@ -307,6 +421,31 @@ public class DatabaseHelper {
         try {
             Statement statement = connection.createStatement();
             ResultSet set = statement.executeQuery(sql);
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int professorIdIndex = set.findColumn(Teaches.PROFESSOR_ID);
+            int semSecIdIndex = set.findColumn(Teaches.SEM_SEC_ID);
+            int subjectIdIndex = set.findColumn(Teaches.SUBJECT_ID);
+
+            while (set.next()) {
+                list.add(new TeachesData(set.getLong(rowIdIndex), set.getString(professorIdIndex), set.getString(semSecIdIndex), set.getString(subjectIdIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
+    public static List<TeachesData> searchTeachesDetails(String searchString, String mode) {
+        String sql = "SELECT * FROM " +
+                Teaches.TABLE_NAME +
+                " WHERE MATCH(" + Teaches.PROFESSOR_ID + "," + Teaches.SEM_SEC_ID + "," + Teaches.SUBJECT_ID + ") " +
+                "AGAINST(? IN " + mode.toUpperCase() + ")";
+        Connection connection = Database.getConnection();
+        List<TeachesData> list = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, searchString);
+            ResultSet set = preparedStatement.executeQuery();
             int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
             int professorIdIndex = set.findColumn(Teaches.PROFESSOR_ID);
             int semSecIdIndex = set.findColumn(Teaches.SEM_SEC_ID);
@@ -342,6 +481,30 @@ public class DatabaseHelper {
         return list;
     }
 
+    public static List<DivisionData> searchDivisionDetails(String searchString, String mode) {
+        String sql = "SELECT * FROM " +
+                Division.TABLE_NAME +
+                " WHERE MATCH(" + Division.STUDENT_ID + "," + Division.SEM_SEC_ID + ") " +
+                "AGAINST(? IN " + mode.toUpperCase() + ")";
+        Connection connection = Database.getConnection();
+        List<DivisionData> list = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, searchString);
+            ResultSet set = preparedStatement.executeQuery();
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int studentIdIndex = set.findColumn(Division.STUDENT_ID);
+            int semSecIdIndex = set.findColumn(Division.SEM_SEC_ID);
+
+            while (set.next()) {
+                list.add(new DivisionData(set.getLong(rowIdIndex), set.getString(studentIdIndex), set.getString(semSecIdIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
     public static List<IaMarksData> fetchIaMarksDetails() {
         String sql = "SELECT * FROM " +
                 IaMarks.TABLE_NAME;
@@ -350,6 +513,34 @@ public class DatabaseHelper {
         try {
             Statement statement = connection.createStatement();
             ResultSet set = statement.executeQuery(sql);
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int studentIdIndex = set.findColumn(IaMarks.STUDENT_ID);
+            int semSecIdIndex = set.findColumn(IaMarks.SEM_SEC_ID);
+            int subjectIdIndex = set.findColumn(IaMarks.SUBJECT_ID);
+            int test1Index = set.findColumn(IaMarks.TEST1);
+            int test2Index = set.findColumn(IaMarks.TEST2);
+            int test3Index = set.findColumn(IaMarks.TEST3);
+
+            while (set.next()) {
+                list.add(new IaMarksData(set.getLong(rowIdIndex), set.getString(studentIdIndex), set.getString(semSecIdIndex), set.getString(subjectIdIndex), set.getInt(test1Index), set.getInt(test2Index), set.getInt(test3Index)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
+    public static List<IaMarksData> searchIaMarksDetails(String searchString, String mode) {
+        String sql = "SELECT * FROM " +
+                IaMarks.TABLE_NAME +
+                " WHERE MATCH(" + IaMarks.STUDENT_ID + "," + IaMarks.SEM_SEC_ID + "," + IaMarks.SUBJECT_ID + "," + IaMarks.TEST1_IDX + "," + IaMarks.TEST2_IDX + "," + IaMarks.TEST3_IDX + ") " +
+                "AGAINST(? IN " + mode.toUpperCase() + ")";
+        Connection connection = Database.getConnection();
+        List<IaMarksData> list = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, searchString);
+            ResultSet set = preparedStatement.executeQuery();
             int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
             int studentIdIndex = set.findColumn(IaMarks.STUDENT_ID);
             int semSecIdIndex = set.findColumn(IaMarks.SEM_SEC_ID);
