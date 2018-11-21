@@ -10,16 +10,18 @@ import com.nagpal.shivam.dbms.navigation.NavUtil;
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -29,6 +31,10 @@ import static com.nagpal.shivam.dbms.Main.sStage;
 
 public class PreviewDepartment extends UiScene {
     private TableView<DepartmentData> mTableView;
+    private TextField mSearchTextField;
+    private Task<List<DepartmentData>> mSearchDataTask;
+    private Task<List<DepartmentData>> mDepartmentDataTask;
+    private ComboBox<String> mSearchModeComboBox;
 
     @Override
     public void setScene() {
@@ -48,22 +54,9 @@ public class PreviewDepartment extends UiScene {
         addTableColumns();
         mTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        Task<List<DepartmentData>> departmentDataTask = new Task<List<DepartmentData>>() {
-            @Override
-            protected List<DepartmentData> call() {
-                return DatabaseHelper.fetchDepartmentDetails();
-            }
+        mDepartmentDataTask = getDepartmentDataTask();
 
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                List<DepartmentData> al = this.getValue();
-                mTableView.setItems(FXCollections.observableList(al));
-                mTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-            }
-        };
-
-        Thread departmentThread = new Thread(departmentDataTask);
+        Thread departmentThread = new Thread(mDepartmentDataTask);
         departmentThread.start();
 
         Button backButton = new Button("Back");
@@ -75,17 +68,86 @@ public class PreviewDepartment extends UiScene {
         Button deleteButton = new Button("Delete");
         deleteButton.setOnAction(event -> deleteAction());
 
+        Pane emptyPane = new Pane();
+        HBox.setHgrow(emptyPane, Priority.ALWAYS);
+
+        mSearchModeComboBox = new ComboBox<>();
+        mSearchModeComboBox.getItems().addAll(DatabaseHelper.SEARCH_MODE_NATURAL_LANGUAGE, DatabaseHelper.SEARCH_MODE_BOOLEAN);
+        mSearchModeComboBox.getSelectionModel().select(0);
+        mSearchModeComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> searchAction());
+
+        mSearchTextField = new TextField();
+        mSearchTextField.setPromptText(Constants.search);
+        mSearchTextField.addEventHandler(KeyEvent.KEY_RELEASED, event -> searchAction());
+
+        HBox searchHBox = new HBox(mSearchModeComboBox, mSearchTextField);
+
+
         BorderPane borderPane = new BorderPane();
         ToolBar toolBar = new ToolBar(backButton,
                 new Separator(Orientation.VERTICAL),
                 addButton,
                 editButton,
-                deleteButton
+                deleteButton,
+                emptyPane,
+                searchHBox
         );
+
         borderPane.setTop(toolBar);
         borderPane.setPadding(new Insets(15));
         borderPane.setCenter(mTableView);
         return borderPane;
+    }
+
+    private Task<List<DepartmentData>> getDepartmentDataTask() {
+        return new Task<List<DepartmentData>>() {
+            @Override
+            protected List<DepartmentData> call() {
+                return DatabaseHelper.fetchDepartmentDetails();
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                mTableView.getItems().clear();
+                mTableView.getItems().addAll(this.getValue());
+                mTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            }
+        };
+    }
+
+    private void searchAction() {
+        if (mDepartmentDataTask != null) {
+            mDepartmentDataTask.cancel(true);
+        }
+        if (mSearchDataTask != null) {
+            mSearchDataTask.cancel(true);
+        }
+
+        String key = mSearchTextField.getText();
+        if (key == null || key.isEmpty()) {
+            mDepartmentDataTask = getDepartmentDataTask();
+            Thread thread = new Thread(mDepartmentDataTask);
+            thread.start();
+        } else {
+            String mode = mSearchModeComboBox.getSelectionModel().getSelectedItem();
+            mSearchDataTask = new Task<List<DepartmentData>>() {
+                @Override
+                protected List<DepartmentData> call() {
+                    return DatabaseHelper.searchDepartmentDetails(key, mode);
+                }
+
+                @Override
+                protected void succeeded() {
+                    super.succeeded();
+                    mTableView.getItems().clear();
+                    mTableView.getItems().addAll(this.getValue());
+                }
+            };
+            Thread thread = new Thread(mSearchDataTask);
+            thread.start();
+        }
+
     }
 
     private void addTableColumns() {

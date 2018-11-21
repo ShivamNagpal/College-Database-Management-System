@@ -11,6 +11,8 @@ import java.util.List;
 public class DatabaseHelper {
 
 
+    public static final String SEARCH_MODE_NATURAL_LANGUAGE = "Natural Language Mode";
+    public static final String SEARCH_MODE_BOOLEAN = "Boolean Mode";
     private static final String CLASS_NAME = DatabaseHelper.class.getSimpleName();
 
     public static List<DepartmentData> fetchDepartmentDetails() {
@@ -45,6 +47,30 @@ public class DatabaseHelper {
         try {
             Statement statement = connection.createStatement();
             ResultSet set = statement.executeQuery(sql);
+            int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+            int nameIndex = set.findColumn(Department.NAME);
+            int departmentIdIndex = set.findColumn(Department.DEPARTMENT_ID);
+
+            while (set.next()) {
+                list.add(new DepartmentData(set.getLong(rowIdIndex), set.getString(nameIndex), set.getString(departmentIdIndex)));
+            }
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        return list;
+    }
+
+    public static List<DepartmentData> searchDepartmentDetails(String searchString, String mode) {
+        String sql = "SELECT * FROM " +
+                Department.TABLE_NAME +
+                " WHERE MATCH(" + Department.NAME + "," + Department.DEPARTMENT_ID + ") " +
+                "AGAINST(? IN " + mode.toUpperCase() + ")";
+        Connection connection = Database.getConnection();
+        List<DepartmentData> list = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, searchString);
+            ResultSet set = preparedStatement.executeQuery();
             int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
             int nameIndex = set.findColumn(Department.NAME);
             int departmentIdIndex = set.findColumn(Department.DEPARTMENT_ID);
