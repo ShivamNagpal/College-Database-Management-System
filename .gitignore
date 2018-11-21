@@ -42,3 +42,6 @@ build
 database.json
 myDB
 derbyDB
+
+#Root Credentials
+root_credentials.txt
