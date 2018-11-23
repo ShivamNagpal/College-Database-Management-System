@@ -3,6 +3,14 @@
     -fx-min-height: 600;
 }
 
+.logoImageViewFlowPane {
+    -fx-alignment: center;
+}
+
+.tileFlowPane {
+    -fx-alignment: center;
+}
+
 .button {
     -fx-pref-width: 200;
     -fx-background-radius: 100;

@@ -3,6 +3,8 @@ package com.nagpal.shivam.dbms.ui;
 import com.nagpal.shivam.dbms.data.Database;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
@@ -28,6 +30,11 @@ public class LogIn extends UiScene {
 
     @Override
     protected Pane getLayout() {
+        Image logo = new Image("images/icon.png");
+        ImageView logoImageView = new ImageView(logo);
+        FlowPane logoImageViewFlowPane = new FlowPane(logoImageView);
+        logoImageViewFlowPane.getStyleClass().add("logoImageViewFlowPane");
+
         GridPane formGridPane = new GridPane();
         formGridPane.getStyleClass().add("formGridPane");
 
@@ -71,7 +78,7 @@ public class LogIn extends UiScene {
         FlowPane submitButtonFlowPane = new FlowPane(submitButton);
         submitButtonFlowPane.getStyleClass().add("submitButtonFlowPane");
 
-        VBox vBox = new VBox(formGridPane, submitButtonFlowPane);
+        VBox vBox = new VBox(logoImageViewFlowPane, formGridPane, submitButtonFlowPane);
         vBox.setSpacing(30);
 
         FlowPane vBoxFlowPane = new FlowPane(vBox);
