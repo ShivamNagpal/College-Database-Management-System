@@ -124,9 +124,18 @@ public class InsertOrEditTeachesData extends UiScene {
         if (!isEditMode) {
             mTeachesData = new TeachesData();
         }
-        mTeachesData.professorId = mProfessorDataComboBox.getValue().professorId;
-        mTeachesData.semesterSectionId = mSemesterSectionDataComboBox.getValue().semesterSectionId;
-        mTeachesData.subjectId = mSubjectDataComboBox.getValue().subjectId;
+        ProfessorData professorData = mProfessorDataComboBox.getValue();
+        SemesterSectionData semesterSectionData = mSemesterSectionDataComboBox.getValue();
+        SubjectData subjectData = mSubjectDataComboBox.getValue();
+
+        if (professorData == null || semesterSectionData == null || subjectData == null) {
+            Utils.showErrorAlert("Values can't be empty");
+            return;
+        }
+
+        mTeachesData.professorId = professorData.professorId;
+        mTeachesData.semesterSectionId = semesterSectionData.semesterSectionId;
+        mTeachesData.subjectId = subjectData.subjectId;
 
         Task<Integer> submitTask = new Task<Integer>() {
             @Override
@@ -138,6 +147,12 @@ public class InsertOrEditTeachesData extends UiScene {
                     i = DatabaseHelper.updateTeaches(mTeachesData);
                 }
                 return i;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                Utils.onInsertOrUpdateResponse(InsertOrEditTeachesData.this, this.getValue());
             }
         };
         Thread submitThread = new Thread(submitTask);

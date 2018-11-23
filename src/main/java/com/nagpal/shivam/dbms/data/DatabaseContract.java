@@ -185,7 +185,7 @@ public class DatabaseContract {
                 ", " +
                 STUDENT_ID + " VARCHAR(64) PRIMARY KEY" +
                 ", " +
-                SEM_SEC_ID + " VARCHAR(64)" +
+                SEM_SEC_ID + " VARCHAR(64) NOT NULL" +
                 ", " +
                 "FOREIGN KEY (" + STUDENT_ID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ")" +
                 ", " +

@@ -15,7 +15,7 @@ import java.util.List;
 
 import static com.nagpal.shivam.dbms.Main.sStage;
 
-public class InsertOrDivisionData extends UiScene {
+public class InsertOrEditDivisionData extends UiScene {
 
     private final boolean isEditMode;
     private ComboBox<StudentData> mStudentDataComboBox;
@@ -23,12 +23,12 @@ public class InsertOrDivisionData extends UiScene {
     private DivisionData mDivisionData;
     private String mTitle;
 
-    public InsertOrDivisionData() {
+    public InsertOrEditDivisionData() {
         isEditMode = false;
         mTitle = "Insert new division detail";
     }
 
-    public InsertOrDivisionData(DivisionData divisionData) {
+    public InsertOrEditDivisionData(DivisionData divisionData) {
         mDivisionData = divisionData;
         isEditMode = true;
         mTitle = "Edit division detail";
@@ -108,8 +108,15 @@ public class InsertOrDivisionData extends UiScene {
         if (!isEditMode) {
             mDivisionData = new DivisionData();
         }
-        mDivisionData.studentId = mStudentDataComboBox.getValue().studentId;
-        mDivisionData.semesterSectionId = mSemesterSectionDataComboBox.getValue().semesterSectionId;
+        StudentData studentData = mStudentDataComboBox.getValue();
+        SemesterSectionData semesterSectionData = mSemesterSectionDataComboBox.getValue();
+        if (studentData == null || semesterSectionData == null) {
+            Utils.showErrorAlert("Values can't be empty");
+            return;
+        }
+        mDivisionData.studentId = studentData.studentId;
+        mDivisionData.semesterSectionId = semesterSectionData.semesterSectionId;
+
 
         Task<Integer> submitTask = new Task<Integer>() {
             @Override
@@ -121,6 +128,12 @@ public class InsertOrDivisionData extends UiScene {
                     i = DatabaseHelper.updateDivision(mDivisionData);
                 }
                 return i;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                Utils.onInsertOrUpdateResponse(InsertOrEditDivisionData.this, this.getValue());
             }
         };
         Thread submitThread = new Thread(submitTask);

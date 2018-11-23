@@ -109,6 +109,12 @@ public class InsertOrEditDepartmentData extends UiScene {
                 }
                 return i;
             }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                Utils.onInsertOrUpdateResponse(InsertOrEditDepartmentData.this, this.getValue());
+            }
         };
         Thread submitThread = new Thread(submitTask);
         submitThread.start();
