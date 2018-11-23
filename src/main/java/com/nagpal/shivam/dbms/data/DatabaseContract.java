@@ -3,6 +3,28 @@ package com.nagpal.shivam.dbms.data;
 public class DatabaseContract {
     public static final String ROW_ID = "_ROWID";
     public static final String ROW_ID_DATA_TYPE = "BIGINT(8) UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT";
+    public static final String PROCEDURE_IA_MARKS_CALCULATE_AVERAGE = "IA_MARKS_CALCULATE_AVERAGE";
+    public static final String SQL_IA_MARKS_CALCULATE_AVERAGE = "CREATE PROCEDURE " + PROCEDURE_IA_MARKS_CALCULATE_AVERAGE + "()\n" +
+            "BEGIN\n" +
+            " DECLARE a, b, c, average INT;\n" +
+            " DECLARE done INT DEFAULT FALSE;\n" +
+            " DECLARE id BIGINT(8);\n" +
+            " DECLARE cur CURSOR FOR\n" +
+            " SELECT " + DatabaseContract.ROW_ID + ", " + DatabaseContract.IaMarks.TEST1 + ", " + DatabaseContract.IaMarks.TEST2 + ", " + DatabaseContract.IaMarks.TEST3 + " FROM " + DatabaseContract.IaMarks.TABLE_NAME + ";\n" +
+            " DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;  \n" +
+            " OPEN cur;\n" +
+            "   m_loop : LOOP\n" +
+            "       SET done = FALSE;\n" +
+            "       FETCH cur INTO id, a, b, c;\n" +
+            "       IF(done) THEN\n" +
+            "           LEAVE m_loop;\n" +
+            "       END IF;\n" +
+            "       SET average = (a+b+c)/3;\n" +
+            "       UPDATE college.IA_MARKS SET AVG_MARKS = average WHERE " + DatabaseContract.ROW_ID + " = id;\n" +
+            "       SET done = done+1;\n" +
+            "   END LOOP;\n" +
+            " CLOSE cur;\n" +
+            "END\n";
 
     public class Professor {
         public static final String TABLE_NAME = "PROFESSOR";
@@ -234,6 +256,8 @@ public class DatabaseContract {
         public static final String TEST2_IDX = "TEST2_IDX";
         public static final String TEST3 = "TEST3";
         public static final String TEST3_IDX = "TEST3_IDX";
+        public static final String AVG_MARKS = "AVG_MARKS";
+        public static final String AVG_MARKS_IDX = "AVG_MARKS_IDX";
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
@@ -257,6 +281,10 @@ public class DatabaseContract {
                 ", " +
                 TEST3_IDX + " TINYTEXT" +
                 ", " +
+                AVG_MARKS + " INT" +
+                ", " +
+                AVG_MARKS_IDX + " TINYTEXT" +
+                ", " +
                 "FOREIGN KEY (" + STUDENT_ID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ")" +
                 ", " +
                 "FOREIGN KEY (" + SEM_SEC_ID + ") REFERENCES " + SemesterSection.TABLE_NAME + "(" + SemesterSection.SEM_SEC_ID + ")" +
@@ -265,7 +293,7 @@ public class DatabaseContract {
                 ", " +
                 "PRIMARY KEY (" + STUDENT_ID + ", " + SEM_SEC_ID + ", " + SUBJECT_ID + ")" +
                 ", " +
-                "FULLTEXT full_text_idx(" + STUDENT_ID + "," + SEM_SEC_ID + "," + SUBJECT_ID + "," + TEST1_IDX + "," + TEST2_IDX + "," + TEST3_IDX + ")" +
+                "FULLTEXT full_text_idx(" + STUDENT_ID + "," + SEM_SEC_ID + "," + SUBJECT_ID + "," + TEST1_IDX + "," + TEST2_IDX + "," + TEST3_IDX + "," + AVG_MARKS_IDX + ")" +
                 ");";
 
         public static final String SQL_CREATE_FULLTEXT_INDEX_TRIGGER_INSERT = "CREATE TRIGGER " + TABLE_NAME + "_FULL_TEXT_INDEX_TRIGGER_INSERT BEFORE INSERT ON " +
@@ -273,13 +301,18 @@ public class DatabaseContract {
                 "SET NEW." + TEST1_IDX + " = CAST(NEW." + TEST1 + " AS CHAR); " +
                 "SET NEW." + TEST2_IDX + " = CAST(NEW." + TEST2 + " AS CHAR); " +
                 "SET NEW." + TEST3_IDX + " = CAST(NEW." + TEST3 + " AS CHAR); " +
+                "SET NEW." + AVG_MARKS_IDX + " = CAST(NEW." + AVG_MARKS + " AS CHAR); " +
                 "END;";
 
         public static final String SQL_CREATE_FULLTEXT_INDEX_TRIGGER_UPDATE = "CREATE TRIGGER " + TABLE_NAME + "_FULL_TEXT_INDEX_TRIGGER_UPDATE BEFORE UPDATE ON " +
                 TABLE_NAME + " FOR EACH ROW BEGIN " +
+                "IF (OLD." + AVG_MARKS + " IS NOT NULL) THEN\n" +
+                "SET NEW." + AVG_MARKS + " = (NEW." + TEST1 + " + NEW." + TEST2 + " + NEW." + TEST3 + ")/3;\n" +
+                "END IF; " +
                 "SET NEW." + TEST1_IDX + " = CAST(NEW." + TEST1 + " AS CHAR); " +
                 "SET NEW." + TEST2_IDX + " = CAST(NEW." + TEST2 + " AS CHAR); " +
                 "SET NEW." + TEST3_IDX + " = CAST(NEW." + TEST3 + " AS CHAR); " +
+                "SET NEW." + AVG_MARKS_IDX + " = CAST(NEW." + AVG_MARKS + " AS CHAR); " +
                 "END;";
     }
 
