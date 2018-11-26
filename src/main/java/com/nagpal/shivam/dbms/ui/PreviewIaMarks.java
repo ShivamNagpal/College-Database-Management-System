@@ -67,6 +67,8 @@ public class PreviewIaMarks extends UiScene {
         editButton.setOnAction(event -> editAction());
         Button deleteButton = new Button("Delete");
         deleteButton.setOnAction(event -> deleteAction());
+        Button calculateAverageButton = new Button("Calculate Average");
+        calculateAverageButton.setOnAction(event -> calculateAverage());
 
         Pane emptyPane = new Pane();
         HBox.setHgrow(emptyPane, Priority.ALWAYS);
@@ -88,6 +90,7 @@ public class PreviewIaMarks extends UiScene {
                 addButton,
                 editButton,
                 deleteButton,
+                calculateAverageButton,
                 emptyPane,
                 searchHBox
         );
@@ -146,6 +149,25 @@ public class PreviewIaMarks extends UiScene {
             thread.start();
         }
 
+    }
+
+    private void calculateAverage() {
+        Task<Integer> task = new Task<Integer>() {
+            @Override
+            protected Integer call() {
+                return DatabaseHelper.executeIaMarksCalculateAverage();
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                mIaMarksDataTask = getIaMarksDataTask();
+                Thread thread = new Thread(mIaMarksDataTask);
+                thread.start();
+            }
+        };
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     private void addTableColumns() {

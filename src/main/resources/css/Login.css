@@ -2,6 +2,10 @@
     -fx-font-size: 15px;
 }
 
+.logoImageViewFlowPane {
+    -fx-alignment: center;
+}
+
 .formGridPane {
     -fx-vgap: 20;
     -fx-hgap: 20;

@@ -1,12 +1,10 @@
 package com.nagpal.shivam.dbms.ui;
 
+import com.nagpal.shivam.dbms.data.SqlErrorCodes;
 import com.nagpal.shivam.dbms.model.*;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 
@@ -115,5 +113,19 @@ class Utils {
                 source.requestFocus();
             }
         };
+    }
+
+    static void onInsertOrUpdateResponse(UiScene uiScene, int response) {
+        if (response == SqlErrorCodes.SQLITE_OK) {
+            uiScene.onBackPressed();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Some Error Occurred", ButtonType.OK);
+            alert.showAndWait();
+        }
+    }
+
+    static void showErrorAlert(String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, content, ButtonType.OK);
+        alert.showAndWait();
     }
 }

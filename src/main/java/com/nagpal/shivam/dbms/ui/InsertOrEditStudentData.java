@@ -159,7 +159,10 @@ public class InsertOrEditStudentData extends UiScene {
         mStudentData.address = mAddressTextField.getText();
         mStudentData.email = mEmailTextField.getText();
         mStudentData.phone = mPhoneTextField.getText();
-        mStudentData.departmentId = mDepartmentDataComboBox.getValue().departmentId;
+        DepartmentData departmentData = mDepartmentDataComboBox.getValue();
+        if (departmentData != null) {
+            mStudentData.departmentId = departmentData.departmentId;
+        }
 
         Task<Integer> submitTask = new Task<Integer>() {
             @Override
@@ -171,6 +174,12 @@ public class InsertOrEditStudentData extends UiScene {
                     i = DatabaseHelper.updateStudent(mStudentData);
                 }
                 return i;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                Utils.onInsertOrUpdateResponse(InsertOrEditStudentData.this, this.getValue());
             }
         };
         Thread submitThread = new Thread(submitTask);

@@ -520,9 +520,10 @@ public class DatabaseHelper {
             int test1Index = set.findColumn(IaMarks.TEST1);
             int test2Index = set.findColumn(IaMarks.TEST2);
             int test3Index = set.findColumn(IaMarks.TEST3);
+            int averageMarksIndex = set.findColumn(IaMarks.AVG_MARKS);
 
             while (set.next()) {
-                list.add(new IaMarksData(set.getLong(rowIdIndex), set.getString(studentIdIndex), set.getString(semSecIdIndex), set.getString(subjectIdIndex), set.getInt(test1Index), set.getInt(test2Index), set.getInt(test3Index)));
+                list.add(new IaMarksData(set.getLong(rowIdIndex), set.getString(studentIdIndex), set.getString(semSecIdIndex), set.getString(subjectIdIndex), set.getInt(test1Index), set.getInt(test2Index), set.getInt(test3Index), set.getInt(averageMarksIndex)));
             }
         } catch (SQLException e) {
             Log.e(CLASS_NAME, e.getMessage());
@@ -548,9 +549,10 @@ public class DatabaseHelper {
             int test1Index = set.findColumn(IaMarks.TEST1);
             int test2Index = set.findColumn(IaMarks.TEST2);
             int test3Index = set.findColumn(IaMarks.TEST3);
+            int averageMarksIndex = set.findColumn(IaMarks.AVG_MARKS);
 
             while (set.next()) {
-                list.add(new IaMarksData(set.getLong(rowIdIndex), set.getString(studentIdIndex), set.getString(semSecIdIndex), set.getString(subjectIdIndex), set.getInt(test1Index), set.getInt(test2Index), set.getInt(test3Index)));
+                list.add(new IaMarksData(set.getLong(rowIdIndex), set.getString(studentIdIndex), set.getString(semSecIdIndex), set.getString(subjectIdIndex), set.getInt(test1Index), set.getInt(test2Index), set.getInt(test3Index), set.getInt(averageMarksIndex)));
             }
         } catch (SQLException e) {
             Log.e(CLASS_NAME, e.getMessage());
@@ -973,6 +975,19 @@ public class DatabaseHelper {
         try {
             Statement statement = connection.createStatement();
             statement.execute(sql);
+        } catch (SQLException e) {
+            Log.e(CLASS_NAME, e.getMessage());
+            return e.getErrorCode();
+        }
+        return SqlErrorCodes.SQLITE_OK;
+    }
+
+    public static int executeIaMarksCalculateAverage() {
+        String sql = "{CALL " + DatabaseContract.PROCEDURE_IA_MARKS_CALCULATE_AVERAGE + "()}";
+        Connection connection = Database.getConnection();
+        try {
+            CallableStatement statement = connection.prepareCall(sql);
+            statement.execute();
         } catch (SQLException e) {
             Log.e(CLASS_NAME, e.getMessage());
             return e.getErrorCode();

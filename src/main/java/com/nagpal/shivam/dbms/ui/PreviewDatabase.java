@@ -2,13 +2,11 @@ package com.nagpal.shivam.dbms.ui;
 
 import com.nagpal.shivam.dbms.navigation.Intent;
 import com.nagpal.shivam.dbms.navigation.NavUtil;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.TilePane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -30,6 +28,13 @@ public class PreviewDatabase extends UiScene {
 
     @Override
     protected Pane getLayout() {
+        Image logo = new Image("images/college-pic.jpg");
+        ImageView logoImageView = new ImageView(logo);
+        logoImageView.setFitWidth(400);
+        logoImageView.setFitHeight(300);
+        FlowPane logoImageViewFlowPane = new FlowPane(logoImageView);
+        logoImageViewFlowPane.getStyleClass().add("logoImageViewFlowPane");
+
         LinkedHashMap<String, Class> linkedHashMap = new LinkedHashMap<>();
         linkedHashMap.put("Professor", PreviewProfessor.class);
         linkedHashMap.put("Student", PreviewStudent.class);
@@ -53,12 +58,14 @@ public class PreviewDatabase extends UiScene {
         tilePane.setVgap(20);
         tilePane.getChildren().addAll(buttons);
 
-        FlowPane flowPane = new FlowPane();
-        flowPane.getChildren().add(tilePane);
-        flowPane.setAlignment(Pos.CENTER);
+        FlowPane tileFlowPane = new FlowPane(tilePane);
+        tileFlowPane.getStyleClass().add("tileFlowPane");
+
+        VBox vBox = new VBox(logoImageViewFlowPane, tileFlowPane);
+        vBox.setSpacing(30);
 
         BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(flowPane);
+        borderPane.setCenter(vBox);
         return borderPane;
     }
 }

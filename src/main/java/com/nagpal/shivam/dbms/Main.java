@@ -3,6 +3,7 @@ package com.nagpal.shivam.dbms;
 import com.nagpal.shivam.dbms.data.Database;
 import com.nagpal.shivam.dbms.ui.LogIn;
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -22,6 +23,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         sStage = primaryStage;
+        sStage.getIcons().add(new Image("images/icon.png"));
         sStage.show();
         new LogIn().setScene();
     }

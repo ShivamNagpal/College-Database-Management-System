@@ -30,6 +30,7 @@ public class Setup {
     private static int setUpDatabase() {
         try {
             createTables();
+            createStoreProcedure();
             createTriggers();
         } catch (SQLException e) {
             Log.e(CLASS_NAME, e.getMessage());
@@ -49,6 +50,12 @@ public class Setup {
         statement.execute(DatabaseContract.Teaches.SQL_CREATE_TABLE);
         statement.execute(DatabaseContract.Division.SQL_CREATE_TABLE);
         statement.execute(DatabaseContract.IaMarks.SQL_CREATE_TABLE);
+    }
+
+    private static void createStoreProcedure() throws SQLException {
+        Connection connection = Database.getConnection();
+        Statement statement = connection.createStatement();
+        statement.execute(DatabaseContract.SQL_IA_MARKS_CALCULATE_AVERAGE);
     }
 
     private static void createTriggers() throws SQLException {

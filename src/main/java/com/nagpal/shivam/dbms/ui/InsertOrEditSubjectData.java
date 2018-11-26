@@ -142,9 +142,14 @@ public class InsertOrEditSubjectData extends UiScene {
         mSubjectData.name = mNameTextField.getText();
         mSubjectData.subjectId = mIdTextField.getText();
         mSubjectData.scheme = mSchemeTextField.getText();
-        mSubjectData.semester = Integer.parseInt(mSemesterTextField.getText());
-        mSubjectData.credits = Integer.parseInt(mCreditsTextField.getText());
-        //TODO: Check for NumberFormatException and Notify the User.
+        try {
+            mSubjectData.semester = Integer.parseInt(mSemesterTextField.getText());
+            mSubjectData.credits = Integer.parseInt(mCreditsTextField.getText());
+        } catch (NumberFormatException e) {
+            Utils.showErrorAlert("Enter Integral Value for Semester/Credits");
+            return;
+        }
+
         mSubjectData.departmentId = mDepartmentDataComboBox.getValue().departmentId;
 
         Task<Integer> submitTask = new Task<Integer>() {
@@ -157,6 +162,12 @@ public class InsertOrEditSubjectData extends UiScene {
                     i = DatabaseHelper.updateSubject(mSubjectData);
                 }
                 return i;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                Utils.onInsertOrUpdateResponse(InsertOrEditSubjectData.this, this.getValue());
             }
         };
         Thread submitThread = new Thread(submitTask);

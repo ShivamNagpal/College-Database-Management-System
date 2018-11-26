@@ -150,13 +150,25 @@ public class InsertOrEditIaMarksData extends UiScene {
         if (!isEditMode) {
             mIaMarksData = new IaMarksData();
         }
-        mIaMarksData.studentId = mStudentDataComboBox.getValue().studentId;
-        mIaMarksData.semSecId = mSemesterSectionDataComboBox.getValue().semesterSectionId;
-        mIaMarksData.subjectId = mSubjectDataComboBox.getValue().subjectId;
-        mIaMarksData.test1 = Integer.parseInt(mTest1TextField.getText().trim());
-        mIaMarksData.test2 = Integer.parseInt(mTest2TextField.getText().trim());
-        mIaMarksData.test3 = Integer.parseInt(mTest3TextField.getText().trim());
-        // TODO: Check for Number Format Exception
+        StudentData studentData = mStudentDataComboBox.getValue();
+        SemesterSectionData semesterSectionData = mSemesterSectionDataComboBox.getValue();
+        SubjectData subjectData = mSubjectDataComboBox.getValue();
+
+        if (studentData == null || semesterSectionData == null || subjectData == null) {
+            Utils.showErrorAlert("Values can't be empty");
+            return;
+        }
+        mIaMarksData.studentId = studentData.studentId;
+        mIaMarksData.semSecId = semesterSectionData.semesterSectionId;
+        mIaMarksData.subjectId = subjectData.subjectId;
+        try {
+            mIaMarksData.test1 = Integer.parseInt(mTest1TextField.getText().trim());
+            mIaMarksData.test2 = Integer.parseInt(mTest2TextField.getText().trim());
+            mIaMarksData.test3 = Integer.parseInt(mTest3TextField.getText().trim());
+        } catch (NumberFormatException e) {
+            Utils.showErrorAlert("Enter Integral Value for Marks");
+            return;
+        }
 
         Task<Integer> submitTask = new Task<Integer>() {
             @Override
@@ -168,6 +180,12 @@ public class InsertOrEditIaMarksData extends UiScene {
                     i = DatabaseHelper.updateIaMarks(mIaMarksData);
                 }
                 return i;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                Utils.onInsertOrUpdateResponse(InsertOrEditIaMarksData.this, this.getValue());
             }
         };
         Thread submitThread = new Thread(submitTask);

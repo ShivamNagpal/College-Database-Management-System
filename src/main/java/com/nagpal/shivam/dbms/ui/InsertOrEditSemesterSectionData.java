@@ -105,8 +105,12 @@ public class InsertOrEditSemesterSectionData extends UiScene {
             mSemesterSectionData = new SemesterSectionData();
         }
         mSemesterSectionData.semesterSectionId = mSemesterSectionIdTextField.getText();
-        mSemesterSectionData.semester = Integer.parseInt(mSemesterTextField.getText());
-        //TODO: Check For NumberFormat Exception
+        try {
+            mSemesterSectionData.semester = Integer.parseInt(mSemesterTextField.getText());
+        } catch (NumberFormatException e) {
+            Utils.showErrorAlert("Enter Integral Value for Semester");
+            return;
+        }
         mSemesterSectionData.section = mSectionTextField.getText();
 
         Task<Integer> submitTask = new Task<Integer>() {
@@ -119,6 +123,12 @@ public class InsertOrEditSemesterSectionData extends UiScene {
                     i = DatabaseHelper.updateSemesterSection(mSemesterSectionData);
                 }
                 return i;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                Utils.onInsertOrUpdateResponse(InsertOrEditSemesterSectionData.this, this.getValue());
             }
         };
         Thread submitThread = new Thread(submitTask);

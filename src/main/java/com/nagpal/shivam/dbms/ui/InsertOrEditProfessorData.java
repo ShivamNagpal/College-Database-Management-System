@@ -161,14 +161,17 @@ public class InsertOrEditProfessorData extends UiScene {
         }
         mProfessorData.name = mNameTextField.getText();
         mProfessorData.professorId = mIdTextField.getText();
-        LocalDate value = mDobDatePicker.getValue();
-        if (value != null) {
-            mProfessorData.dateOfBirth = value.format(DateTimeFormatter.ISO_DATE);
+        LocalDate localDate = mDobDatePicker.getValue();
+        if (localDate != null) {
+            mProfessorData.dateOfBirth = localDate.format(DateTimeFormatter.ISO_DATE);
         }
         mProfessorData.address = mAddressTextField.getText();
         mProfessorData.email = mEmailTextField.getText();
         mProfessorData.phone = mPhoneTextField.getText();
-        mProfessorData.departmentId = mDepartmentDataComboBox.getValue().departmentId;
+        DepartmentData departmentData = mDepartmentDataComboBox.getValue();
+        if (departmentData != null) {
+            mProfessorData.departmentId = departmentData.departmentId;
+        }
         mProfessorData.designation = mDesignationTextField.getText();
 
         Task<Integer> submitTask = new Task<Integer>() {
@@ -181,6 +184,12 @@ public class InsertOrEditProfessorData extends UiScene {
                     i = DatabaseHelper.updateProfessor(mProfessorData);
                 }
                 return i;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                Utils.onInsertOrUpdateResponse(InsertOrEditProfessorData.this, this.getValue());
             }
         };
         Thread submitThread = new Thread(submitTask);
