@@ -22,8 +22,4 @@ public class DepartmentData {
         this.departmentId = departmentId;
     }
 
-    public void format() {
-        name = name.toUpperCase();
-        departmentId = departmentId.toUpperCase();
-    }
 }

@@ -1,0 +1,387 @@
+\chapter{Implementation}
+\setstretch{1}
+\section{Code For Major Functionalities}
+\subsection{Database Operation}
+\thispagestyle{fancy}
+
+\begin{lstlisting}[caption=DatabaseContract.java]
+public class DatabaseContract {
+  public static final String ROW_ID = "_ROWID";
+  public static final String ROW_ID_DATA_TYPE = "BIGINT(8) UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT";
+  public static final String PROCEDURE_IA_MARKS_CALCULATE_AVERAGE = "IA_MARKS_CALCULATE_AVERAGE";
+  public static final String SQL_IA_MARKS_CALCULATE_AVERAGE = "CREATE PROCEDURE " + PROCEDURE_IA_MARKS_CALCULATE_AVERAGE + "()\n" +
+      "BEGIN\n" +
+      " DECLARE a, b, c, average INT;\n" +
+      " DECLARE done INT DEFAULT FALSE;\n" +
+      " DECLARE id BIGINT(8);\n" +
+      " DECLARE cur CURSOR FOR\n" +
+      " SELECT " + DatabaseContract.ROW_ID + ", " + DatabaseContract.IaMarks.TEST1 + ", " + DatabaseContract.IaMarks.TEST2 + ", " + DatabaseContract.IaMarks.TEST3 + " FROM " + DatabaseContract.IaMarks.TABLE_NAME + ";\n" +
+      " DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;  \n" +
+      " OPEN cur;\n" +
+      "   m_loop : LOOP\n" +
+      "     SET done = FALSE;\n" +
+      "     FETCH cur INTO id, a, b, c;\n" +
+      "     IF(done) THEN\n" +
+      "       LEAVE m_loop;\n" +
+      "     END IF;\n" +
+      "     SET average = (a+b+c)/3;\n" +
+      "     UPDATE college.IA_MARKS SET AVG_MARKS = average WHERE " + DatabaseContract.ROW_ID + " = id;\n" +
+      "     SET done = done+1;\n" +
+      "   END LOOP;\n" +
+      " CLOSE cur;\n" +
+      "END\n";
+
+  public class Professor {
+    public static final String TABLE_NAME = "PROFESSOR";
+    public static final String NAME = "NAME";
+    public static final String PROFESSOR_ID = "PROFESSOR_ID";
+    public static final String DATE_OF_BIRTH = "DATE_OF_BIRTH";
+    public static final String ADDRESS = "ADDRESS";
+    public static final String PHONE = "PHONE";
+    public static final String EMAIL = "EMAIL";
+    public static final String DEPARTMENT_ID = "DEPARTMENT_ID";
+    public static final String DESIGNATION = "DESIGNATION";
+  }
+
+  public class Department {
+    public static final String TABLE_NAME = "DEPARTMENT";
+    public static final String NAME = "NAME";
+    public static final String DEPARTMENT_ID = "DEPARTMENT_ID";
+  }
+
+  public class Student {
+    public static final String TABLE_NAME = "STUDENT";
+    public static final String NAME = "NAME";
+    public static final String STUDENT_ID = "STUDENT_ID";
+    public static final String DATE_OF_BIRTH = "DATE_OF_BIRTH";
+    public static final String ADDRESS = "ADDRESS";
+    public static final String PHONE = "PHONE";
+    public static final String EMAIL = "EMAIL";
+    public static final String DEPARTMENT_ID = "DEPARTMENT_ID";
+  }
+
+  public class Subject {
+    public static final String TABLE_NAME = "SUBJECT";
+    public static final String NAME = "NAME";
+    public static final String SUBJECT_ID = "SUBJECT_ID";
+    public static final String SCHEME = "SCHEME";
+    public static final String SEMESTER = "SEMESTER";
+    public static final String SEMESTER_IDX = "SEMESTER_IDX";
+    public static final String CREDITS = "CREDITS";
+    public static final String CREDITS_IDX = "CREDITS_IDX";
+    public static final String DEPARTMENT_ID = "DEPARTMENT_ID";
+ }
+
+  public class SemesterSection {
+    public static final String TABLE_NAME = "SEMESTER_SECTION";
+    public static final String SEM_SEC_ID = "SEM_SEC_ID";
+    public static final String SEMESTER = "SEMESTER";
+    public static final String SEMESTER_IDX = "SEMESTER_IDX";
+    public static final String SECTION = "SECTION";
+  }
+
+  public class Division {
+    public static final String TABLE_NAME = "DIVISION";
+    public static final String STUDENT_ID = "STUDENT_ID";
+    public static final String SEM_SEC_ID = "SEM_SEC_ID";
+  }
+
+  public class Teaches {
+    public static final String TABLE_NAME = "TEACHES";
+    public static final String PROFESSOR_ID = "PROFESSOR_ID";
+    public static final String SEM_SEC_ID = "SEM_SEC_ID";
+    public static final String SUBJECT_ID = "SUBJECT_ID";
+  }
+
+  public class IaMarks {
+    public static final String TABLE_NAME = "IA_MARKS";
+    public static final String STUDENT_ID = "STUDENT_ID";
+    public static final String SEM_SEC_ID = "SEM_SEC_ID";
+    public static final String SUBJECT_ID = "SUBJECT_ID";
+    public static final String TEST1 = "TEST1";
+    public static final String TEST1_IDX = "TEST1_IDX";
+    public static final String TEST2 = "TEST2";
+    public static final String TEST2_IDX = "TEST2_IDX";
+    public static final String TEST3 = "TEST3";
+    public static final String TEST3_IDX = "TEST3_IDX";
+    public static final String AVG_MARKS = "AVG_MARKS";
+    public static final String AVG_MARKS_IDX = "AVG_MARKS_IDX";
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=DatabaseHelper.java]
+package com.nagpal.shivam.dbms.data;
+
+import com.nagpal.shivam.dbms.Log;
+import com.nagpal.shivam.dbms.data.DatabaseContract.*;
+import com.nagpal.shivam.dbms.model.*;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DatabaseHelper {
+
+
+  public static final String SEARCH_MODE_NATURAL_LANGUAGE = "Natural Language Mode";
+  public static final String SEARCH_MODE_BOOLEAN = "Boolean Mode";
+  private static final String CLASS_NAME = DatabaseHelper.class.getSimpleName();
+
+  public static List<DepartmentData> fetchDepartmentDetails() {
+    String sql = "SELECT * FROM " +
+        Department.TABLE_NAME;
+    Connection connection = Database.getConnection();
+    List<DepartmentData> list = new ArrayList<>();
+    try {
+      Statement statement = connection.createStatement();
+      ResultSet set = statement.executeQuery(sql);
+      int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+      int nameIndex = set.findColumn(Department.NAME);
+      int departmentIdIndex = set.findColumn(Department.DEPARTMENT_ID);
+
+      while (set.next()) {
+        list.add(new DepartmentData(set.getLong(rowIdIndex), set.getString(nameIndex), set.getString(departmentIdIndex)));
+      }
+    } catch (SQLException e) {
+      Log.e(CLASS_NAME, e.getMessage());
+    }
+    return list;
+  }
+
+  public static List<DepartmentData> fetchParticularDepartment(String departmentId, boolean include) {
+    String operator = include ? " = " : " != ";
+    String sql = "SELECT * FROM " +
+        Department.TABLE_NAME +
+        " WHERE " +
+        Department.DEPARTMENT_ID + operator + "'" + departmentId + "'";
+    Connection connection = Database.getConnection();
+    List<DepartmentData> list = new ArrayList<>();
+    try {
+      Statement statement = connection.createStatement();
+      ResultSet set = statement.executeQuery(sql);
+      int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+      int nameIndex = set.findColumn(Department.NAME);
+      int departmentIdIndex = set.findColumn(Department.DEPARTMENT_ID);
+
+      while (set.next()) {
+        list.add(new DepartmentData(set.getLong(rowIdIndex), set.getString(nameIndex), set.getString(departmentIdIndex)));
+      }
+    } catch (SQLException e) {
+      Log.e(CLASS_NAME, e.getMessage());
+    }
+    return list;
+  }
+
+  public static List<DepartmentData> searchDepartmentDetails(String searchString, String mode) {
+    String sql = "SELECT * FROM " +
+        Department.TABLE_NAME +
+        " WHERE MATCH(" + Department.NAME + "," + Department.DEPARTMENT_ID + ") " +
+        "AGAINST(? IN " + mode.toUpperCase() + ")";
+    Connection connection = Database.getConnection();
+    List<DepartmentData> list = new ArrayList<>();
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(sql);
+      preparedStatement.setString(1, searchString);
+      ResultSet set = preparedStatement.executeQuery();
+      int rowIdIndex = set.findColumn(DatabaseContract.ROW_ID);
+      int nameIndex = set.findColumn(Department.NAME);
+      int departmentIdIndex = set.findColumn(Department.DEPARTMENT_ID);
+
+      while (set.next()) {
+        list.add(new DepartmentData(set.getLong(rowIdIndex), set.getString(nameIndex), set.getString(departmentIdIndex)));
+      }
+    } catch (SQLException e) {
+      Log.e(CLASS_NAME, e.getMessage());
+    }
+    return list;
+  }
+
+  public static int updateDepartment(DepartmentData departmentData) {
+    String sql = "UPDATE " +
+        Department.TABLE_NAME +
+        " SET " +
+        Department.NAME + "=?, " +
+        Department.DEPARTMENT_ID + "=? " +
+        "WHERE " + DatabaseContract.ROW_ID + " =" + departmentData.rowId;
+    Connection connection = Database.getConnection();
+    try {
+      PreparedStatement statement = connection.prepareStatement(sql);
+      statement.setString(1, departmentData.name);
+      statement.setString(2, departmentData.departmentId);
+      statement.executeUpdate();
+    } catch (SQLException e) {
+      Log.e(CLASS_NAME, e.getMessage());
+      return e.getErrorCode();
+    }
+    return SqlErrorCodes.SQLITE_OK;
+  }
+
+  public static int deleteRow(String tableName, long rowId) {
+    String sql = "DELETE FROM " +
+        tableName +
+        " WHERE " + DatabaseContract.ROW_ID + " =" + rowId;
+    Connection connection = Database.getConnection();
+    try {
+      Statement statement = connection.createStatement();
+      statement.execute(sql);
+    } catch (SQLException e) {
+      Log.e(CLASS_NAME, e.getMessage());
+      return e.getErrorCode();
+    }
+    return SqlErrorCodes.SQLITE_OK;
+  }
+
+  public static int executeIaMarksCalculateAverage() {
+    String sql = "{CALL " + DatabaseContract.PROCEDURE_IA_MARKS_CALCULATE_AVERAGE + "()}";
+    Connection connection = Database.getConnection();
+    try {
+      CallableStatement statement = connection.prepareCall(sql);
+      statement.execute();
+    } catch (SQLException e) {
+      Log.e(CLASS_NAME, e.getMessage());
+      return e.getErrorCode();
+    }
+    return SqlErrorCodes.SQLITE_OK;
+  }
+}
+
+\end{lstlisting}
+
+
+\pagebreak
+\subsection{Model Class}
+\thispagestyle{fancy}
+\begin{lstlisting}[caption=DepartmentData.java]
+package com.nagpal.shivam.dbms.model;
+
+import com.nagpal.shivam.dbms.data.PreviewIgnoredAttribute;
+
+public class DepartmentData {
+  @PreviewIgnoredAttribute
+  public long rowId;
+  public String name;
+  public String departmentId;
+
+  public DepartmentData() {
+  }
+
+  public DepartmentData(String name, String departmentId) {
+    this.name = name;
+    this.departmentId = departmentId;
+  }
+
+  public DepartmentData(long rowId, String name, String departmentId) {
+    this.rowId = rowId;
+    this.name = name;
+    this.departmentId = departmentId;
+  }
+  
+}
+\end{lstlisting}
+
+
+\pagebreak
+\subsection{UI Scenes}
+\thispagestyle{fancy}
+\begin{lstlisting}[caption=PreviewDatabase.java]
+package com.nagpal.shivam.dbms.ui;
+
+import com.nagpal.shivam.dbms.navigation.Intent;
+import com.nagpal.shivam.dbms.navigation.NavUtil;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static com.nagpal.shivam.dbms.Main.sStage;
+
+public class PreviewDatabase extends UiScene {
+  @Override
+  public void setScene() {
+    Pane pane = getLayout();
+    pane.getStyleClass().add("parentPane");
+    Scene scene = new Scene(pane);
+    scene.getStylesheets().add("css/PreviewDatabaseScene.css");
+    sStage.setTitle("Database Preview");
+    sStage.setScene(scene);
+    pane.requestFocus();
+  }
+
+  @Override
+  protected Pane getLayout() {
+    Image logo = new Image("images/college-pic.png");
+    ImageView logoImageView = new ImageView(logo);
+    logoImageView.setFitWidth(400);
+    logoImageView.setFitHeight(300);
+    FlowPane logoImageViewFlowPane = new FlowPane(logoImageView);
+    logoImageViewFlowPane.getStyleClass().add("logoImageViewFlowPane");
+
+    LinkedHashMap<String, Class> linkedHashMap = new LinkedHashMap<>();
+    linkedHashMap.put("Professor", PreviewProfessor.class);
+    linkedHashMap.put("Student", PreviewStudent.class);
+    linkedHashMap.put("Department", PreviewDepartment.class);
+    linkedHashMap.put("Subject", PreviewSubject.class);
+    linkedHashMap.put("Division", PreviewDivision.class);
+    linkedHashMap.put("Teaches", PreviewTeaches.class);
+    linkedHashMap.put("Semester-Section", PreviewSemesterSection.class);
+    linkedHashMap.put("IaMarks", PreviewIaMarks.class);
+    TilePane tilePane = new TilePane();
+
+    ArrayList<Button> buttons = new ArrayList<>();
+    for (Map.Entry<String, Class> entry : linkedHashMap.entrySet()) {
+      Button button = new Button(entry.getKey());
+      button.setOnAction(event -> NavUtil.startScene(new Intent(PreviewDatabase.this, entry.getValue())));
+      buttons.add(button);
+    }
+
+    tilePane.setPrefColumns(3);
+    tilePane.setHgap(20);
+    tilePane.setVgap(20);
+    tilePane.getChildren().addAll(buttons);
+
+    FlowPane tileFlowPane = new FlowPane(tilePane);
+    tileFlowPane.getStyleClass().add("tileFlowPane");
+
+    VBox vBox = new VBox(logoImageViewFlowPane, tileFlowPane);
+    vBox.setSpacing(30);
+
+    BorderPane borderPane = new BorderPane();
+    borderPane.setCenter(vBox);
+    return borderPane;
+  }
+}
+
+\end{lstlisting}
+
+\pagebreak
+\subsection{CSS}
+\thispagestyle{fancy}
+\begin{lstlisting}[caption=PreviewDatabase.css]
+.parentPane {
+    -fx-min-width: 800;
+    -fx-min-height: 600;
+}
+
+.logoImageViewFlowPane {
+    -fx-alignment: center;
+}
+
+.tileFlowPane {
+    -fx-alignment: center;
+}
+
+.button {
+    -fx-pref-width: 200;
+    -fx-background-radius: 100;
+    -fx-padding: 20;
+    -fx-alignment: center;
+}
+
+\end{lstlisting}
+
