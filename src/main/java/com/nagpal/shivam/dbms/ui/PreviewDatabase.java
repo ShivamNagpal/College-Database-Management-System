@@ -28,7 +28,7 @@ public class PreviewDatabase extends UiScene {
 
     @Override
     protected Pane getLayout() {
-        Image logo = new Image("images/college-pic.jpg");
+        Image logo = new Image("images/college-pic.png");
         ImageView logoImageView = new ImageView(logo);
         logoImageView.setFitWidth(400);
         logoImageView.setFitHeight(300);

@@ -53,11 +53,11 @@ public class DatabaseContract {
                 ", " +
                 EMAIL + " VARCHAR(64)" +
                 ", " +
-                DEPARTMENT_ID + " VARCHAR(64) NOT NULL" +
+                DEPARTMENT_ID + " VARCHAR(64)" +
                 ", " +
                 DESIGNATION + " VARCHAR(64)" +
                 ", " +
-                "FOREIGN KEY (" + DEPARTMENT_ID + ") REFERENCES " + Department.TABLE_NAME + "(" + Department.DEPARTMENT_ID + ")" +
+                "FOREIGN KEY (" + DEPARTMENT_ID + ") REFERENCES " + Department.TABLE_NAME + "(" + Department.DEPARTMENT_ID + ") ON UPDATE CASCADE ON DELETE SET NULL" +
                 ", " +
                 "FULLTEXT full_text_idx(" + NAME + "," + PROFESSOR_ID + "," + ADDRESS + "," + PHONE + "," + EMAIL + "," + DEPARTMENT_ID + "," + DESIGNATION + ")" +
                 ");";
@@ -106,9 +106,9 @@ public class DatabaseContract {
                 ", " +
                 EMAIL + " VARCHAR(64)" +
                 ", " +
-                DEPARTMENT_ID + " VARCHAR(64) NOT NULL" +
+                DEPARTMENT_ID + " VARCHAR(64)" +
                 ", " +
-                "FOREIGN KEY (" + DEPARTMENT_ID + ") REFERENCES " + Department.TABLE_NAME + "(" + Department.DEPARTMENT_ID + ")" +
+                "FOREIGN KEY (" + DEPARTMENT_ID + ") REFERENCES " + Department.TABLE_NAME + "(" + Department.DEPARTMENT_ID + ") ON UPDATE CASCADE ON DELETE SET NULL" +
                 ", " +
                 "FULLTEXT full_text_idx(" + NAME + "," + STUDENT_ID + "," + ADDRESS + "," + PHONE + "," + EMAIL + "," + DEPARTMENT_ID + ")" +
                 ");";
@@ -133,7 +133,7 @@ public class DatabaseContract {
                 ", " +
                 SUBJECT_ID + " VARCHAR(64) PRIMARY KEY" +
                 ", " +
-                DEPARTMENT_ID + " VARCHAR(64) NOT NULL" +
+                DEPARTMENT_ID + " VARCHAR(64)" +
                 ", " +
                 SCHEME + " VARCHAR(64)" +
                 ", " +
@@ -145,7 +145,7 @@ public class DatabaseContract {
                 ", " +
                 CREDITS_IDX + " TINYTEXT" +
                 ", " +
-                "FOREIGN KEY (" + DEPARTMENT_ID + ") REFERENCES " + Department.TABLE_NAME + "(" + Department.DEPARTMENT_ID + ")" +
+                "FOREIGN KEY (" + DEPARTMENT_ID + ") REFERENCES " + Department.TABLE_NAME + "(" + Department.DEPARTMENT_ID + ") ON UPDATE CASCADE ON DELETE SET NULL" +
                 ", " +
                 "FULLTEXT full_text_idx(" + NAME + "," + SUBJECT_ID + "," + DEPARTMENT_ID + "," + SCHEME + "," + SEMESTER_IDX + "," + CREDITS_IDX + ")" +
                 ");";
@@ -207,11 +207,11 @@ public class DatabaseContract {
                 ", " +
                 STUDENT_ID + " VARCHAR(64) PRIMARY KEY" +
                 ", " +
-                SEM_SEC_ID + " VARCHAR(64) NOT NULL" +
+                SEM_SEC_ID + " VARCHAR(64)" +
                 ", " +
-                "FOREIGN KEY (" + STUDENT_ID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ")" +
+                "FOREIGN KEY (" + STUDENT_ID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ") ON UPDATE CASCADE ON DELETE CASCADE" +
                 ", " +
-                "FOREIGN KEY (" + SEM_SEC_ID + ") REFERENCES " + SemesterSection.TABLE_NAME + "(" + SemesterSection.SEM_SEC_ID + ")" +
+                "FOREIGN KEY (" + SEM_SEC_ID + ") REFERENCES " + SemesterSection.TABLE_NAME + "(" + SemesterSection.SEM_SEC_ID + ") ON UPDATE CASCADE ON DELETE SET NULL" +
                 ", " +
                 "FULLTEXT full_text_idx(" + STUDENT_ID + "," + SEM_SEC_ID + ")" +
                 ");";
@@ -233,11 +233,11 @@ public class DatabaseContract {
                 ", " +
                 SUBJECT_ID + " VARCHAR(64)" +
                 ", " +
-                "FOREIGN KEY (" + PROFESSOR_ID + ") REFERENCES " + Professor.TABLE_NAME + "(" + Professor.PROFESSOR_ID + ")" +
+                "FOREIGN KEY (" + PROFESSOR_ID + ") REFERENCES " + Professor.TABLE_NAME + "(" + Professor.PROFESSOR_ID + ") ON UPDATE CASCADE ON DELETE CASCADE" +
                 ", " +
-                "FOREIGN KEY (" + SEM_SEC_ID + ") REFERENCES " + SemesterSection.TABLE_NAME + "(" + SemesterSection.SEM_SEC_ID + ")" +
+                "FOREIGN KEY (" + SEM_SEC_ID + ") REFERENCES " + SemesterSection.TABLE_NAME + "(" + SemesterSection.SEM_SEC_ID + ") ON UPDATE CASCADE ON DELETE CASCADE" +
                 ", " +
-                "FOREIGN KEY (" + SUBJECT_ID + ") REFERENCES " + Subject.TABLE_NAME + "(" + Subject.SUBJECT_ID + ")" +
+                "FOREIGN KEY (" + SUBJECT_ID + ") REFERENCES " + Subject.TABLE_NAME + "(" + Subject.SUBJECT_ID + ") ON UPDATE CASCADE ON DELETE CASCADE" +
                 ", " +
                 "PRIMARY KEY (" + PROFESSOR_ID + ", " + SEM_SEC_ID + ", " + SUBJECT_ID + ")" +
                 ", " +
@@ -285,11 +285,11 @@ public class DatabaseContract {
                 ", " +
                 AVG_MARKS_IDX + " TINYTEXT" +
                 ", " +
-                "FOREIGN KEY (" + STUDENT_ID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ")" +
+                "FOREIGN KEY (" + STUDENT_ID + ") REFERENCES " + Student.TABLE_NAME + "(" + Student.STUDENT_ID + ") ON UPDATE CASCADE ON DELETE CASCADE" +
                 ", " +
-                "FOREIGN KEY (" + SEM_SEC_ID + ") REFERENCES " + SemesterSection.TABLE_NAME + "(" + SemesterSection.SEM_SEC_ID + ")" +
+                "FOREIGN KEY (" + SEM_SEC_ID + ") REFERENCES " + SemesterSection.TABLE_NAME + "(" + SemesterSection.SEM_SEC_ID + ") ON UPDATE CASCADE ON DELETE CASCADE" +
                 ", " +
-                "FOREIGN KEY (" + SUBJECT_ID + ") REFERENCES " + Subject.TABLE_NAME + "(" + Subject.SUBJECT_ID + ")" +
+                "FOREIGN KEY (" + SUBJECT_ID + ") REFERENCES " + Subject.TABLE_NAME + "(" + Subject.SUBJECT_ID + ") ON UPDATE CASCADE ON DELETE CASCADE" +
                 ", " +
                 "PRIMARY KEY (" + STUDENT_ID + ", " + SEM_SEC_ID + ", " + SUBJECT_ID + ")" +
                 ", " +

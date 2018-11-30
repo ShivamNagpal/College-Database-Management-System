@@ -1,0 +1,102 @@
+\documentclass[12pt,oneside]{book}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{multicol}
+\usepackage{titletoc}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage{lmodern} % for bold teletype font
+\usepackage{setspace}
+\usepackage{blindtext}
+\usepackage{mathptmx}
+\usepackage{listings}
+\usepackage{caption}
+
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{%
+	\parbox{\textwidth}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}\vskip-4pt}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+\lstset{frame=lrb,xleftmargin=\fboxsep,xrightmargin=-\fboxsep,
+	basicstyle=\ttfamily,
+	columns=fullflexible,
+	breaklines=true,}
+
+\titleformat*{\section}{\large\bfseries}
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries}{\filright\chaptertitlename\ \thechapter}
+  {20pt}{\Large\filcenter}
+
+
+\usepackage[bookmarks, colorlinks=false, pdfborder={0 0 0}, pdftitle={<pdf title here>}, pdfauthor={<author's name here>}, pdfsubject={<subject here>}, pdfkeywords={<keywords here>}]{hyperref}
+
+\usepackage{etoolbox} % enable fancyhdr on chapter pages.
+\patchcmd{\chapter}{\thispagestyle{plain}}{\thispagestyle{fancy}}{}{}
+\patchcmd{\lstlisting}{\thispagestyle{plain}}{\thispagestyle{fancy}}{}{}
+
+\renewcommand\bibname{References}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{COLLEGE DATABASE MANAGEMENT SYSTEM}
+\fancyfoot[L]{RNSIT, Dept. of CSE}
+\fancyfoot[R]{Page \thepage}
+
+\renewcommand{\headrulewidth}{5pt}
+\renewcommand{\footrulewidth}{5pt}
+\newlength\FHoffset
+\fancyheadoffset{\FHoffset}
+
+\definecolor{darkbrown}{RGB}{153, 51, 51}
+\definecolor{blue}{RGB}{102, 102, 255}
+\definecolor{black}{RGB}{0, 0, 0}
+
+\renewcommand{\headrule}{\hbox to\headwidth{\color{darkbrown}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{darkbrown}\leaders\hrule height \footrulewidth\hfill}}
+
+
+\renewcommand{\contentsname}{\centering Contents}
+
+\AtBeginDocument{%
+  \addtocontents{toc}{\protect\thispagestyle{empty}}%
+  \addtocontents{lof}{\protect\thispagestyle{empty}}%
+}
+
+\usepackage{geometry}
+\geometry{
+	lmargin = 1.25in,
+	rmargin = 1in,
+	top = 0.75in,
+	bottom = 0.75in,
+}
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+
+
+\begin{document}
+
+\input{./title.tex}
+\input{./certificate.tex}
+\input{./abstract.tex}
+\input{./acknowledgements.tex}
+
+\setcounter{tocdepth}{2}
+\tableofcontents
+\listoffigures
+
+\pagenumbering{arabic}
+\input{./chapter1.tex}
+\input{./chapter2.tex}
+\input{./chapter3.tex}
+\input{./chapter4.tex}
+\input{./chapter5.tex}
+\input{./chapter6.tex}
+\input{./chapter7.tex}
+\input{./chapter8.tex}
+\input{./ref.tex}
+
+\end{document}

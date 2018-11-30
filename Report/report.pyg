@@ -1,0 +1,153 @@
+CREATE OR REPLACE FUNCTION monthcountfill ()
+RETURNS TRIGGER AS $$
+DECLARE
+    Carouselcount INTEGER := 0 ;
+    Darkridecount INTEGER := 0 ;
+    Droptowercount INTEGER := 0 ;
+    Ferriswheelcount INTEGER := 0 ;
+    Gyrotowercount INTEGER := 0 ;
+    Rollercoastercount INTEGER := 0 ;
+    Waterridecount INTEGER := 0 ;
+    SpiralSlidecount INTEGER := 0 ;
+    Circuscount INTEGER := 0 ;
+    Gravitroncount INTEGER := 0 ;
+
+BEGIN
+    Carouselcount := sum("Carousel") from daycount;
+    Darkridecount := sum("Darkride") from daycount;
+    Droptowercount := sum("Droptower") from daycount;
+    Ferriswheelcount := sum("Ferriswheel") from daycount;
+    Gyrotowercount := sum("Gyrotower") from daycount;
+    Rollercoastercount := sum("Rollercoaster") from daycount;
+    Waterridecount := sum("Waterride") from daycount;
+    SpiralSlidecount := sum("SpiralSlide") from daycount;
+    Circuscount := sum("Circus") from daycount;
+    Gravitroncount := sum("Gravitron") from daycount;
+
+    insert into monthcount("time", "Carousel", "Darkride", "Droptower", "Ferriswheel", "Gyrotower", "Rollercoaster", "Waterride", "SpiralSlide", "Circus", "Gravitron") values (new.time, Carouselcount, Darkridecount, Droptowercount, Ferriswheelcount, Gyrotowercount, Rollercoastercount, Waterridecount, SpiralSlidecount, Circuscount, Gravitroncount);
+    RETURN new;
+END;$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER update_monthcount
+    AFTER INSERT ON daycount
+    FOR EACH ROW
+    WHEN ( extract (day from new.time ) = 28)
+    EXECUTE PROCEDURE monthcountfill();
+
+CREATE OR REPLACE FUNCTION monthrevfill ()
+RETURNS TRIGGER AS $$
+DECLARE
+    Carouselcount INTEGER := 0 ;
+    Darkridecount INTEGER := 0 ;
+    Droptowercount INTEGER := 0 ;
+    Ferriswheelcount INTEGER := 0 ;
+    Gyrotowercount INTEGER := 0 ;
+    Rollercoastercount INTEGER := 0 ;
+    Waterridecount INTEGER := 0 ;
+    SpiralSlidecount INTEGER := 0 ;
+    Circuscount INTEGER := 0 ;
+    Gravitroncount INTEGER := 0 ;
+
+BEGIN
+    Carouselcount := sum("Carousel") from dayrev;
+    Darkridecount := sum("Darkride") from dayrev;
+    Droptowercount := sum("Droptower") from dayrev;
+    Ferriswheelcount := sum("Ferriswheel") from dayrev;
+    Gyrotowercount := sum("Gyrotower") from dayrev;
+    Rollercoastercount := sum("Rollercoaster") from dayrev;
+    Waterridecount := sum("Waterride") from dayrev;
+    SpiralSlidecount := sum("SpiralSlide") from dayrev;
+    Circuscount := sum("Circus") from dayrev;
+    Gravitroncount := sum("Gravitron") from dayrev;
+
+    insert into monthrev("time", "Carousel", "Darkride", "Droptower", "Ferriswheel", "Gyrotower", "Rollercoaster", "Waterride", "SpiralSlide", "Circus", "Gravitron") values (new.time, Carouselcount, Darkridecount, Droptowercount, Ferriswheelcount, Gyrotowercount, Rollercoastercount, Waterridecount, SpiralSlidecount, Circuscount, Gravitroncount);
+    delete from dayrev;
+    delete from daydetails;
+    delete from daycount;
+    alter sequence dayrev_id_seq restart with 1;
+    alter sequence daydetails_id_seq restart with 1;
+    alter sequence daycount_id_seq restart with 1;
+    RETURN new;
+END;$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER update_monthrev
+    AFTER INSERT ON dayrev
+    FOR EACH ROW
+    WHEN ( extract (day from new.time ) = 28)
+    EXECUTE PROCEDURE monthrevfill();
+
+CREATE OR REPLACE FUNCTION monthmcfill ()
+RETURNS TRIGGER AS $$
+DECLARE
+    totalcount INTEGER := 0;
+    Carouselcount INTEGER := 0 ;
+    Darkridecount INTEGER := 0 ;
+    Droptowercount INTEGER := 0 ;
+    Ferriswheelcount INTEGER := 0 ;
+    Gyrotowercount INTEGER := 0 ;
+    Rollercoastercount INTEGER := 0 ;
+    Waterridecount INTEGER := 0 ;
+    SpiralSlidecount INTEGER := 0 ;
+    Circuscount INTEGER := 0 ;
+    Gravitroncount INTEGER := 0 ;
+
+BEGIN
+    Carouselcount := new."Carousel";
+    Darkridecount := new."Darkride";
+    Droptowercount := new."Droptower";
+    Ferriswheelcount := new."Ferriswheel";
+    Gyrotowercount := new."Gyrotower";
+    Rollercoastercount := new."Rollercoaster";
+    Waterridecount := new."Waterride";
+    SpiralSlidecount := new."SpiralSlide";
+    Circuscount := new."Circus";
+    Gravitroncount := new."Gravitron";
+    totalcount := Carouselcount + Darkridecount + Droptowercount + Ferriswheelcount + Gyrotowercount + Rollercoastercount + Waterridecount + SpiralSlidecount + Circuscount + Gravitroncount;
+    insert into monthdetails("time", "month_rev", "month_count") values (new.time, 0, totalcount);
+    RETURN new;
+END;$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER update_monthmccount
+    AFTER INSERT ON monthcount
+    FOR EACH ROW
+    EXECUTE PROCEDURE monthmcfill();
+
+CREATE OR REPLACE FUNCTION monthmrfill ()
+RETURNS TRIGGER AS $$
+DECLARE
+    totalprice INTEGER := 0;
+    Carouselprice INTEGER := 0 ;
+    Darkrideprice INTEGER := 0 ;
+    Droptowerprice INTEGER := 0 ;
+    Ferriswheelprice INTEGER := 0 ;
+    Gyrotowerprice INTEGER := 0 ;
+    Rollercoasterprice INTEGER := 0 ;
+    Waterrideprice INTEGER := 0 ;
+    SpiralSlideprice INTEGER := 0 ;
+    Circusprice INTEGER := 0 ;
+    Gravitronprice INTEGER := 0 ;
+
+BEGIN
+    Carouselprice := new."Carousel";
+    Darkrideprice := new."Darkride";
+    Droptowerprice := new."Droptower";
+    Ferriswheelprice := new."Ferriswheel";
+    Gyrotowerprice := new."Gyrotower";
+    Rollercoasterprice := new."Rollercoaster";
+    Waterrideprice:= new."Waterride";
+    SpiralSlideprice := new."SpiralSlide";
+    Circusprice := new."Circus";
+    Gravitronprice := new."Gravitron";
+    totalprice := Carouselprice + Darkrideprice + Droptowerprice + Ferriswheelprice + Gyrotowerprice + Rollercoasterprice + Waterrideprice + SpiralSlideprice + Circusprice + Gravitronprice;
+    update monthdetails set month_rev = totalprice where id = new.id;
+    RETURN new;
+END;$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER update_monthmrcount
+    AFTER INSERT ON monthrev
+    FOR EACH ROW
+    EXECUTE PROCEDURE monthmrfill();
