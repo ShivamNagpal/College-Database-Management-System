@@ -534,7 +534,7 @@ public class DatabaseHelper {
     public static List<IaMarksData> searchIaMarksDetails(String searchString, String mode) {
         String sql = "SELECT * FROM " +
                 IaMarks.TABLE_NAME +
-                " WHERE MATCH(" + IaMarks.STUDENT_ID + "," + IaMarks.SEM_SEC_ID + "," + IaMarks.SUBJECT_ID + "," + IaMarks.TEST1_IDX + "," + IaMarks.TEST2_IDX + "," + IaMarks.TEST3_IDX + ") " +
+                " WHERE MATCH(" + IaMarks.STUDENT_ID + "," + IaMarks.SEM_SEC_ID + "," + IaMarks.SUBJECT_ID + "," + IaMarks.TEST1_IDX + "," + IaMarks.TEST2_IDX + "," + IaMarks.TEST3_IDX + "," + IaMarks.AVG_MARKS_IDX + ") " +
                 "AGAINST(? IN " + mode.toUpperCase() + ")";
         Connection connection = Database.getConnection();
         List<IaMarksData> list = new ArrayList<>();
