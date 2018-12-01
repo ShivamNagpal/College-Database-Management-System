@@ -104,7 +104,7 @@ public class InsertOrEditStudentData extends UiScene {
         formGridPane.add(mEmailTextField, 1, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
-        Label departmentIdLabel = new Label("Department*");
+        Label departmentIdLabel = new Label("Department");
 
         Callback<ListView<DepartmentData>, ListCell<DepartmentData>> departmentComboBoxCallback = Utils.getDepartmentComboBoxCallback();
 
@@ -114,10 +114,8 @@ public class InsertOrEditStudentData extends UiScene {
 
         mDepartmentDataComboBox.setPromptText("Choose a department");
 
-        Label linkToAddNewDepartment = new Label("Not Found!, Add new Department First");
         formGridPane.add(departmentIdLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mDepartmentDataComboBox, 1, gridPaneStartingRowIndex);
-        formGridPane.add(linkToAddNewDepartment, 2, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         BorderPane borderPane = new BorderPane();

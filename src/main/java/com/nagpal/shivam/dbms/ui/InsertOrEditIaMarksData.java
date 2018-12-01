@@ -162,9 +162,18 @@ public class InsertOrEditIaMarksData extends UiScene {
         mIaMarksData.semSecId = semesterSectionData.semesterSectionId;
         mIaMarksData.subjectId = subjectData.subjectId;
         try {
-            mIaMarksData.test1 = Integer.parseInt(mTest1TextField.getText().trim());
-            mIaMarksData.test2 = Integer.parseInt(mTest2TextField.getText().trim());
-            mIaMarksData.test3 = Integer.parseInt(mTest3TextField.getText().trim());
+            String tm1 = mTest1TextField.getText().trim();
+            if (!tm1.isEmpty()) {
+                mIaMarksData.test1 = Integer.parseInt(tm1);
+            }
+            String tm2 = mTest2TextField.getText().trim();
+            if (!tm2.isEmpty()) {
+                mIaMarksData.test2 = Integer.parseInt(tm2);
+            }
+            String tm3 = mTest3TextField.getText().trim();
+            if (!tm3.isEmpty()) {
+                mIaMarksData.test3 = Integer.parseInt(tm3);
+            }
         } catch (NumberFormatException e) {
             Utils.showErrorAlert("Enter Integral Value for Marks");
             return;
