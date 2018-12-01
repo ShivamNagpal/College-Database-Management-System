@@ -104,10 +104,8 @@ public class InsertOrEditSubjectData extends UiScene {
 
         mDepartmentDataComboBox.setPromptText("Choose a department");
 
-        Label linkToAddNewDepartment = new Label("Not Found!, Add new Department First");
         formGridPane.add(departmentIdLabel, 0, gridPaneStartingRowIndex);
         formGridPane.add(mDepartmentDataComboBox, 1, gridPaneStartingRowIndex);
-        formGridPane.add(linkToAddNewDepartment, 2, gridPaneStartingRowIndex);
         gridPaneStartingRowIndex += 1;
 
         BorderPane borderPane = new BorderPane();
@@ -143,14 +141,23 @@ public class InsertOrEditSubjectData extends UiScene {
         mSubjectData.subjectId = mIdTextField.getText();
         mSubjectData.scheme = mSchemeTextField.getText();
         try {
-            mSubjectData.semester = Integer.parseInt(mSemesterTextField.getText());
-            mSubjectData.credits = Integer.parseInt(mCreditsTextField.getText());
+            String semesterTextFieldText = mSemesterTextField.getText();
+            if (!semesterTextFieldText.isEmpty()) {
+                mSubjectData.semester = Integer.parseInt(semesterTextFieldText);
+            }
+            String creditsTextFieldText = mCreditsTextField.getText();
+            if (!creditsTextFieldText.isEmpty()) {
+                mSubjectData.credits = Integer.parseInt(creditsTextFieldText);
+            }
         } catch (NumberFormatException e) {
             Utils.showErrorAlert("Enter Integral Value for Semester/Credits");
             return;
         }
 
-        mSubjectData.departmentId = mDepartmentDataComboBox.getValue().departmentId;
+        DepartmentData dataComboBoxValue = mDepartmentDataComboBox.getValue();
+        if (dataComboBoxValue != null) {
+            mSubjectData.departmentId = dataComboBoxValue.departmentId;
+        }
 
         Task<Integer> submitTask = new Task<Integer>() {
             @Override

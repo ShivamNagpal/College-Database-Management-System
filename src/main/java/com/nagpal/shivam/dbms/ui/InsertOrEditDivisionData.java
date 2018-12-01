@@ -109,13 +109,15 @@ public class InsertOrEditDivisionData extends UiScene {
             mDivisionData = new DivisionData();
         }
         StudentData studentData = mStudentDataComboBox.getValue();
-        SemesterSectionData semesterSectionData = mSemesterSectionDataComboBox.getValue();
-        if (studentData == null || semesterSectionData == null) {
+        if (studentData == null) {
             Utils.showErrorAlert("Values can't be empty");
             return;
         }
         mDivisionData.studentId = studentData.studentId;
-        mDivisionData.semesterSectionId = semesterSectionData.semesterSectionId;
+        SemesterSectionData semesterSectionData = mSemesterSectionDataComboBox.getValue();
+        if (semesterSectionData != null) {
+            mDivisionData.semesterSectionId = semesterSectionData.semesterSectionId;
+        }
 
 
         Task<Integer> submitTask = new Task<Integer>() {
