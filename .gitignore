@@ -45,3 +45,6 @@ derbyDB
 
 #Root Credentials
 root_credentials.txt
+
+#Gradle
+.gradle
